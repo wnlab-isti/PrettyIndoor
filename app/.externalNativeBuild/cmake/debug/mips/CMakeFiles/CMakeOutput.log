@@ -1,0 +1,218 @@
+The target system is: Android - 19 - mips
+The host system is: Windows - 10.0.14393 - AMD64
+Determining if the C compiler works passed with the following output:
+Change Dir: C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/.externalNativeBuild/cmake/debug/mips/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:\Users\WNLab\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\ninja.exe" "cmTC_56c02"
+[1/2] Building C object CMakeFiles/cmTC_56c02.dir/testCCompiler.c.o
+[2/2] Linking C executable cmTC_56c02
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/.externalNativeBuild/cmake/debug/mips/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:\Users\WNLab\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\ninja.exe" "cmTC_e8758"
+[1/2] Building C object CMakeFiles/cmTC_e8758.dir/CMakeCCompilerABI.c.o
+[2/2] Linking C executable cmTC_e8758
+Android clang version 3.8.256229  (based on LLVM 3.8.256229)
+Target: mipsel-none-linux-android
+Thread model: posix
+InstalledDir: C:\Users\WNLab\AppData\Local\Android\sdk\ndk-bundle\toolchains\llvm\prebuilt\windows-x86_64\bin
+Found candidate GCC installation: C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android\4.9.x
+Selected GCC installation: C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x
+Candidate multilib: mips-r6;@march=mips32r6
+Candidate multilib: mips-r2;@march=mips32r2
+Candidate multilib: .;
+Selected multilib: .;
+ "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/bin\\ld" --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips -pie --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips --eh-frame-hdr -m elf32ltsmip -dynamic-linker /system/bin/linker -o cmTC_e8758 "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_e8758.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\\crtend_android.o"
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(mipsel-linux-android-ld\.exe|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/.externalNativeBuild/cmake/debug/mips/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"C:\Users\WNLab\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\ninja.exe" "cmTC_e8758"]
+  ignore line: [[1/2] Building C object CMakeFiles/cmTC_e8758.dir/CMakeCCompilerABI.c.o]
+  ignore line: [[2/2] Linking C executable cmTC_e8758]
+  ignore line: [Android clang version 3.8.256229  (based on LLVM 3.8.256229)]
+  ignore line: [Target: mipsel-none-linux-android]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: C:\Users\WNLab\AppData\Local\Android\sdk\ndk-bundle\toolchains\llvm\prebuilt\windows-x86_64\bin]
+  ignore line: [Found candidate GCC installation: C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android\4.9.x]
+  ignore line: [Selected GCC installation: C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x]
+  ignore line: [Candidate multilib: mips-r6]
+  ignore line: [@march=mips32r6]
+  ignore line: [Candidate multilib: mips-r2]
+  ignore line: [@march=mips32r2]
+  ignore line: [Candidate multilib: .]
+  ignore line: []
+  ignore line: [Selected multilib: .]
+  ignore line: []
+  link line: [ "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/bin\\ld" --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips -pie --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips --eh-frame-hdr -m elf32ltsmip -dynamic-linker /system/bin/linker -o cmTC_e8758 "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_e8758.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\\crtend_android.o"]
+    arg [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/bin\ld] ==> ignore
+    arg [--sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips] ==> ignore
+    arg [-pie] ==> ignore
+    arg [--sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf32ltsmip] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/system/bin/linker] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_e8758] ==> ignore
+    arg [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\crtbegin_dynamic.o] ==> ignore
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+    arg [--build-id] ==> ignore
+    arg [--warn-shared-textrel] ==> ignore
+    arg [--fatal-warnings] ==> ignore
+    arg [--no-undefined] ==> ignore
+    arg [-znoexecstack] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-znow] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [-znocopyreloc] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--warn-shared-textrel] ==> ignore
+    arg [--fatal-warnings] ==> ignore
+    arg [--no-undefined] ==> ignore
+    arg [-znoexecstack] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-znow] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [-znocopyreloc] ==> ignore
+    arg [CMakeFiles/cmTC_e8758.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [-ldl] ==> lib [dl]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-ldl] ==> lib [dl]
+    arg [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\crtend_android.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/mipsel-linux-android/lib]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/mipsel-linux-android/lib]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+  implicit libs: [dl;c;dl]
+  implicit dirs: [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x;C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/mipsel-linux-android/lib;C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+  implicit fwks: []
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/.externalNativeBuild/cmake/debug/mips/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:\Users\WNLab\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\ninja.exe" "cmTC_bd5ae"
+[1/2] Building CXX object CMakeFiles/cmTC_bd5ae.dir/testCXXCompiler.cxx.o
+[2/2] Linking CXX executable cmTC_bd5ae
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/.externalNativeBuild/cmake/debug/mips/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:\Users\WNLab\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\ninja.exe" "cmTC_dfd97"
+[1/2] Building CXX object CMakeFiles/cmTC_dfd97.dir/CMakeCXXCompilerABI.cpp.o
+[2/2] Linking CXX executable cmTC_dfd97
+Android clang version 3.8.256229  (based on LLVM 3.8.256229)
+Target: mipsel-none-linux-android
+Thread model: posix
+InstalledDir: C:\Users\WNLab\AppData\Local\Android\sdk\ndk-bundle\toolchains\llvm\prebuilt\windows-x86_64\bin
+Found candidate GCC installation: C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android\4.9.x
+Selected GCC installation: C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x
+Candidate multilib: mips-r6;@march=mips32r6
+Candidate multilib: mips-r2;@march=mips32r2
+Candidate multilib: .;
+Selected multilib: .;
+ "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/bin\\ld" --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips -pie --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips --eh-frame-hdr -m elf32ltsmip -dynamic-linker /system/bin/linker -o cmTC_dfd97 "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_dfd97.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc -lgcc -ldl -lc -lgcc -lgcc -ldl "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\\crtend_android.o"
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(mipsel-linux-android-ld\.exe|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/.externalNativeBuild/cmake/debug/mips/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"C:\Users\WNLab\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\ninja.exe" "cmTC_dfd97"]
+  ignore line: [[1/2] Building CXX object CMakeFiles/cmTC_dfd97.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [[2/2] Linking CXX executable cmTC_dfd97]
+  ignore line: [Android clang version 3.8.256229  (based on LLVM 3.8.256229)]
+  ignore line: [Target: mipsel-none-linux-android]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: C:\Users\WNLab\AppData\Local\Android\sdk\ndk-bundle\toolchains\llvm\prebuilt\windows-x86_64\bin]
+  ignore line: [Found candidate GCC installation: C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android\4.9.x]
+  ignore line: [Selected GCC installation: C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x]
+  ignore line: [Candidate multilib: mips-r6]
+  ignore line: [@march=mips32r6]
+  ignore line: [Candidate multilib: mips-r2]
+  ignore line: [@march=mips32r2]
+  ignore line: [Candidate multilib: .]
+  ignore line: []
+  ignore line: [Selected multilib: .]
+  ignore line: []
+  link line: [ "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/bin\\ld" --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips -pie --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips --eh-frame-hdr -m elf32ltsmip -dynamic-linker /system/bin/linker -o cmTC_dfd97 "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib -LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_dfd97.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc -lgcc -ldl -lc -lgcc -lgcc -ldl "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\\crtend_android.o"]
+    arg [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/bin\ld] ==> ignore
+    arg [--sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips] ==> ignore
+    arg [-pie] ==> ignore
+    arg [--sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf32ltsmip] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/system/bin/linker] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_dfd97] ==> ignore
+    arg [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\crtbegin_dynamic.o] ==> ignore
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib]
+    arg [-LC:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib] ==> dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+    arg [--build-id] ==> ignore
+    arg [--warn-shared-textrel] ==> ignore
+    arg [--fatal-warnings] ==> ignore
+    arg [--no-undefined] ==> ignore
+    arg [-znoexecstack] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-znow] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [-znocopyreloc] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--warn-shared-textrel] ==> ignore
+    arg [--fatal-warnings] ==> ignore
+    arg [--no-undefined] ==> ignore
+    arg [-znoexecstack] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-znow] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [-znocopyreloc] ==> ignore
+    arg [CMakeFiles/cmTC_dfd97.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-ldl] ==> lib [dl]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-ldl] ==> lib [dl]
+    arg [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib\crtend_android.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc]
+  remove lib [gcc]
+  remove lib [gcc]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib/../lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/mipsel-linux-android/lib]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/../lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib/mipsel-linux-android/../../lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x/../../../../mipsel-linux-android/lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/mipsel-linux-android/lib]
+  collapse library dir [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib] ==> [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+  implicit libs: [stdc++;m;dl;c;dl]
+  implicit dirs: [C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/lib/gcc/mipsel-linux-android/4.9.x;C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9/prebuilt/windows-x86_64/mipsel-linux-android/lib;C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-mips/usr/lib]
+  implicit fwks: []
+
+

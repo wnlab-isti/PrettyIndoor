@@ -1,0 +1,38 @@
+
+{
+	"buildFiles" : [ "C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/CMakeLists.txt" ],
+	"cleanCommands" : 
+	[
+		"C:\\Users\\WNLab\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.3155560\\bin\\cmake.exe --build C:\\Users\\WNLab\\Desktop\\PrettyIndoorNavigator\\app\\.externalNativeBuild\\cmake\\debug\\x86 --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"native-lib-Debug-x86" : 
+		{
+			"abi" : "x86",
+			"artifactName" : "native-lib",
+			"buildCommand" : "C:\\Users\\WNLab\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.3155560\\bin\\cmake.exe --build C:\\Users\\WNLab\\Desktop\\PrettyIndoorNavigator\\app\\.externalNativeBuild\\cmake\\debug\\x86 --target native-lib",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  -target i686-none-linux-android -gcc-toolchain C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/x86-4.9/prebuilt/windows-x86_64 --sysroot=C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/platforms/android-19/arch-x86  -Dnative_lib_EXPORTS -isystem C:\\Users\\WNLab\\AppData\\Local\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include -isystem C:\\Users\\WNLab\\AppData\\Local\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\libs\\x86\\include -isystem C:\\Users\\WNLab\\AppData\\Local\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include\\backward  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -fno-exceptions -fno-rtti -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -fno-exceptions -fno-rtti  -O0 -fno-limit-debug-info -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/src/main/cpp/native-lib.cpp",
+					"workingDirectory" : "C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/.externalNativeBuild/cmake/debug/x86"
+				}
+			],
+			"output" : "C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app/.externalNativeBuild/cmake/debug/obj/x86/libnative-lib.so",
+			"toolchain" : "2496899349"
+		}
+	},
+	"toolchains" : 
+	{
+		"2496899349" : 
+		{
+			"cCompilerExecutable" : "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "C:/Users/WNLab/AppData/Local/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+		}
+	}
+}

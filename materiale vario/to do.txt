@@ -1,0 +1,15 @@
+// Progetto
+- Android service
+- Android UI
+- Android indoor navigator builder
+- IndoorNavigator class
+- Wifi2KF adapter
+- MM2KF adapter
+- WifiFingerprint localization
+- MM localization
+- Floor localization
+
+// Altro
+- Studiare step detection e codice
+- Studiare codice bussola
+- Scrivere cose
