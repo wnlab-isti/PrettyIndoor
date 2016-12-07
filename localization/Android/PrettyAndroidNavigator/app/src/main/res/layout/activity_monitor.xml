@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="it.cnr.isti.wnlab.indoornavigator.android.BlueMapRedSquareActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:id="@+id/start_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start" />
+
+        <Button
+            android:id="@+id/stop_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accelerometer"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/acc_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gravity"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/gra_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gyroscope"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/gyro_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Linear Acceleration"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/linacc_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Magnetic Field"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/mag_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pressure"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/press_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Relative humidity"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/relhum_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rotation"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/rot_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Step Counter"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/stepc_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wifi"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/wififp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A" />
+
+    </LinearLayout>
+
+</ScrollView>

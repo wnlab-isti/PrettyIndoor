@@ -1,0 +1,4 @@
+KF
+http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/
+http://greg.czerniak.info/guides/kalman1/
+http://stackoverflow.com/questions/22598585/how-to-should-i-implement-a-kalman-filter-to-get-accurate-accelerometer-data

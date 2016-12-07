@@ -1,0 +1,167 @@
+package it.cnr.isti.wnlab.indoornavigator.android;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.hardware.SensorManager;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
+import it.cnr.isti.wnlab.indoornavigator.R;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.Compass;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.LawitzkiCompass;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.AccelerometerHandler;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.FasterStepDetector;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.GyroscopeHandler;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.StepDetector;
+import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigator.framework.PositionUpdateCallback;
+import it.cnr.isti.wnlab.indoornavigator.framework.util.strategy.KFUleeStrategy;
+
+public class BlueMapRedSquareActivity extends AppCompatActivity {
+
+    private TestView mView;
+    private File mFile;
+    private BufferedWriter mWriter;
+    private static final String LOG_FILE_NAME = "pin.log";
+
+    /*
+    * Test map
+    */
+    private class TestView extends View {
+
+        Paint paint = new Paint();
+        public float x,y;
+        public float rotate;
+        private float l = 50.f;
+        public float offsetX, offsetY;
+        private float factor = 90.f;
+
+        public TestView(Context context) {
+            super(context);
+            paint.setAntiAlias(true);
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.FILL);
+        }
+
+        @Override
+        public void onDraw(Canvas c) {
+            c.save();
+
+            Log.d("HEY","HEY");
+            c.translate(offsetX+factor*x, offsetY+factor*y);
+            c.rotate((float) Math.toDegrees(rotate));
+            c.drawRect(-l/2.f, -l/2.f, l/2.f, l/2.f, paint);
+
+            c.restore();
+        }
+
+        @Override
+        protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+            super.onLayout(changed, left, top, right, bottom);
+            if(changed) {
+                offsetX = (right-left)/2;
+                offsetY = (bottom-top)/2;
+            }
+        }
+    }
+
+    // onCreate
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize view
+        mView = new TestView(getApplicationContext());
+        mView.setBackgroundColor(Color.BLUE);
+        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.activity_main);
+        insertPoint.addView(mView, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // Initialize sensors
+        SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        // Initialize handlers
+        AccelerometerHandler ah = new AccelerometerHandler(manager, SensorManager.SENSOR_DELAY_FASTEST);
+        GyroscopeHandler gh = new GyroscopeHandler(manager, SensorManager.SENSOR_DELAY_FASTEST);
+        MagneticFieldHandler mfh = new MagneticFieldHandler(manager, SensorManager.SENSOR_DELAY_FASTEST);
+
+        // Initialize log writer
+        mFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + LOG_FILE_NAME);
+        try {
+            mWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mFile)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Initialize strategy and position updater
+        KFUleeStrategy strategy = new KFUleeStrategy(
+                new IndoorPosition(0.f, 0.f, 0, System.currentTimeMillis()), // initial position
+                (float) Math.PI/2.f,  // initial heading
+                new PositionUpdateCallback(){
+                    @Override
+                    public void onPositionUpdate(IndoorPosition newPosition) { // OnPositionUpdate
+                        Log.i("POSITION","newX: " + newPosition.x + ", newY: " + newPosition.y);
+                        // GUI
+                        mView.x = newPosition.x;
+                        mView.y = newPosition.y;
+                        mView.invalidate();
+                        // Write in text file
+                        try {
+                            Logger.steplog(mWriter,newPosition.timestamp,
+                                        newPosition.x, newPosition.y,
+                                        newPosition.floor);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
+
+        // Initialize compass
+        Compass compass = new LawitzkiCompass(strategy, ah, gh, mfh, 30);
+
+        // Initialize step detector
+        StepDetector stepd = new FasterStepDetector(strategy, ah, this);
+
+        // Start everything
+        ah.start();
+        gh.start();
+        mfh.start();
+        compass.start();
+        stepd.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            mWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            mWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
