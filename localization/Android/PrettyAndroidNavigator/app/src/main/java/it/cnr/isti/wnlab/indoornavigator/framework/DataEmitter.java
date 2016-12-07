@@ -6,7 +6,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.types.RawData;
  * Emits a data type and accepts subscribers.
  * @param <T> Emitted data type.
  */
-public interface DataEmitter<T extends RawData> extends StoppableStartable {
+public interface DataEmitter<T extends RawData> extends StartableStoppable {
     /**
      * Register an observer.
      * @param observer

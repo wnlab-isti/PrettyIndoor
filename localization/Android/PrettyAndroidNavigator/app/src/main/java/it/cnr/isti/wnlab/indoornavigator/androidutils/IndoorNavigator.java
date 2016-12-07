@@ -15,19 +15,19 @@ import it.cnr.isti.wnlab.indoornavigator.androidutils.wifi.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.LocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.framework.PositionUpdateCallback;
-import it.cnr.isti.wnlab.indoornavigator.framework.StoppableStartable;
+import it.cnr.isti.wnlab.indoornavigator.framework.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.strategy.KFUleeStrategy;
 
 /**
  * IndoorNavigator object for the user.
  */
-public class IndoorNavigator implements StoppableStartable {
+public class IndoorNavigator implements StartableStoppable {
 
-    private List<StoppableStartable> mSources;
+    private List<StartableStoppable> mSources;
     private LocationStrategy mStrategy;
     private PositionUpdateCallback mUpdater;
 
-    protected IndoorNavigator(StoppableStartable... sources) {
+    protected IndoorNavigator(StartableStoppable... sources) {
         mSources = Arrays.asList(sources);
     }
 
@@ -36,7 +36,7 @@ public class IndoorNavigator implements StoppableStartable {
      */
     @Override
     public void start() {
-        for(StoppableStartable s : mSources)
+        for(StartableStoppable s : mSources)
             s.start();
     }
 
@@ -45,7 +45,7 @@ public class IndoorNavigator implements StoppableStartable {
      */
     @Override
     public void stop() {
-        for(StoppableStartable s : mSources)
+        for(StartableStoppable s : mSources)
             s.stop();
     }
 
@@ -68,7 +68,7 @@ public class IndoorNavigator implements StoppableStartable {
      */
     public static class Builder {
 
-        private List<StoppableStartable> mSources;
+        private List<StartableStoppable> mSources;
         private LocationStrategy mStrategy;
         private PositionUpdateCallback mUpdater;
 
@@ -76,7 +76,7 @@ public class IndoorNavigator implements StoppableStartable {
          * Set data sources and pre-filter fusion techniques like Step Detection and Heading.
          * @param sources
          */
-        public void setSources(List<StoppableStartable> sources) {
+        public void setSources(List<StartableStoppable> sources) {
             mSources = sources;
         }
 
@@ -99,7 +99,7 @@ public class IndoorNavigator implements StoppableStartable {
                 GyroscopeHandler gyro = null;
                 MagneticFieldHandler mag = null;
                 WifiScanner wifi = null;
-                for(StoppableStartable s : mSources) {
+                for(StartableStoppable s : mSources) {
                     Class<?> type = s.getClass();
                     if (type == AccelerometerHandler.class)
                         acc = (AccelerometerHandler) s;
@@ -112,7 +112,7 @@ public class IndoorNavigator implements StoppableStartable {
                 }
 
                 // Choose strategy and link everything
-                List<StoppableStartable> sources = new ArrayList<>();
+                List<StartableStoppable> sources = new ArrayList<>();
                 if(acc != null && mag != null && gyro != null) {
                     // Pseudo-You Li strategy
                     KFUleeStrategy strategy = new KFUleeStrategy(
@@ -133,7 +133,7 @@ public class IndoorNavigator implements StoppableStartable {
                 }
 
                 // Initialize IndoorNavigator instance
-                IndoorNavigator nav = new IndoorNavigator((StoppableStartable[]) sources.toArray());
+                IndoorNavigator nav = new IndoorNavigator((StartableStoppable[]) sources.toArray());
 
                 // Set strategy
                 nav.setStrategy(mStrategy);
