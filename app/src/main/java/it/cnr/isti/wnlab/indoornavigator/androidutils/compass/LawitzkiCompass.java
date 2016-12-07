@@ -8,7 +8,6 @@ import java.util.TimerTask;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.DataEmitter;
-import it.cnr.isti.wnlab.indoornavigator.framework.StoppableStartable;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.Rotation;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
