@@ -4,6 +4,7 @@ import android.util.Log;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.PositionFilter2D;
+import it.cnr.isti.wnlab.indoornavigator.framework.XYPosition;
 
 /**
  * Kalman Filter for indoor localization.
@@ -22,7 +23,7 @@ public class IndoorKalmanFilter extends AbstractSimpleKalmanFilter implements Po
      * @param heading Initial P[2][2]
      * @param stepLength Initial P[3][3]
      */
-    public IndoorKalmanFilter(IndoorPosition startPosition,
+    public IndoorKalmanFilter(XYPosition startPosition,
                               float initPosVar, float heading, float stepLength) {
         super(N);
 

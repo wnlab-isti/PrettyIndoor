@@ -1,15 +1,20 @@
 // Progetto
-- Android service
-- Android UI
-- Android indoor navigator builder
-- IndoorNavigator class
-- Wifi2KF adapter
-- MM2KF adapter
+- Android UI:
+    PER OGNI sensore disponibile & interessante:
+        Toggle button per attivarlo, toggle button per il log (disattivato se si disattiva il
+        sensore).
+        Toggle per logging su file.
+- Logger per sensori come DataObserver
+- Comunicazione AIDL steplogger
+- Sistemare dati vari WiFi e MM
 - WifiFingerprint localization
+- KF updater
+- Wifi2KF adapter
 - MM localization
-- Floor localization
+- MM2KF adapter
 
 // Altro
-- Studiare step detection e codice
-- Studiare codice bussola
+- Floor localization?
+- Studiare meglio step detection e codice
+- Studiare meglio codice bussola
 - Scrivere cose

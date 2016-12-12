@@ -62,31 +62,31 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
             // Check x
             float diff = v.x - mf.x;
             delta += diff*diff;
-            if(delta < minDelta) {
 
-                // Then check y
+            // Then check y (conditionally)
+            if(delta < minDelta) {
                 diff = v.y - mf.y;
                 delta += diff*diff;
-                if(delta < minDelta) {
 
-                    // Then check z
+                // Then check z (conditionally)
+                if(delta < minDelta) {
                     diff = v.z - mf.z;
                     delta += diff*diff;
-                    if(delta < minDelta) {
 
-                        // If x^2+y^2+z^2 < minDelta, update minDelta
+                    // If x^2+y^2+z^2 < minDelta, update minDelta and position
+                    if(delta < minDelta) {
                         minDelta = delta;
                         position = mPositions[i];
-
-                        // If threshold is respected, return new position
-                        if(minDelta < mThreshold)
-                            return new IndoorPosition(position, mFloor, mf.timestamp);
                     }
                 }
             }
         }
 
-        return null;
+        // If a position has been found and its distance is not beyond the threshold
+        if(position != null && minDelta < mThreshold)
+            return new IndoorPosition(position, mFloor, mf.timestamp);
+        else
+            return null;
     }
 
     /**
@@ -99,7 +99,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
      *
      * NOTE: the table ends without '\n'
      *
-     * @return A ready-to-use Magnetic Mismatch localizer. Null if an error occurs.
+     * @return A ready-to-use Magnetic Mismatch locator. Null if an error occurs.
      */
     public static MagneticMismatchLocator makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
 
@@ -115,7 +115,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
                 values.add(new MagneticField(Float.parseFloat(splitr[2]), Float.parseFloat(splitr[3]), Float.parseFloat(splitr[4]), -1, -1));
             }
 
-            // Return a ready-to-use MM localizer
+            // Return a ready-to-use MM locator
             return new MagneticMismatchLocator((XYPosition[]) positions.toArray(), (MagneticField[]) values.toArray(), floor, threshold);
 
         } catch (IOException e) {
