@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util;
+package it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr;
 
 /**
  * PDR utility methods.

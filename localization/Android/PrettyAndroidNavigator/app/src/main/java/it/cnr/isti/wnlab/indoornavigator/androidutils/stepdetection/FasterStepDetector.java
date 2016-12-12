@@ -3,10 +3,10 @@ package it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection;
 import android.hardware.SensorManager;
 import android.util.Log;
 
-import it.cnr.isti.wnlab.indoornavigator.framework.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
+import it.cnr.isti.wnlab.indoornavigator.framework.Emitter;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
-import it.cnr.isti.wnlab.indoornavigator.framework.util.StepDetectedCallback;
+import it.cnr.isti.wnlab.indoornavigator.framework.callbacks.StepDetectedCallback;
 
 
 public class FasterStepDetector implements StepDetector {
@@ -25,7 +25,7 @@ public class FasterStepDetector implements StepDetector {
 
     private StepDetectedCallback mCallback;
 
-    public FasterStepDetector(StepDetectedCallback callback, DataEmitter<Acceleration> accelerometer) {
+    public FasterStepDetector(StepDetectedCallback callback, Emitter<Acceleration> accelerometer) {
         int h = 480; // TODO: remove this constant
         mYOffset = h * 0.5f;
         mScale[0] = - (h * 0.5f * (1.0f / (SensorManager.STANDARD_GRAVITY * 2)));

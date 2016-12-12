@@ -9,7 +9,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
 /**
  * Handler for Android's accelerometer events.
  */
-public class AccelerometerHandler extends AbstractAOSPSensorEmitter<Acceleration> {
+public class AccelerometerHandler extends SensorDataEmitter<Acceleration> {
 
     public AccelerometerHandler(SensorManager manager, int delay) {
         super(manager, Sensor.TYPE_ACCELEROMETER, delay);

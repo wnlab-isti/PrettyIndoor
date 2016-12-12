@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util.kalmanfilter;
+package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter;
 
 import android.util.Log;
 
@@ -48,7 +48,7 @@ public abstract class AbstractSimpleKalmanFilter implements KalmanFilter {
     }
 
     @Override
-    public void update(float[][] mH, float[] z, float[][] mR) {
+    public void update(float[] z, float[][] mH, float[][] mR) {
         // TODO later...
     }
 }

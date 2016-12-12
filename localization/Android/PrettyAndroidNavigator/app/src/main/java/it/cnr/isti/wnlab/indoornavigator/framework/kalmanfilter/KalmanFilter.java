@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util.kalmanfilter;
+package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.Filter;
 
@@ -17,13 +17,13 @@ public interface KalmanFilter extends Filter {
 
     /**
      * Kalman Filter update.
-     * @param mH (matrix): Multiply a state vector by H to translate it to a measurement
-     *           vector.
      * @param zn (vector): Measurement vector. This contains the real-world measurement we received
      *           in this time step.
 
+     * @param mH (matrix): Multiply a state vector by H to translate it to a measurement
+     *           vector.
      * @param R (matrix): Estimated measurement error covariance.
      */
-    void update(float[][] mH, float[] zn, float[][] R);
+    void update(float[] zn, float[][] mH, float[][] R);
 
 }

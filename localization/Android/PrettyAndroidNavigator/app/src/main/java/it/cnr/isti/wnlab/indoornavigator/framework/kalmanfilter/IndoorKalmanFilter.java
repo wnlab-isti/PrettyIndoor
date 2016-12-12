@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util.kalmanfilter;
+package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter;
 
 import android.util.Log;
 

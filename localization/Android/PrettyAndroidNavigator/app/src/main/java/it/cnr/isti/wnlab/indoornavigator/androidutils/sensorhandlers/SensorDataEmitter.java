@@ -5,20 +5,16 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import it.cnr.isti.wnlab.indoornavigator.androidutils.AbstractEmitter;
-import it.cnr.isti.wnlab.indoornavigator.framework.DataEmitter;
-import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
+import it.cnr.isti.wnlab.indoornavigator.framework.AbstractEmitter;
+import it.cnr.isti.wnlab.indoornavigator.framework.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.RawSensorData;
 
 /**
  * Abstract class that manages SensorManager, event listening and subscribers.
  */
-public abstract class AbstractAOSPSensorEmitter<T extends RawSensorData>
+public abstract class SensorDataEmitter<T extends RawSensorData>
         extends AbstractEmitter<T>
-        implements SensorEventListener
+        implements StartableStoppable, SensorEventListener
 {
     private Sensor mSensor;
     private SensorManager mManager;
@@ -30,8 +26,8 @@ public abstract class AbstractAOSPSensorEmitter<T extends RawSensorData>
      * @param delay Delay of sensor listening.
      * @throws SensorException If sensor cannot be retrieved.
      */
-    protected AbstractAOSPSensorEmitter(SensorManager manager,
-                                        int sensorType, int delay)
+    protected SensorDataEmitter(SensorManager manager,
+                                int sensorType, int delay)
             throws SensorException {
         // Retrieve sensor from manager
         if ((mSensor = manager.getDefaultSensor(sensorType)) == null)
