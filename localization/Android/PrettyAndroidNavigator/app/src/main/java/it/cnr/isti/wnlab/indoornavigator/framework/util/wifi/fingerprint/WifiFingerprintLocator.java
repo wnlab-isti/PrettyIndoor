@@ -134,7 +134,7 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
      *
      * NOTE: the table ends without '\n'
      *
-     * @return A ready-to-use WiFi fingerprint localizer. Null if an error occurs.
+     * @return A ready-to-use WiFi fingerprint locator. Null if an error occurs.
      */
     public static WifiFingerprintLocator makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tsvWellFormattedRSSI)))) {
