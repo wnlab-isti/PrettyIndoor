@@ -5,9 +5,9 @@ import java.io.Writer;
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.RawData;
 
-public class EmitterLogger implements DataObserver<RawData> {
+public class SensorLogger implements DataObserver<RawData> {
 
-    public EmitterLogger(Writer writer) {
+    public SensorLogger(Writer writer) {
         // TODO
     }
 

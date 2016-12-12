@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigator.androidutils.AbstractEmitter;
+import it.cnr.isti.wnlab.indoornavigator.framework.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
-import it.cnr.isti.wnlab.indoornavigator.framework.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.WifiFingerprint;
 
 /**

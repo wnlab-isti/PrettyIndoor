@@ -55,7 +55,7 @@ public class IndoorNavigator implements StartableStoppable {
     public LocationStrategy getStrategy() { return mStrategy; }
     private void setStrategy(LocationStrategy strategy) { mStrategy = strategy; }
 
-    // Position Updater getter and setter
+    // XYPosition Updater getter and setter
     public void setPositionUpdater(PositionUpdateCallback updater) {
         mUpdater = updater;
     }

@@ -9,7 +9,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.types.Rotation;
 /**
  * Handler for Android's gyroscope events.
  */
-public class GyroscopeHandler extends AbstractAOSPSensorEmitter<Rotation> {
+public class GyroscopeHandler extends SensorDataEmitter<Rotation> {
 
     public GyroscopeHandler(SensorManager manager, int delay) {
         super(manager, Sensor.TYPE_GYROSCOPE, delay);

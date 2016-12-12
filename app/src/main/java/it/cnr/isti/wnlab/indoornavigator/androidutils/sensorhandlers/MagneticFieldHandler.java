@@ -9,7 +9,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
 /**
  * Handler for Android's magnetometer events.
  */
-public class MagneticFieldHandler extends AbstractAOSPSensorEmitter<MagneticField> {
+public class MagneticFieldHandler extends SensorDataEmitter<MagneticField> {
 
     public MagneticFieldHandler(SensorManager manager, int delay) {
         super(manager, Sensor.TYPE_MAGNETIC_FIELD, delay);

@@ -1,6 +1,9 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util.kalmanfilter;
+package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.adapters;
 
 import android.util.Log;
+
+import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IndoorKalmanFilter;
+import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.KalmanFilter;
 
 /**
  * Kalman Filter wrapper for prediction with PDR.

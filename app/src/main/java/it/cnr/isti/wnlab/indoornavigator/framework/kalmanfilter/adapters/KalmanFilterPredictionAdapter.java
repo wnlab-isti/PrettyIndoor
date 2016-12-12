@@ -1,4 +1,6 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util.kalmanfilter;
+package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.adapters;
+
+import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.KalmanFilter;
 
 /**
  * Manages model-specific matrices and vectors and wraps the filter object.
