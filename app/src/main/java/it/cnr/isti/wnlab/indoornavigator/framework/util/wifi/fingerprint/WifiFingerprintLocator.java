@@ -20,7 +20,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.types.SingleAccessPoint;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.WifiFingerprint;
 
 
-public class WifiFingerprintLocalizer extends LocationStrategy implements DataObserver<WifiFingerprint> {
+public class WifiFingerprintLocator extends LocationStrategy implements DataObserver<WifiFingerprint> {
 
     // Integer: BSSD code, Set: { (pos1, rss1), (pos2, rss2), ... }
     private HashMap<String, HashSet<PositionRss>> mBssdPositionRssAssociation;
@@ -31,7 +31,10 @@ public class WifiFingerprintLocalizer extends LocationStrategy implements DataOb
     // Possible positions
     private XYPosition[] mPositions;
 
-    // Selected floor. Note it's constant, so it's needed one WifiFingerprintLocalizer per floor
+    // Maximum threshold for distance: if position's row distance is over this, it isn't accepted
+    private int mThreshold;
+
+    // Selected floor. Note it's constant, so it's needed one WifiFingerprintLocator per floor
     private final int FLOOR;
 
     // "No/low signal" constant
@@ -56,19 +59,16 @@ public class WifiFingerprintLocalizer extends LocationStrategy implements DataOb
      * @param positions Possible positions.
      * @param floor Selected floor.
      */
-    private WifiFingerprintLocalizer(
+    private WifiFingerprintLocator(
             HashMap<String, HashSet<PositionRss>> sets,
             XYPosition[] positions,
-            int floor
+            int floor,
+            int threshold
     ) {
-        // Initialize distances array
         mRowDistances = new int[sets.size()];
-
-        // Save positions
         mPositions = positions;
-
-        // Save selected floor
         FLOOR = floor;
+        mThreshold = threshold;
     }
 
     /**
@@ -77,24 +77,16 @@ public class WifiFingerprintLocalizer extends LocationStrategy implements DataOb
      */
     @Override
     public void notify(WifiFingerprint data) {
-        localize(data, FLOOR);
-    }
-
-    /**
-     * Notify fingerprint localization.
-     * @param fingerprint Received fingerprint.
-     */
-    private void localize(WifiFingerprint fingerprint, int floor) {
-        int r = findMinimumDistanceRow(fingerprint);
-        notifyToAll(new IndoorPosition(mPositions[r], floor, fingerprint.timestamp));
+        notifyObservers(localize(data, FLOOR));
     }
 
     /**
      * Find the minimum-distanced row (position) from received fingerprint.
      * @param fingerprint Received fingerprint
+     * @param floor The floor localization refers to
      * @return index of the minimum distanced row
      */
-    private int findMinimumDistanceRow(WifiFingerprint fingerprint) {
+    private IndoorPosition localize(WifiFingerprint fingerprint, int floor) {
         // Reset every distance
         Arrays.fill(mRowDistances, 0);
 
@@ -110,7 +102,8 @@ public class WifiFingerprintLocalizer extends LocationStrategy implements DataOb
             // For each position, add it to solutions set and calculate row distance contribute
             for(PositionRss pos : positions) {
                 solutions.add(pos.positionIndex);
-                mRowDistances[pos.positionIndex] += Math.abs(pos.rssi - ap.level);
+                int diff = pos.rssi - ap.level;
+                mRowDistances[pos.positionIndex] += diff * diff;
             }
         }
 
@@ -123,7 +116,11 @@ public class WifiFingerprintLocalizer extends LocationStrategy implements DataOb
                 minDelta = mRowDistances[n];
             }
 
-        return minRow;
+        // Check threshold
+        if(minDelta < mThreshold)
+            return new IndoorPosition(mPositions[minRow], floor, fingerprint.timestamp);
+        else
+            return null;
     }
 
     /**
@@ -139,8 +136,8 @@ public class WifiFingerprintLocalizer extends LocationStrategy implements DataOb
      *
      * @return A ready-to-use WiFi fingerprint localizer. Null if an error occurs.
      */
-    public static WifiFingerprintLocalizer makeLocalizer(File tsvWellFormattedRSS, int floor) {
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tsvWellFormattedRSS)))) {
+    public static WifiFingerprintLocator makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tsvWellFormattedRSSI)))) {
             // Initialize map of (string,set)
             HashMap<String, HashSet<PositionRss>> sets = new HashMap<>();
             // Initialize positions list
@@ -172,20 +169,21 @@ public class WifiFingerprintLocalizer extends LocationStrategy implements DataOb
                 for(int i = 2; i < splitr.length; i++) {
                     int rssi = Integer.parseInt(splitr[i]);
                     if(rssi > NO_SIGNAL)
-                        setList.get(i - 2).add(new PositionRss(npos, rssi));
+                        setList.get(i-2).add(new PositionRss(npos, rssi));
                 }
 
                 npos++;
             }
 
-            return new WifiFingerprintLocalizer(sets, (XYPosition[]) positions.toArray(), floor);
+            return new WifiFingerprintLocator(sets, (XYPosition[]) positions.toArray(), floor, threshold);
+
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         } catch (ArrayIndexOutOfBoundsException e) {
             Log.e("WifiFingLocFactory", "File is not well-formatted");
-            return null;
         }
+
+        return null;
     }
 
 }

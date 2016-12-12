@@ -54,7 +54,7 @@ public abstract class SensorDataEmitter<T extends RawSensorData>
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        notifyToAll(adapt(sensorEvent));
+        notifyObservers(adapt(sensorEvent));
     }
 
     @Override
