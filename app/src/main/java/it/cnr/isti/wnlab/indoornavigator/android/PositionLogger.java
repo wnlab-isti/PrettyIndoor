@@ -4,20 +4,20 @@ import java.io.IOException;
 import java.io.Writer;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigator.framework.PositionUpdateCallback;
+import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
 
-public class PositionLogCallback implements PositionUpdateCallback {
+public class PositionLogger implements Observer<IndoorPosition> {
 
-    private Writer mWriter;
+    protected Writer mWriter;
 
-    public PositionLogCallback(Writer writer) {
+    public PositionLogger(Writer writer) {
         mWriter = writer;
     }
 
     @Override
-    public void onPositionUpdate(IndoorPosition newPosition) {
+    public void notify(IndoorPosition data) {
         try {
-            Logger.steplog(mWriter, newPosition);
+            mWriter.write(data + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }

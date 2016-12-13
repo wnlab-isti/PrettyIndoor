@@ -3,8 +3,6 @@ package it.cnr.isti.wnlab.indoornavigator.framework.util.strategy;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.LocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
-import it.cnr.isti.wnlab.indoornavigator.framework.PositionUpdateCallback;
-import it.cnr.isti.wnlab.indoornavigator.framework.XYPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IndoorKalmanFilter;
 import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.adapters.MagneticMismatchUpdater;
 import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.adapters.PDRPredictor;
@@ -24,9 +22,6 @@ public class KFUleeStrategy extends LocationStrategy {
     private WifiFingerprintUpdater wifi2kf;
     private MagneticMismatchUpdater mm2kf;
 
-    // Position update callback
-    final private PositionUpdateCallback mCallback;
-
     // Floor
     private int mFloor;
 
@@ -34,8 +29,7 @@ public class KFUleeStrategy extends LocationStrategy {
             IndoorPosition startPosition,
             PDR pdr,
             WifiFingerprintLocator wifiLocator,
-            MagneticMismatchLocator mmLocator,
-            PositionUpdateCallback callback
+            MagneticMismatchLocator mmLocator
     ) {
         // Initialize KF
         kf = new IndoorKalmanFilter(startPosition, 5.0f, (float) Math.toRadians(10.0f), 0.5f); // with You Li's initialization
@@ -46,15 +40,12 @@ public class KFUleeStrategy extends LocationStrategy {
         // Floor initialization
         mFloor = startPosition.floor;
 
-        // Callback for position updates
-        mCallback = callback;
-
         // KF prediction with PDR
         pdr.register(new Observer<PDR.Result>() {
             @Override
             public void notify(PDR.Result pdrDelta) {
                 pdr2kf.predict(pdrDelta);
-                mCallback.onPositionUpdate(kf.positionInstance(mFloor,pdrDelta.timestamp));
+                notifyObservers(kf.positionInstance(mFloor,pdrDelta.timestamp));
             }
         });
 
@@ -64,7 +55,7 @@ public class KFUleeStrategy extends LocationStrategy {
                 @Override
                 public void notify(IndoorPosition wifiPosition) {
                     wifi2kf.update(wifiPosition);
-                    mCallback.onPositionUpdate(kf.positionInstance(mFloor,wifiPosition.timestamp));
+                    notifyObservers(kf.positionInstance(mFloor,wifiPosition.timestamp));
                 }
             });
 
@@ -74,7 +65,7 @@ public class KFUleeStrategy extends LocationStrategy {
                 @Override
                 public void notify(IndoorPosition mmPosition) {
                     mm2kf.update(mmPosition);
-                    mCallback.onPositionUpdate(kf.positionInstance(mFloor,mmPosition.timestamp));
+                    notifyObservers(kf.positionInstance(mFloor,mmPosition.timestamp));
                 }
             });
     }

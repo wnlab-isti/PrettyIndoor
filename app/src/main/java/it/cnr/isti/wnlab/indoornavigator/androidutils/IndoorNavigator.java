@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import it.cnr.isti.wnlab.indoornavigator.android.Logger;
+import it.cnr.isti.wnlab.indoornavigator.android.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.Compass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.LawitzkiCompass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.AccelerometerHandler;
@@ -15,9 +17,8 @@ import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.StepDetector
 import it.cnr.isti.wnlab.indoornavigator.androidutils.wifi.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.LocationStrategy;
-import it.cnr.isti.wnlab.indoornavigator.framework.PositionUpdateCallback;
+import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
 import it.cnr.isti.wnlab.indoornavigator.framework.StartableStoppable;
-import it.cnr.isti.wnlab.indoornavigator.framework.XYPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.geomagnetic.mm.MagneticMismatchLocator;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.FixedLengthPDR;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.strategy.KFUleeStrategy;
@@ -30,7 +31,7 @@ public class IndoorNavigator implements StartableStoppable {
 
     private List<StartableStoppable> mSources;
     private LocationStrategy mStrategy;
-    private PositionUpdateCallback mUpdater;
+    private Observer<IndoorPosition> mUpdater;
 
     private static final float DEFAULT_START_X = 0.f;
     private static final float DEFAULT_START_Y = 0.f;
@@ -68,10 +69,10 @@ public class IndoorNavigator implements StartableStoppable {
     private void setStrategy(LocationStrategy strategy) { mStrategy = strategy; }
 
     // XYPosition Updater getter and setter
-    public void setPositionUpdater(PositionUpdateCallback updater) {
+    public void setPositionUpdater(Observer<IndoorPosition> updater) {
         mUpdater = updater;
     }
-    public PositionUpdateCallback getPositionUpdater() { return mUpdater; }
+    public Observer<IndoorPosition> getPositionUpdater() { return mUpdater; }
 
     /******************************************************************************************/
 
@@ -82,9 +83,13 @@ public class IndoorNavigator implements StartableStoppable {
 
         private List<StartableStoppable> mSources;
         private LocationStrategy mStrategy;
-        private PositionUpdateCallback mUpdater;
+        private Observer<IndoorPosition> mUpdater;
         private File mWifiFingerprintMap;
         private File mMagneticFingerprintMap;
+
+        private Logger mDataLogger;
+        private PositionLogger mWifiFingerprintPositionLogger;
+        private PositionLogger mMMPositionLogger;
 
         /**
          * Set data sources and pre-filter fusion techniques like Step Detection and Heading.
@@ -98,7 +103,7 @@ public class IndoorNavigator implements StartableStoppable {
          * Set a new position update callback.
          * @param updater
          */
-        public void setPositionUpdater(PositionUpdateCallback updater) {
+        public void setPositionObserver(Observer<IndoorPosition> updater) {
             mUpdater = updater;
         }
 
@@ -119,57 +124,108 @@ public class IndoorNavigator implements StartableStoppable {
         }
 
         /**
+         * Set logger for data.
+         * @param logger
+         */
+        public void setDataLogger(Logger logger) {
+            mDataLogger = logger;
+        }
+
+        /**
+         * Set logger for wifi fingerprint positioning.
+         * @param logger
+         */
+        public void setWifiFingerprintLogger(PositionLogger logger) {
+            mWifiFingerprintPositionLogger = logger;
+        }
+
+        /**
+         * Set logger for mm fingerprint positioning.
+         * @param logger
+         */
+        public void setMMFingerprintLogger(PositionLogger logger) {
+            mMMPositionLogger = logger;
+        }
+
+        /**
          * @return A ready-to-use startable IndoorNavigator or null if the builder is not properly configured.
          */
         public IndoorNavigator create() {
             // Check if there's everything
             if(mSources != null && mUpdater != null) {
+
                 // Scan available sources
                 AccelerometerHandler acc = null;
                 GyroscopeHandler gyro = null;
                 MagneticFieldHandler mag = null;
                 WifiScanner wifi = null;
-                for(StartableStoppable s : mSources) {
+                for (StartableStoppable s : mSources) {
                     Class<?> type = s.getClass();
                     if (type == AccelerometerHandler.class)
                         acc = (AccelerometerHandler) s;
                     else if (type == GyroscopeHandler.class)
                         gyro = (GyroscopeHandler) s;
-                    else if(type == MagneticFieldHandler.class)
+                    else if (type == MagneticFieldHandler.class)
                         mag = (MagneticFieldHandler) s;
-                    else if(type == WifiScanner.class)
+                    else if (type == WifiScanner.class)
                         wifi = (WifiScanner) s;
+                }
+
+                // Wifi Fingerprint
+                WifiFingerprintLocator wifiLoc = null;
+                if (wifi != null && mWifiFingerprintMap != null) {
+                    // Build locator instance
+                    wifiLoc = WifiFingerprintLocator.makeInstance(
+                            mWifiFingerprintMap, 0, WIFI_FINGERPRINT_THRESHOLD);
+                    // Register locator to wifi emitter
+                    wifi.register(wifiLoc);
+                    // Register logger to wifi location
+                    if(mWifiFingerprintPositionLogger != null)
+                        wifiLoc.register(mWifiFingerprintPositionLogger);
+                }
+
+                // Geomagnetic fingerprint
+                MagneticMismatchLocator mm = null;
+                if (mm != null && mMagneticFingerprintMap != null) {
+                    // Build locator instance
+                    mm = MagneticMismatchLocator.makeInstance(
+                            mMagneticFingerprintMap, 0, MM_THRESHOLD);
+                    // Register locator to magnetic emitter
+                    mag.register(mm);
+                    // Register logger to mm location
+                    if(mMMPositionLogger != null)
+                        mm.register(mMMPositionLogger);
                 }
 
                 // Choose strategy and link everything
                 List<StartableStoppable> sources = new ArrayList<>();
-                if(acc != null && mag != null && gyro != null) {
+                if (acc != null && mag != null && gyro != null) {
+
                     // Pseudo-You Li strategy
                     FixedLengthPDR pdr = new FixedLengthPDR(0.f);
-                    WifiFingerprintLocator wifiLoc = WifiFingerprintLocator.makeInstance(
-                            mWifiFingerprintMap,0,WIFI_FINGERPRINT_THRESHOLD);
-                    MagneticMismatchLocator mm = MagneticMismatchLocator.makeInstance(
-                            mMagneticFingerprintMap,0,MM_THRESHOLD);
-                    KFUleeStrategy strategy = new KFUleeStrategy(
+                    // Heading
+                    Compass heading = new LawitzkiCompass(pdr, acc, gyro, mag, 30);
+                    sources.add(heading);
+                    // Step detection
+                    StepDetector sd = new FasterStepDetector(pdr, acc);
+                    sources.add(sd);
+
+                    // Pseudo-You Li strategy with KF
+                    mStrategy = new KFUleeStrategy(
                             new IndoorPosition(
                                     DEFAULT_START_X, DEFAULT_START_Y,
                                     DEFAULT_START_FLOOR,
                                     System.currentTimeMillis()),
                             pdr,
                             wifiLoc,
-                            mm,
-                            mUpdater);
+                            mm);
 
-                    // Heading from sensor fusion
-                    Compass heading = new LawitzkiCompass(pdr, acc, gyro, mag, 30);
-                    sources.add(heading);
-
-                    // Step detection
-                    StepDetector sd = new FasterStepDetector(pdr, acc);
-                    sources.add(sd);
-
-                    // Set strategy as the chosen one
-                    mStrategy = strategy;
+                } else if(wifi != null) {
+                    // If PDR isn't available but WiFi is, go Wifi fingerprint-only
+                    mStrategy = wifiLoc;
+                } else if(mag != null) {
+                    // If PDR and WiFi aren't available, go MM-only
+                    mStrategy = mm;
                 }
 
                 // Initialize IndoorNavigator instance
@@ -183,9 +239,9 @@ public class IndoorNavigator implements StartableStoppable {
 
                 // Return built instance
                 return nav;
-            } else
-                return null;
-        }
+            }
 
+            return null;
+        }
     }
 }

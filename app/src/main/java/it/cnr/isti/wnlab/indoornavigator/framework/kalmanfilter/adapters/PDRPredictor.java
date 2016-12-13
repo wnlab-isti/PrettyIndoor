@@ -8,7 +8,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.PDR;
  * Kalman Filter wrapper for prediction with PDR.
  * Adapts PDR's (dN,dE) to a prediction matrix for KF and triggers prediction.
  */
-public class PDRPredictor extends KalmanFilterPredictionAdapter {
+public class PDRPredictor extends KalmanFilterPredictor {
 
     public PDRPredictor(KalmanFilter filter) {
         super(filter, IndoorKalmanFilter.N);

@@ -18,4 +18,12 @@ public class IndoorPosition extends XYPosition {
         this.floor = floor;
         this.timestamp = timestamp;
     }
+
+    /**
+     * @return StepLogger-like formatted position information.
+     */
+    @Override
+    public String toString() {
+        return timestamp + " " + x + " " + y + " " + floor;
+    }
 }

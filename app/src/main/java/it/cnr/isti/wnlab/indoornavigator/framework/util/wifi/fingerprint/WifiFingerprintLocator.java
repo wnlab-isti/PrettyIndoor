@@ -54,6 +54,21 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
     }
 
     /**
+     * Custom position subtype.
+     */
+    private class WifiFingerprintPosition extends IndoorPosition {
+
+        public WifiFingerprintPosition(XYPosition p, int floor, long timestamp) {
+            super(p, floor, timestamp);
+        }
+
+        public String toString() {
+            return "WFING " + super.toString();
+        }
+    }
+
+    /**
+     * WifiFingerprintLocator constructor.
      *
      * @param sets For each BSSD, the positions set where BSSD can be found in.
      * @param positions Possible positions.
@@ -86,7 +101,7 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
      * @param floor The floor localization refers to
      * @return index of the minimum distanced row
      */
-    private IndoorPosition localize(WifiFingerprint fingerprint, int floor) {
+    private WifiFingerprintPosition localize(WifiFingerprint fingerprint, int floor) {
         // Reset every distance
         Arrays.fill(mRowDistances, 0);
 
@@ -118,12 +133,14 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
 
         // Check threshold
         if(minDelta < mThreshold)
-            return new IndoorPosition(mPositions[minRow], floor, fingerprint.timestamp);
+            return new WifiFingerprintPosition(mPositions[minRow], floor, fingerprint.timestamp);
         else
             return null;
     }
 
     /**
+     * Factory method.
+     *
      * The compatible format for TSV map is:
      *
      * \t\tBSSD1\tBSSD2\tBSSD3\t...\n

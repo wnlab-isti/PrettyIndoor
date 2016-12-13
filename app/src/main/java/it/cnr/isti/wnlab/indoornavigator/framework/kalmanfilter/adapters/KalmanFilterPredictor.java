@@ -6,13 +6,13 @@ import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.KalmanFilter;
  * Manages model-specific matrices and vectors and wraps the filter object.
  * Contains and initializes A and Q matrices.
  */
-public abstract class KalmanFilterPredictionAdapter {
+public abstract class KalmanFilterPredictor {
     protected KalmanFilter filter;
     protected float[][] mA;
     protected float[][] mQ;
 
 
-    protected KalmanFilterPredictionAdapter(KalmanFilter filter, int n) {
+    protected KalmanFilterPredictor(KalmanFilter filter, int n) {
         this.filter = filter;
         mA = new float[n][n];
         initA(mA);
