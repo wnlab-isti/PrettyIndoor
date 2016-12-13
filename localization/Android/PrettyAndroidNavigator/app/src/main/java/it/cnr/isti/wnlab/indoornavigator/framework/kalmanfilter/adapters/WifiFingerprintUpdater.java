@@ -4,7 +4,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IndoorKalmanFilter;
 import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.KalmanFilter;
 
-public class WifiFingerprintUpdater extends KalmanFilterUpdateAdapter {
+public class WifiFingerprintUpdater extends KalmanFilterUpdater {
 
     public WifiFingerprintUpdater(KalmanFilter filter) {
         super(filter, IndoorKalmanFilter.N);

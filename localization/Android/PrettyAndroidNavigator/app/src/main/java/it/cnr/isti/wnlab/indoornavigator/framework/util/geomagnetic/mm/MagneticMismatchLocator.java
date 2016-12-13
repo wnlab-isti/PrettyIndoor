@@ -30,6 +30,20 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
     private float mThreshold;
 
     /**
+     * Custom position subtype.
+     */
+    private class MMFingerprintPosition extends IndoorPosition {
+
+        public MMFingerprintPosition(XYPosition p, int floor, long timestamp) {
+            super(p, floor, timestamp);
+        }
+
+        public String toString() {
+            return "MFING " + super.toString();
+        }
+    }
+
+    /**
      * @param positions Positions list (rows).
      * @param values Measured magnetic field values.
      * @param floor Floor this localizer refers to.
@@ -51,7 +65,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
      * @param mf Magnetic field just measured.
      * @return Found IndoorPosition or null.
      */
-    private IndoorPosition localize(MagneticField mf) {
+    private MMFingerprintPosition localize(MagneticField mf) {
         float minDelta = Float.MAX_VALUE;
         XYPosition position = null;
 
@@ -84,7 +98,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
 
         // If a position has been found and its distance is not beyond the threshold
         if(position != null && minDelta < mThreshold)
-            return new IndoorPosition(position, mFloor, mf.timestamp);
+            return new MMFingerprintPosition(position, mFloor, mf.timestamp);
         else
             return null;
     }
