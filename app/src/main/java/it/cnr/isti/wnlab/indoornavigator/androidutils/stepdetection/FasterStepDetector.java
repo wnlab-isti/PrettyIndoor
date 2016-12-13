@@ -99,4 +99,9 @@ public class FasterStepDetector implements StepDetector {
     public void stop() {
         started = false;
     }
+
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 }

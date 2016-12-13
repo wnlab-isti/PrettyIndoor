@@ -6,4 +6,5 @@ package it.cnr.isti.wnlab.indoornavigator.framework;
 public interface StartableStoppable {
     void start();
     void stop();
+    boolean isStarted();
 }

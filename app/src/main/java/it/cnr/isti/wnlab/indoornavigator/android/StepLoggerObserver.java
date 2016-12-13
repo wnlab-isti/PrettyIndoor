@@ -2,8 +2,10 @@ package it.cnr.isti.wnlab.indoornavigator.android;
 
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,7 +15,7 @@ import java.io.OutputStreamWriter;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
 
-public class StepLoggerObserver implements Observer<IndoorPosition> {
+public class StepLoggerObserver implements Observer<IndoorPosition>, Closeable {
 
     private final String APP_NAME = "PrettyIndoorNavigator";
     public final String POSITION_LOG_FILE_NAME = "pin_positions.log";
@@ -36,9 +38,15 @@ public class StepLoggerObserver implements Observer<IndoorPosition> {
             try {
                 mWriter.write(data + "\n");
                 mWriter.flush();
+                Log.d("FAKESTEPLOGGER",data.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        mWriter.close();
     }
 }

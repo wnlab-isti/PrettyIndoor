@@ -2,6 +2,7 @@ package it.cnr.isti.wnlab.indoornavigator.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -12,12 +13,14 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 import it.cnr.isti.wnlab.indoornavigator.R;
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
         View.OnClickListener {
 
+    // IndoorNavigator instance
+    private IndoorNavigator mNav;
+
     // Switches
     private Switch accSwitch;
     private Switch gyroSwitch;
@@ -44,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements
 
     // Buttons
     private Button btnStart;
+    private Button btnWifi;
+    private Button btnMM;
 
     // Sensor handlers
     private AccelerometerHandler ah;
@@ -58,6 +66,19 @@ public class MainActivity extends AppCompatActivity implements
     private File wifiFingerprintDB;
     private File magneticFingerprintDB;
 
+    // Log and output
+    private StepLoggerObserver mStepLoggerObserver;
+    private Writer mLogWriter;
+
+    // Shared Preferences constants
+    private String SHARED_PREFERENCES_FILE = "PIN_FILEPATHS";
+    private String SHARED_PREFERENCES_WIFI_DB_PATH = "WIFI_DB_PATH";
+    private String SHARED_PREFERENCES_MM_DB_PATH = "MM_DB_PATH";
+
+    // TextView
+    private TextView textWifiDB;
+    private TextView textMMDB;
+
     // Activity request codes
     private static final int WIFI_REQUEST_CODE = 42;
     private static final int MAGNETIC_REQUEST_CODE = 1337;
@@ -68,6 +89,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize app external folder
+        (new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name)))
+                .mkdirs();
+
+        // Initialize output observer
+        mStepLoggerObserver = new StepLoggerObserver();
 
         // Initialize sensors and handlers
         SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -78,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements
         // Initialize WiFi
         WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifi = new WifiScanner(wifiManager, WIFI_RATE);
+
+        // Initialize GUI pointers
 
         // Switches
         accSwitch = (Switch) findViewById(R.id.switch_acc);
@@ -96,6 +127,15 @@ public class MainActivity extends AppCompatActivity implements
         // Buttons
         btnStart = (Button) findViewById(R.id.btn_start);
         btnStart.setOnClickListener(this);
+        btnWifi = (Button) findViewById(R.id.btn_load_wifi_db);
+        btnWifi.setOnClickListener(this);
+        btnMM = (Button) findViewById(R.id.btn_load_mm_db);
+        btnMM.setOnClickListener(this);
+
+        // TextViews
+        textWifiDB = (TextView) findViewById(R.id.wifidb_text);
+        textMMDB = (TextView) findViewById(R.id.mmdb_text);
+        initFingerprintLoad();
     }
 
     @Override
@@ -106,20 +146,51 @@ public class MainActivity extends AppCompatActivity implements
             switch(requestCode) {
                 // From WifiDB file request
                 case WIFI_REQUEST_CODE:
-                    wifiFingerprintDB = new File(data.getData().getPath());
+                    setWifiDB(data.getData().getPath());
                     break;
                 // From geomagnetic DB file request
                 case MAGNETIC_REQUEST_CODE:
-                    magneticFingerprintDB = new File(data.getData().getPath());
+                    setMMDB(data.getData().getPath());
                     break;
             }
         }
+    }
+
+    private void setWifiDB(String path) {
+        wifiFingerprintDB = new File(path);
+        getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).edit()
+                .putString(SHARED_PREFERENCES_WIFI_DB_PATH,path).commit();
+        textWifiDB.setText(path);
+    }
+
+    private void setMMDB(String path) {
+        magneticFingerprintDB = new File(path);
+        getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).edit()
+                .putString(SHARED_PREFERENCES_MM_DB_PATH,path).commit();
+        textMMDB.setText(path);
     }
 
     private void chooseFileRequest(int requestCode) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("text/plain");
         startActivityForResult(intent, requestCode);
+    }
+
+    private void initFingerprintLoad() {
+        SharedPreferences pref = getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        // Wifi
+        String wifiPath = pref.getString(SHARED_PREFERENCES_WIFI_DB_PATH, null);
+        if(wifiPath != null) {
+            wifiFingerprintDB = new File(wifiPath);
+            textWifiDB.setText(wifiPath);
+        }
+        // MM
+        String mmPath = pref.getString(SHARED_PREFERENCES_MM_DB_PATH, null);
+        if(mmPath != null) {
+            magneticFingerprintDB = new File(mmPath);
+            textMMDB.setText(mmPath);
+        }
+
     }
 
     @Override
@@ -167,47 +238,103 @@ public class MainActivity extends AppCompatActivity implements
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btn_start:
-                initNavigator();
+                if(mNav == null || !mNav.isStarted()) {
+                    mNav = initNavigator(radios.getCheckedRadioButtonId());
+                    mNav.start();
+                    ((Button) view).setText("STOP");
+                } else {
+                    mNav.stop();
+                    mNav = null;
+                    ((Button) view).setText("START");
+                }
+                break;
+
+            case R.id.btn_load_wifi_db:
+                chooseFileRequest(WIFI_REQUEST_CODE);
+                break;
+
+            case R.id.btn_load_mm_db:
+                chooseFileRequest(MAGNETIC_REQUEST_CODE);
                 break;
         }
     }
 
-    private IndoorNavigator initNavigator() {
+    private IndoorNavigator initNavigator(int radio) {
         // Builder for Indoor Navigator
         IndoorNavigator.Builder builder = new IndoorNavigator.Builder();
 
         // Add data sources
         ArrayList<StartableStoppable> sources = new ArrayList<>();
-        sources.add(ah);
-        sources.add(gh);
-        sources.add(mh);
-        sources.add(wifi);
+        // KF (PDR/WIFI/MM)
+        if(radio == R.id.radio_kf) {
+            sources.add(ah);
+            if(ah != null)
+                accSwitch.setChecked(true);
+            sources.add(gh);
+            if(gh != null)
+                gyroSwitch.setChecked(true);
+        }
+        // KF or Wifi
+        if(radio == R.id.radio_kf || radio == R.id.radio_wifi_only) {
+            if(wifi != null) {
+                // Add Wifi source
+                sources.add(wifi);
+                // Set fingerprint file
+                builder.setWifiFingerprintMap(wifiFingerprintDB);
+                // Change status of the wifi switch
+                wifiSwitch.setChecked(true);
+            }
+        }
+        // KF or MM
+        if(radio == R.id.radio_kf || radio == R.id.radio_mm_only) {
+            if(mh != null) {
+                // Add Magnetic source
+                sources.add(mh);
+                // Set fingerprint file
+                builder.setMagneticFingerprintMap(magneticFingerprintDB);
+                // Change status of the magnetometer switch
+                magSwitch.setChecked(true);
+            }
+        }
+
+        // Set sources
         builder.setSources(sources);
 
-        // Set fingerprint files
-        builder.setWifiFingerprintMap(wifiFingerprintDB);
-        builder.setMagneticFingerprintMap(magneticFingerprintDB);
-
         // Set updater
-        builder.setPositionObserver(new StepLoggerObserver());
+        builder.setPositionObserver(mStepLoggerObserver);
 
         // If checked, initialize data log
         if(logSwitch.isChecked()) {
             File rawLogFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + RAW_LOG_FILE_NAME);
             try {
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rawLogFile)));
-                builder.setDataLogger(new Logger(writer));
-                builder.setWifiFingerprintLogger(new PositionLogger(writer));
-                builder.setMMFingerprintLogger(new PositionLogger(writer));
+                mLogWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rawLogFile)));
+                builder.setDataLogger(new Logger(mLogWriter));
+                builder.setWifiFingerprintLogger(new PositionLogger(mLogWriter));
+                builder.setMMFingerprintLogger(new PositionLogger(mLogWriter));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         // Make navigator
-        IndoorNavigator nav = builder.create();
-        nav.start();
+        return builder.create();
+    }
 
-        return nav;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(mLogWriter != null)
+            try {
+                mLogWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        if(mStepLoggerObserver != null)
+            try {
+                mStepLoggerObserver.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 }

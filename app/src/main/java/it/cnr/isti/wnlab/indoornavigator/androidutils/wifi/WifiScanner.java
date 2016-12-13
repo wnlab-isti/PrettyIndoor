@@ -21,9 +21,10 @@ public class WifiScanner extends AbstractEmitter<WifiFingerprint> implements Sta
     private WifiManager mManager;
     private Timer mTimer;
     private long mRate;
-    private DataObserver<WifiFingerprint> mDataReceiver;
     private long mLastTimestamp;
     private Handler mHandler;
+
+    private boolean started = false;
 
     public WifiScanner(WifiManager manager, long milliseconds) {
         mManager = manager;
@@ -37,27 +38,36 @@ public class WifiScanner extends AbstractEmitter<WifiFingerprint> implements Sta
      */
     @Override
     public void start() {
-        // Start timed scan
-        mTimer = new Timer();
-        mTimer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                // Adapt previous results and send data to related source
-                List<ScanResult> results = mManager.getScanResults();
-                final WifiFingerprint data = new WifiFingerprint(results.size(), mLastTimestamp);
-                for (ScanResult res : results)
-                    data.add(res.BSSID, res.level);
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDataReceiver.notify(data);
-                    }
-                });
+        if(!started) {
+            // Start timed scan
+            mTimer = new Timer();
+            mTimer.scheduleAtFixedRate(new TimerTask() {
+                public void run() {
+                    // Adapt previous results and send data to related source
+                    List<ScanResult> results = mManager.getScanResults();
+                    final WifiFingerprint data = new WifiFingerprint(results.size(), mLastTimestamp);
+                    for (ScanResult res : results)
+                        data.add(res.BSSID, res.level);
+                    // Notify observers on main thread
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyNewFingerprint(data);
+                        }
+                    });
 
-                // Start scanning again
-                mLastTimestamp = System.currentTimeMillis();
-                mManager.startScan();
-            }
-        }, 0, mRate);
+                    // Start scanning again
+                    mLastTimestamp = System.currentTimeMillis();
+                    mManager.startScan();
+                }
+            }, 0, mRate);
+
+            started = true;
+        }
+    }
+
+    private void notifyNewFingerprint(WifiFingerprint f) {
+        notifyObservers(f);
     }
 
     /**
@@ -65,7 +75,15 @@ public class WifiScanner extends AbstractEmitter<WifiFingerprint> implements Sta
      */
     @Override
     public void stop() {
-        mTimer.cancel();
+        if(started) {
+            mTimer.cancel();
+            started = true;
+        }
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started;
     }
 
     /**

@@ -20,6 +20,8 @@ public abstract class SensorDataEmitter<T extends RawSensorData>
     private SensorManager mManager;
     private int mDelay;
 
+    protected boolean started = false;
+
     /**
      * @param manager Android's SensorManager
      * @param sensorType Android's sensor type.
@@ -42,12 +44,23 @@ public abstract class SensorDataEmitter<T extends RawSensorData>
 
     @Override
     public void start() {
-        mManager.registerListener(this, mSensor, mDelay);
+        if(!started) {
+            mManager.registerListener(this, mSensor, mDelay);
+            started = true;
+        }
     }
 
     @Override
     public void stop() {
-        mManager.unregisterListener(this, mSensor);
+        if(started) {
+            mManager.unregisterListener(this, mSensor);
+            started = false;
+        }
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started;
     }
 
     // SensorEventListener overrides

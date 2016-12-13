@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigator.androidutils;
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +29,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.util.wifi.fingerprint.WifiFin
 /**
  * IndoorNavigator object for the user.
  */
-public class IndoorNavigator implements StartableStoppable {
+public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosition> {
 
     private List<StartableStoppable> mSources;
     private LocationStrategy mStrategy;
@@ -38,10 +40,12 @@ public class IndoorNavigator implements StartableStoppable {
     private static final int DEFAULT_START_FLOOR = 0;
 
     private static final int WIFI_FINGERPRINT_THRESHOLD = Integer.MAX_VALUE;
-    private static final int MM_THRESHOLD = Integer.MAX_VALUE;
+    private static final float MM_THRESHOLD = 10.f;
 
-    protected IndoorNavigator(StartableStoppable... sources) {
-        mSources = Arrays.asList(sources);
+    private boolean started = false;
+
+    protected IndoorNavigator(List<StartableStoppable> sources) {
+        mSources = sources;
     }
 
     /**
@@ -49,8 +53,11 @@ public class IndoorNavigator implements StartableStoppable {
      */
     @Override
     public void start() {
-        for(StartableStoppable s : mSources)
-            s.start();
+        if(!started) {
+            for (StartableStoppable s : mSources)
+                s.start();
+            started = true;
+        }
     }
 
     /**
@@ -58,21 +65,41 @@ public class IndoorNavigator implements StartableStoppable {
      */
     @Override
     public void stop() {
-        for(StartableStoppable s : mSources)
-            s.stop();
+        if(started) {
+            for (StartableStoppable s : mSources)
+                s.stop();
+            started = false;
+        }
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started;
     }
 
     // NOTE: sources are immutable.
 
     // Strategy getter and (private) setter
     public LocationStrategy getStrategy() { return mStrategy; }
-    private void setStrategy(LocationStrategy strategy) { mStrategy = strategy; }
+    private void setStrategy(LocationStrategy strategy) {
+        // Remove an older strategy, if it exists
+        if(mStrategy != null)
+            mStrategy.unregister(this);
+        // Set new strategy and register the navigator to its updates
+        mStrategy = strategy;
+        mStrategy.register(this);
+    }
 
     // XYPosition Updater getter and setter
     public void setPositionUpdater(Observer<IndoorPosition> updater) {
         mUpdater = updater;
     }
     public Observer<IndoorPosition> getPositionUpdater() { return mUpdater; }
+
+    @Override
+    public void notify(IndoorPosition strategyPosition) {
+        mUpdater.notify(strategyPosition);
+    }
 
     /******************************************************************************************/
 
@@ -161,6 +188,7 @@ public class IndoorNavigator implements StartableStoppable {
                 WifiScanner wifi = null;
                 for (StartableStoppable s : mSources) {
                     Class<?> type = s.getClass();
+                    Log.d("ITERATION", "Current class is " + type.getName());
                     if (type == AccelerometerHandler.class)
                         acc = (AccelerometerHandler) s;
                     else if (type == GyroscopeHandler.class)
@@ -170,6 +198,8 @@ public class IndoorNavigator implements StartableStoppable {
                     else if (type == WifiScanner.class)
                         wifi = (WifiScanner) s;
                 }
+                Log.d("SCANRESULT", "sources empty? " + mSources.isEmpty() + " | " +
+                        "acc" + acc + ", gyro " + gyro + ", mag " + mag + ", wifi " + wifi);
 
                 // Wifi Fingerprint
                 WifiFingerprintLocator wifiLoc = null;
@@ -186,7 +216,7 @@ public class IndoorNavigator implements StartableStoppable {
 
                 // Geomagnetic fingerprint
                 MagneticMismatchLocator mm = null;
-                if (mm != null && mMagneticFingerprintMap != null) {
+                if (mag != null && mMagneticFingerprintMap != null) {
                     // Build locator instance
                     mm = MagneticMismatchLocator.makeInstance(
                             mMagneticFingerprintMap, 0, MM_THRESHOLD);
@@ -198,17 +228,16 @@ public class IndoorNavigator implements StartableStoppable {
                 }
 
                 // Choose strategy and link everything
-                List<StartableStoppable> sources = new ArrayList<>();
                 if (acc != null && mag != null && gyro != null) {
-
+                    Log.d("INBUILDER","PDR recognised");
                     // Pseudo-You Li strategy
                     FixedLengthPDR pdr = new FixedLengthPDR(0.f);
                     // Heading
                     Compass heading = new LawitzkiCompass(pdr, acc, gyro, mag, 30);
-                    sources.add(heading);
+                    mSources.add(heading);
                     // Step detection
                     StepDetector sd = new FasterStepDetector(pdr, acc);
-                    sources.add(sd);
+                    mSources.add(sd);
 
                     // Pseudo-You Li strategy with KF
                     mStrategy = new KFUleeStrategy(
@@ -221,15 +250,17 @@ public class IndoorNavigator implements StartableStoppable {
                             mm);
 
                 } else if(wifi != null) {
+                    Log.d("INBUILDER","Wifi-only recognised");
                     // If PDR isn't available but WiFi is, go Wifi fingerprint-only
                     mStrategy = wifiLoc;
                 } else if(mag != null) {
+                    Log.d("INBUILDER","MM-only recognised");
                     // If PDR and WiFi aren't available, go MM-only
                     mStrategy = mm;
                 }
 
                 // Initialize IndoorNavigator instance
-                IndoorNavigator nav = new IndoorNavigator((StartableStoppable[]) sources.toArray());
+                IndoorNavigator nav = new IndoorNavigator(mSources);
 
                 // Set strategy
                 nav.setStrategy(mStrategy);
