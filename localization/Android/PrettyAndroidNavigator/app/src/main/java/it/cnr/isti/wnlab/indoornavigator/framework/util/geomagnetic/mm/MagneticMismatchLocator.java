@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
@@ -18,7 +19,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
 public class MagneticMismatchLocator extends LocationStrategy implements DataObserver<MagneticField> {
 
     // Positions (rows)
-    private XYPosition[] mPositions;
+    private XYPosition[] mAllPositions;
 
     // Magnetic field measured values
     private MagneticField[] mValues;
@@ -49,7 +50,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
      * @param floor Floor this localizer refers to.
      */
     private MagneticMismatchLocator(XYPosition[] positions, MagneticField[] values, int floor, float threshold) {
-        mPositions = positions;
+        mAllPositions = positions;
         mValues = values;
         mFloor = floor;
         mThreshold = threshold;
@@ -57,19 +58,22 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
 
     @Override
     public void notify(MagneticField data) {
-        notifyObservers(localize(data));
+        IndoorPosition p = localize(data);
+        if(p != null)
+            notifyObservers(p);
     }
 
     /**
      * Calculate minimum euclidean distanced row in matrix and find position.
      * @param mf Magnetic field just measured.
-     * @return Found IndoorPosition or null.
+     * @return An average position between the all ones found or null if no one has been found.
      */
     private MMFingerprintPosition localize(MagneticField mf) {
-        float minDelta = Float.MAX_VALUE;
-        XYPosition position = null;
+        // All positions which are delta-distanced less than the threshold
+        List<XYPosition> positions = new ArrayList<>();
 
-        for(int i = 0; i < mPositions.length; i++) {
+        // Find positions
+        for(int i = 0; i < mAllPositions.length; i++) {
             MagneticField v = mValues[i];
             float delta = 0;
 
@@ -78,28 +82,37 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
             delta += diff*diff;
 
             // Then check y (conditionally)
-            if(delta < minDelta) {
+            if(delta < mThreshold) {
                 diff = v.y - mf.y;
                 delta += diff*diff;
 
                 // Then check z (conditionally)
-                if(delta < minDelta) {
+                if(delta < mThreshold) {
                     diff = v.z - mf.z;
                     delta += diff*diff;
+                    Log.i("MM","delta X+Y+Z is " + delta);
 
                     // If x^2+y^2+z^2 < minDelta, update minDelta and position
-                    if(delta < minDelta) {
-                        minDelta = delta;
-                        position = mPositions[i];
+                    if(delta < mThreshold) {
+                        positions.add(mAllPositions[i]);
                     }
                 }
             }
         }
 
-        // If a position has been found and its distance is not beyond the threshold
-        if(position != null && minDelta < mThreshold)
-            return new MMFingerprintPosition(position, mFloor, mf.timestamp);
-        else
+        // Calculate average between found positions
+        if(!positions.isEmpty()) {
+            float[] newXY = {0.f, 0.f};
+            for (XYPosition p : positions) {
+                newXY[0] += p.x;
+                newXY[1] += p.y;
+            }
+            newXY[0] /= positions.size();
+            newXY[1] /= positions.size();
+
+            // If positions have been found, return an average one
+            return new MMFingerprintPosition(new XYPosition(newXY[0], newXY[1]), mFloor, mf.timestamp);
+        } else
             return null;
     }
 
@@ -115,7 +128,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
      *
      * @return A ready-to-use Magnetic Mismatch locator. Null if an error occurs.
      */
-    public static MagneticMismatchLocator makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
+    public static MagneticMismatchLocator makeInstance(File tsvWellFormattedRSSI, int floor, float threshold) {
 
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tsvWellFormattedRSSI)))) {
 
@@ -129,8 +142,10 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
                 values.add(new MagneticField(Float.parseFloat(splitr[2]), Float.parseFloat(splitr[3]), Float.parseFloat(splitr[4]), -1, -1));
             }
 
-            // Return a ready-to-use MM locator
-            return new MagneticMismatchLocator((XYPosition[]) positions.toArray(), (MagneticField[]) values.toArray(), floor, threshold);
+            // Return the ready-to-use MM locator
+            XYPosition[] positionArray = positions.toArray(new XYPosition[positions.size()]);
+            MagneticField[] valuesArray = values.toArray(new MagneticField[values.size()]);
+            return new MagneticMismatchLocator(positionArray, valuesArray, floor, threshold);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -51,6 +51,9 @@ public class LawitzkiCompass implements Compass {
     // PositionFilter2D's timer
     private Timer mTimer;
 
+    // Start stuff
+    private boolean started = false;
+
     public LawitzkiCompass(HeadingChangeCallback callback,
                            Emitter<Acceleration> accelerometer,
                            Emitter<Rotation> gyroscope,
@@ -95,26 +98,38 @@ public class LawitzkiCompass implements Compass {
 
     @Override
     public void start() {
-        // wait for one second until gyroscope and magnetometer/accelerometer
-        // data is initialised then schedule the complementary filter task
-        mTimer = new Timer();
-        mHandler = new Handler();
-        mTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        calculateFusedOrientation();
-                    }
-                });
-            }
-        }, 1000, mRate);
+        if(!started) {
+            // wait for one second until gyroscope and magnetometer/accelerometer
+            // data is initialised then schedule the complementary filter task
+            mTimer = new Timer();
+            mHandler = new Handler();
+            mTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            calculateFusedOrientation();
+                        }
+                    });
+                }
+            }, 1000, mRate);
+
+            started = true;
+        }
     }
 
     @Override
     public void stop() {
-        mTimer.cancel();
+        if(started) {
+            mTimer.cancel();
+            started = false;
+        }
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started;
     }
 
     /* ***************************************

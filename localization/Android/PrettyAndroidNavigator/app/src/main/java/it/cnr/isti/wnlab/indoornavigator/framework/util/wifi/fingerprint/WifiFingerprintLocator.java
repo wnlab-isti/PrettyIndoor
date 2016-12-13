@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -80,7 +81,8 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
             int floor,
             int threshold
     ) {
-        mRowDistances = new int[sets.size()];
+        mBssdPositionRssAssociation = sets;
+        mRowDistances = new int[positions.length];
         mPositions = positions;
         FLOOR = floor;
         mThreshold = threshold;
@@ -92,16 +94,17 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
      */
     @Override
     public void notify(WifiFingerprint data) {
-        notifyObservers(localize(data, FLOOR));
+        IndoorPosition p = localize(data);
+        if(p != null)
+            notifyObservers(p);
     }
 
     /**
      * Find the minimum-distanced row (position) from received fingerprint.
      * @param fingerprint Received fingerprint
-     * @param floor The floor localization refers to
      * @return index of the minimum distanced row
      */
-    private WifiFingerprintPosition localize(WifiFingerprint fingerprint, int floor) {
+    private WifiFingerprintPosition localize(WifiFingerprint fingerprint) {
         // Reset every distance
         Arrays.fill(mRowDistances, 0);
 
@@ -114,11 +117,14 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
             // Get AP's possible positions
             HashSet<PositionRss> positions = mBssdPositionRssAssociation.get(ap.bssid);
 
-            // For each position, add it to solutions set and calculate row distance contribute
-            for(PositionRss pos : positions) {
-                solutions.add(pos.positionIndex);
-                int diff = pos.rssi - ap.level;
-                mRowDistances[pos.positionIndex] += diff * diff;
+            // An AP might not be measured. If we have information about it, do the math
+            if(positions != null) {
+                // For each position, add it to solutions set and calculate row distance contribute
+                for (PositionRss pos : positions) {
+                    solutions.add(pos.positionIndex);
+                    int diff = pos.rssi - ap.level;
+                    mRowDistances[pos.positionIndex] += diff * diff;
+                }
             }
         }
 
@@ -133,7 +139,7 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
 
         // Check threshold
         if(minDelta < mThreshold)
-            return new WifiFingerprintPosition(mPositions[minRow], floor, fingerprint.timestamp);
+            return new WifiFingerprintPosition(mPositions[minRow], FLOOR, fingerprint.timestamp);
         else
             return null;
     }
@@ -155,12 +161,13 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
      */
     public static WifiFingerprintLocator makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tsvWellFormattedRSSI)))) {
-            // Initialize map of (string,set)
+            // Initialize map of (string, set of positions)
             HashMap<String, HashSet<PositionRss>> sets = new HashMap<>();
+
             // Initialize positions list
             ArrayList<XYPosition> positions = new ArrayList<>();
 
-            // Initialize sets list. It is useful to have for populating them
+            // Initialize a sets list useful to have for populating the sets map
             ArrayList<HashSet<PositionRss>> setList = new ArrayList<>();
 
             // Parse known BSSDs from first line
@@ -173,7 +180,7 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
             }
 
             // For each remaining line, parse RSSIs for each position
-            String r = null;
+            String r;
             int npos = 0;
             while( (r = br.readLine()) != null ) {
                 // File is TSV
@@ -192,8 +199,20 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
                 npos++;
             }
 
-            return new WifiFingerprintLocator(sets, (XYPosition[]) positions.toArray(), floor, threshold);
+            // Return the ready-to-use wifiFingerprintLocator instance
+            XYPosition[] positionArray = new XYPosition[positions.size()];
+            positions.toArray(positionArray);
 
+            // ---------------------- DEBUG
+/*            Log.d("WIFILOCBUILD","Positions: " + positionArray.length);
+            for(int i = 0; i < positionArray.length; i++)
+                Log.d("WIFILOCBUILD",positionArray[i].toString());
+            Log.d("WIFILOCBUILD","BSSDs: " + sets.size() + " ; " + setList.size());
+            for(HashSet<PositionRss> set : setList)
+                Log.d("WIFILOCBUILD", setList.indexOf(set) + " has #sets = " + set.size());
+*/          // ====================== DEBUG
+
+            return new WifiFingerprintLocator(sets, positionArray, floor, threshold);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ArrayIndexOutOfBoundsException e) {
