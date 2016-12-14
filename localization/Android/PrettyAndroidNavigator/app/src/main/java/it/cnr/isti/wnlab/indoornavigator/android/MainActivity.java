@@ -29,6 +29,7 @@ import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.Acceleromet
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.wifi.WifiScanner;
+import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.StartableStoppable;
 
 public class MainActivity extends AppCompatActivity implements
@@ -37,6 +38,11 @@ public class MainActivity extends AppCompatActivity implements
 
     // IndoorNavigator instance
     private IndoorNavigator mNav;
+    private float INITIAL_X = 19.5f;
+    private float INITIAL_Y = 5.7f;
+    private int INITIAL_FLOOR = 0;
+    private IndoorPosition mInitialPosition =
+            new IndoorPosition(INITIAL_X,INITIAL_Y,INITIAL_FLOOR,System.currentTimeMillis());
 
     // Switches
     private Switch accSwitch;
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
     private Button btnStart;
     private Button btnWifi;
     private Button btnMM;
+    private Button btnLogPosition;
 
     // Sensor handlers
     private AccelerometerHandler ah;
@@ -96,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
                 .mkdirs();
 
         // Initialize output observer
-        mStepLoggerObserver = new StepLoggerObserver();
+        mStepLoggerObserver = new StepLoggerObserver(mInitialPosition);
 
         // Initialize sensors and handlers
         SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -131,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements
         btnWifi.setOnClickListener(this);
         btnMM = (Button) findViewById(R.id.btn_load_mm_db);
         btnMM.setOnClickListener(this);
+        btnLogPosition = (Button) findViewById(R.id.btn_log_position);
+        btnLogPosition.setOnClickListener(this);
 
         // TextViews
         textWifiDB = (TextView) findViewById(R.id.wifidb_text);
@@ -190,7 +199,6 @@ public class MainActivity extends AppCompatActivity implements
             magneticFingerprintDB = new File(mmPath);
             textMMDB.setText(mmPath);
         }
-
     }
 
     @Override
@@ -245,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     mNav.stop();
                     mNav = null;
+                    resetSwitches();
                     ((Button) view).setText("START");
                 }
                 break;
@@ -256,12 +265,19 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.btn_load_mm_db:
                 chooseFileRequest(MAGNETIC_REQUEST_CODE);
                 break;
+
+            case R.id.btn_log_position:
+                mStepLoggerObserver.steplog();
+                break;
         }
     }
 
     private IndoorNavigator initNavigator(int radio) {
         // Builder for Indoor Navigator
         IndoorNavigator.Builder builder = new IndoorNavigator.Builder();
+
+        // Set initial position
+        builder.setInitialPosition(mInitialPosition);
 
         // Add data sources
         ArrayList<StartableStoppable> sources = new ArrayList<>();
@@ -318,6 +334,14 @@ public class MainActivity extends AppCompatActivity implements
 
         // Make navigator
         return builder.create();
+    }
+
+    private void resetSwitches() {
+        accSwitch.setChecked(false);
+        gyroSwitch.setChecked(false);
+        magSwitch.setChecked(false);
+        wifiSwitch.setChecked(false);
+        logSwitch.setChecked(false);
     }
 
     @Override

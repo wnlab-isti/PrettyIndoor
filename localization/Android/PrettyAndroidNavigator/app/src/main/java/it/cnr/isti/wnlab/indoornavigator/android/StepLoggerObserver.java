@@ -19,10 +19,10 @@ public class StepLoggerObserver implements Observer<IndoorPosition>, Closeable {
 
     private final String APP_NAME = "PrettyIndoorNavigator";
     public final String POSITION_LOG_FILE_NAME = "pin_positions.log";
-
     private BufferedWriter mWriter;
+    private IndoorPosition data;
 
-    public StepLoggerObserver() {
+    public StepLoggerObserver(IndoorPosition initialPosition) {
         // Initialize log writer
         File logFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + APP_NAME + "/" + POSITION_LOG_FILE_NAME);
         try {
@@ -30,10 +30,12 @@ public class StepLoggerObserver implements Observer<IndoorPosition>, Closeable {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        // Set initial position (for avoiding null data)
+        data = initialPosition;
     }
 
-    @Override
-    public void notify(IndoorPosition data) {
+    public void steplog() {
         if(mWriter != null) {
             try {
                 mWriter.write(data + "\n");
@@ -43,6 +45,11 @@ public class StepLoggerObserver implements Observer<IndoorPosition>, Closeable {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void notify(IndoorPosition data) {
+        this.data = data;
     }
 
     @Override

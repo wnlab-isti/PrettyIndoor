@@ -19,12 +19,14 @@ public class IndoorKalmanFilter extends AbstractSimpleKalmanFilter implements Po
 
     /**
      * @param startPosition The position where the filtering starts from.
-     * @param initPosVar Initial P[0][0], P[1][1]
      * @param heading Initial P[2][2]
      * @param stepLength Initial P[3][3]
      */
-    public IndoorKalmanFilter(XYPosition startPosition,
-                              float initPosVar, float heading, float stepLength) {
+    public IndoorKalmanFilter(
+            XYPosition startPosition,
+            float initialPositionVar,
+            float heading,
+            float stepLength) {
         super(N);
 
         // Initial x vector
@@ -35,10 +37,10 @@ public class IndoorKalmanFilter extends AbstractSimpleKalmanFilter implements Po
         Log.d("INDOOR X VECTOR", x[0] + "," + x[1] + "," + x[2] + "," + x[3]);
 
         // Initial P matrix
-        mP[0][0] = initPosVar;
-        mP[1][1] = initPosVar;
-        mP[2][2] = heading;
-        mP[3][3] = stepLength;
+        mP[0][0] = initialPositionVar*initialPositionVar;
+        mP[1][1] = initialPositionVar*initialPositionVar;
+        mP[2][2] = heading*heading;
+        mP[3][3] = stepLength*stepLength;
     }
 
     @Override

@@ -139,8 +139,10 @@ public class LawitzkiCompass implements Compass {
     private void onAccelerometer(Acceleration data) {
         // copy new accelerometer data into accel array
         // then calculate new orientation
-        accel = data;
-        calculateAccMagOrientation();
+
+        // TODO
+        //accel = data;
+        //calculateAccMagOrientation();
     }
 
     /* ***************************************
