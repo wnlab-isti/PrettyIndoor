@@ -9,7 +9,7 @@ import java.util.TimerTask;
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.Emitter;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
-import it.cnr.isti.wnlab.indoornavigator.framework.types.Rotation;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularVelocity;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
 import it.cnr.isti.wnlab.indoornavigator.framework.callbacks.HeadingChangeCallback;
 
@@ -25,7 +25,7 @@ public class LawitzkiCompass implements Compass {
     private HeadingChangeCallback mCallback;
 
     // angular speeds from gyro
-    private Rotation gyro;
+    private AngularVelocity gyro;
 
     // rotation matrix from gyro data
     private float[] gyroMatrix = new float[9];
@@ -56,7 +56,7 @@ public class LawitzkiCompass implements Compass {
 
     public LawitzkiCompass(HeadingChangeCallback callback,
                            Emitter<Acceleration> accelerometer,
-                           Emitter<Rotation> gyroscope,
+                           Emitter<AngularVelocity> gyroscope,
                            Emitter<MagneticField> magnetometer,
                            int rate
     ) {
@@ -79,10 +79,10 @@ public class LawitzkiCompass implements Compass {
                 onAccelerometer(data);
             }
         });
-        gyroscope.register(new DataObserver<Rotation>() {
+        gyroscope.register(new DataObserver<AngularVelocity>() {
             @Override
-            public void notify(Rotation data) {
-                onGyroscope(data);
+            public void notify(AngularVelocity data) {
+                gyroFunction(data);
             }
         });
         magnetometer.register(new DataObserver<MagneticField>() {
@@ -140,56 +140,19 @@ public class LawitzkiCompass implements Compass {
         // copy new accelerometer data into accel array
         // then calculate new orientation
 
-        // TODO
-        //accel = data;
-        //calculateAccMagOrientation();
+        accel = data;
+        calculateAccMagOrientation();
     }
 
     /* ***************************************
      * GYROSCOPE
      * ***************************************/
 
-    private void onGyroscope(Rotation data) {
-        gyroFunction(data);
-    }
-
-    private static void getRotationVectorFromGyro(float[] gyroValues, float[] deltaRotationVector, float timeFactor) {
-
-        float[] normValues = new float[3];
-
-        // Calculate the angular speed of the sample
-        float omegaMagnitude =
-                (float)Math.sqrt(
-                        gyroValues[0] * gyroValues[0] +
-                        gyroValues[1] * gyroValues[1] +
-                        gyroValues[2] * gyroValues[2]);
-
-        // Normalize the rotation vector if it's big enough to get the axis
-        final float EPSILON = 0.000000001f;
-        if(omegaMagnitude > EPSILON) {
-            normValues[0] = gyroValues[0] / omegaMagnitude;
-            normValues[1] = gyroValues[1] / omegaMagnitude;
-            normValues[2] = gyroValues[2] / omegaMagnitude;
-        }
-
-        // Integrate around this axis with the angular speed by the timestep
-        // in order to get a delta rotation from this sample over the timestep
-        // We will convert this axis-angle representation of the delta rotation
-        // into a quaternion before turning it into the rotation matrix.
-        float thetaOverTwo = omegaMagnitude * timeFactor;
-        float sinThetaOverTwo = (float)Math.sin(thetaOverTwo);
-        float cosThetaOverTwo = (float)Math.cos(thetaOverTwo);
-        deltaRotationVector[0] = sinThetaOverTwo * normValues[0];
-        deltaRotationVector[1] = sinThetaOverTwo * normValues[1];
-        deltaRotationVector[2] = sinThetaOverTwo * normValues[2];
-        deltaRotationVector[3] = cosThetaOverTwo;
-    }
-
     private static final float NS2S = 1.0f / 1000000000.0f;
     private long timestamp;
     private boolean initState = true;
 
-    public void gyroFunction(Rotation data) {
+    public void gyroFunction(AngularVelocity data) {
         // don't start until first accelerometer/magnetometer orientation has been acquired
         if (accMagOrientation == null)
             return;
@@ -224,6 +187,38 @@ public class LawitzkiCompass implements Compass {
 
         // get the gyroscope based orientation from the rotation matrix
         SensorManager.getOrientation(gyroMatrix, gyroOrientation);
+    }
+
+    private static void getRotationVectorFromGyro(float[] gyroValues, float[] deltaRotationVector, float timeFactor) {
+
+        float[] normValues = new float[3];
+
+        // Calculate the angular speed of the sample
+        float omegaMagnitude =
+                (float)Math.sqrt(
+                        gyroValues[0] * gyroValues[0] +
+                                gyroValues[1] * gyroValues[1] +
+                                gyroValues[2] * gyroValues[2]);
+
+        // Normalize the rotation vector if it's big enough to get the axis
+        final float EPSILON = 0.000000001f;
+        if(omegaMagnitude > EPSILON) {
+            normValues[0] = gyroValues[0] / omegaMagnitude;
+            normValues[1] = gyroValues[1] / omegaMagnitude;
+            normValues[2] = gyroValues[2] / omegaMagnitude;
+        }
+
+        // Integrate around this axis with the angular speed by the timestep
+        // in order to get a delta rotation from this sample over the timestep
+        // We will convert this axis-angle representation of the delta rotation
+        // into a quaternion before turning it into the rotation matrix.
+        float thetaOverTwo = omegaMagnitude * timeFactor;
+        float sinThetaOverTwo = (float)Math.sin(thetaOverTwo);
+        float cosThetaOverTwo = (float)Math.cos(thetaOverTwo);
+        deltaRotationVector[0] = sinThetaOverTwo * normValues[0];
+        deltaRotationVector[1] = sinThetaOverTwo * normValues[1];
+        deltaRotationVector[2] = sinThetaOverTwo * normValues[2];
+        deltaRotationVector[3] = cosThetaOverTwo;
     }
 
     /* ***************************************
@@ -262,12 +257,12 @@ public class LawitzkiCompass implements Compass {
                         + oneMinusCoeff * accMagOrientation[2];
 
         // overwrite gyro matrix and orientation with fused orientation
-        // to comensate gyro drift
+        // to compensate gyro drift
         gyroMatrix = getRotationMatrixFromOrientation(fusedOrientation);
         System.arraycopy(fusedOrientation, 0, gyroOrientation, 0, 3);
 
         // Update heading
-        mCallback.onHeadingChange(fusedOrientation[0], timestamp);
+        mCallback.onHeadingChange(-fusedOrientation[0], timestamp);
     }
 
     // Utils
