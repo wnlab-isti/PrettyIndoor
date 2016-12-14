@@ -40,10 +40,6 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
     private LocationStrategy mStrategy;
     private Observer<IndoorPosition> mUpdater;
 
-    private static final float DEFAULT_START_X = 0.f;
-    private static final float DEFAULT_START_Y = 0.f;
-    private static final int DEFAULT_START_FLOOR = 0;
-
     private static final int WIFI_FINGERPRINT_THRESHOLD = Integer.MAX_VALUE;
     private static final float MM_THRESHOLD = 10.f;
 
@@ -123,6 +119,8 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
         private PositionLogger mWifiFingerprintPositionLogger;
         private PositionLogger mMMPositionLogger;
 
+        private IndoorPosition mInitialPosition;
+
         /**
          * Set data sources and pre-filter fusion techniques like Step Detection and Heading.
          * @param sources
@@ -177,6 +175,10 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
          */
         public void setMMFingerprintLogger(PositionLogger logger) {
             mMMPositionLogger = logger;
+        }
+
+        public void setInitialPosition(IndoorPosition position) {
+            mInitialPosition = position;
         }
 
         /**
@@ -255,10 +257,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
 
                     // Pseudo-You Li strategy with KF
                     mStrategy = new KFUleeStrategy(
-                            new IndoorPosition(
-                                    DEFAULT_START_X, DEFAULT_START_Y,
-                                    DEFAULT_START_FLOOR,
-                                    System.currentTimeMillis()),
+                            mInitialPosition,
                             pdr,
                             wifiLoc,
                             mm);
