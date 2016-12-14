@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements
             File rawLogFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + RAW_LOG_FILE_NAME);
             try {
                 mLogWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rawLogFile)));
-                builder.setDataLogger(new Logger(mLogWriter));
+                builder.setLogWriter(mLogWriter);
                 builder.setWifiFingerprintLogger(new PositionLogger(mLogWriter));
                 builder.setMMFingerprintLogger(new PositionLogger(mLogWriter));
             } catch (IOException e) {

@@ -64,7 +64,7 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
         }
 
         public String toString() {
-            return "WFING " + super.toString();
+            return "WIFI " + super.toString();
         }
     }
 

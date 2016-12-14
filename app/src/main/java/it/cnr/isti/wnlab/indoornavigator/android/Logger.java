@@ -7,7 +7,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.RawData;
 
-public class Logger implements DataObserver<RawData> {
+public class Logger<T extends RawData> implements DataObserver<T> {
 
     private Writer mWriter;
 
@@ -16,7 +16,7 @@ public class Logger implements DataObserver<RawData> {
     }
 
     @Override
-    public void notify(RawData data) {
+    public void notify(T data) {
         try {
             mWriter.write(data + "\n");
         } catch(IOException e) {
