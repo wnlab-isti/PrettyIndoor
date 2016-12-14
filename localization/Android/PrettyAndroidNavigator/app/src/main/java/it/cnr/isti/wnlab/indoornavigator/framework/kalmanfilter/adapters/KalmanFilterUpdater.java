@@ -8,13 +8,13 @@ public abstract class KalmanFilterUpdater {
     protected float[][] mR;
 
 
-    protected KalmanFilterUpdater(KalmanFilter filter, int n) {
+    protected KalmanFilterUpdater(KalmanFilter filter) {
         this.filter = filter;
-        initH(n);
-        initR(n);
+        mH = initH();
+        mR = initR();
     }
 
-    protected abstract void initH(int n);
+    protected abstract float[][] initH();
 
-    protected abstract void initR(int n);
+    protected abstract float[][] initR();
 }

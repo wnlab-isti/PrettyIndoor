@@ -40,7 +40,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
         }
 
         public String toString() {
-            return "MFING " + super.toString();
+            return "MAG " + super.toString();
         }
     }
 
@@ -75,7 +75,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
         // Find positions
         for(int i = 0; i < mAllPositions.length; i++) {
             MagneticField v = mValues[i];
-            float delta = 0;
+            float delta = 0.f;
 
             // Check x
             float diff = v.x - mf.x;
@@ -90,10 +90,10 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
                 if(delta < mThreshold) {
                     diff = v.z - mf.z;
                     delta += diff*diff;
-                    Log.i("MM","delta X+Y+Z is " + delta);
 
                     // If x^2+y^2+z^2 < minDelta, update minDelta and position
                     if(delta < mThreshold) {
+//                        Log.i("MM", "delta X+Y+Z is " + delta + ", adding position");
                         positions.add(mAllPositions[i]);
                     }
                 }

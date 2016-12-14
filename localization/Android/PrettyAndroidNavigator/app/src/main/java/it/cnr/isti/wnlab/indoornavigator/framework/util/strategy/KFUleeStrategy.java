@@ -25,6 +25,9 @@ public class KFUleeStrategy extends LocationStrategy {
     // Floor
     private int mFloor;
 
+    // Last step's timestamp
+    private long mLastStepTimestamp = Long.MAX_VALUE;
+
     public KFUleeStrategy(
             IndoorPosition startPosition,
             PDR pdr,
@@ -46,6 +49,8 @@ public class KFUleeStrategy extends LocationStrategy {
             public void notify(PDR.Result pdrDelta) {
                 pdr2kf.predict(pdrDelta);
                 notifyObservers(kf.positionInstance(mFloor,pdrDelta.timestamp));
+                // Update timestamp for doing PDR before Wifi/MM updates
+                mLastStepTimestamp = pdrDelta.timestamp;
             }
         });
 
@@ -54,8 +59,11 @@ public class KFUleeStrategy extends LocationStrategy {
             wifiLocator.register(new Observer<IndoorPosition>() {
                 @Override
                 public void notify(IndoorPosition wifiPosition) {
-                    wifi2kf.update(wifiPosition);
-                    notifyObservers(kf.positionInstance(mFloor,wifiPosition.timestamp));
+                    // PDR before Wifi fingerprint positioning
+                    if(wifiPosition.timestamp > mLastStepTimestamp) {
+                        wifi2kf.update(wifiPosition);
+                        notifyObservers(kf.positionInstance(mFloor, wifiPosition.timestamp));
+                    }
                 }
             });
 
@@ -64,8 +72,11 @@ public class KFUleeStrategy extends LocationStrategy {
             mmLocator.register(new Observer<IndoorPosition>() {
                 @Override
                 public void notify(IndoorPosition mmPosition) {
-                    mm2kf.update(mmPosition);
-                    notifyObservers(kf.positionInstance(mFloor,mmPosition.timestamp));
+                    // PDR before MM
+                    if(mmPosition.timestamp > mLastStepTimestamp) {
+                        mm2kf.update(mmPosition);
+                        notifyObservers(kf.positionInstance(mFloor, mmPosition.timestamp));
+                    }
                 }
             });
     }

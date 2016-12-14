@@ -12,32 +12,21 @@ public abstract class KalmanFilterPredictor {
     protected float[][] mQ;
 
 
-    protected KalmanFilterPredictor(KalmanFilter filter, int n) {
+    protected KalmanFilterPredictor(KalmanFilter filter) {
         this.filter = filter;
-        mA = new float[n][n];
-        initA(mA);
-        mQ = new float[n][n];
-        initQ(mQ);
+        mA = initA();
+        mQ = initQ();
     }
 
     /**
      * Initialize as identity matrix.
-     * @param mA A matrix.
+     * @return Matrix A.
      */
-    protected void initA(float[][] mA) {
-        for(int i = 0; i < mA.length; i++)
-            for(int j = 0; j < mA.length; j++)
-                mA[i][j] = (i == j ? 1.f : 0.f);
-    }
+    protected abstract float[][] initA();
 
     /**
      * Initialize as zero matrix.
-     * @param mQ Q matrix.
+     * @return Matrix Q.
      */
-    protected void initQ(float[][] mQ) {
-        int n = mQ.length;
-        for(int i = 0; i < n; i++)
-            for(int j = 0; j < n; j++)
-                mQ[i][j] = 0.f;
-    }
+    protected abstract float[][] initQ();
 }

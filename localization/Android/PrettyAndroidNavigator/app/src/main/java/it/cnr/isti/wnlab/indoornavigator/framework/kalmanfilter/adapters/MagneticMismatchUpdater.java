@@ -7,26 +7,30 @@ import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.KalmanFilter;
 public class MagneticMismatchUpdater extends KalmanFilterUpdater {
 
     public MagneticMismatchUpdater(KalmanFilter filter) {
-        super(filter, IndoorKalmanFilter.N);
+        super(filter);
     }
 
     @Override
-    protected void initH(int n) {
-        // mH = new zero matrix TODO
-        mH = new float[2][n];
-        mH[0][0] = 1.f; mH[0][1] = 0.f; mH[0][2] = 0.f; mH[0][3] = 0.f;
-        mH[1][0] = 0.f; mH[1][1] = 1.f; mH[1][2] = 0.f; mH[1][3] = 0.f;
+    protected float[][] initH() {
+        int n = IndoorKalmanFilter.N;
+        float[][] matrix = new float[2][n];
+
+        matrix[0][0] = 1.f; matrix[0][1] = 0.f; matrix[0][2] = 0.f; matrix[0][3] = 0.f;
+        matrix[1][0] = 0.f; matrix[1][1] = 1.f; matrix[1][2] = 0.f; matrix[1][3] = 0.f;
+
+        return matrix;
     }
 
     @Override
-    protected void initR(int n) {
-        mR = new float[2][2];
+    protected float[][] initR() {
+        int n = 2;
+        float[][] mR = new float[n][n];
+
         for(int i = 0; i < n; i++)
             for(int j = 0; j < n; j++)
-                if(i == j)
-                    mR[i][j] = 1.f;
-                else
-                    mR[i][j] = 0.f;
+                mR[i][j] = 0.f;
+
+        return mR;
     }
 
     public void update(IndoorPosition wifiPosition) {

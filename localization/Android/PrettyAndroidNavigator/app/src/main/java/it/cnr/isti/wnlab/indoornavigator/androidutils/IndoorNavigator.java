@@ -3,6 +3,7 @@ package it.cnr.isti.wnlab.indoornavigator.androidutils;
 import android.util.Log;
 
 import java.io.File;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +22,10 @@ import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.LocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
 import it.cnr.isti.wnlab.indoornavigator.framework.StartableStoppable;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Rotation;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.WifiFingerprint;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.geomagnetic.mm.MagneticMismatchLocator;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.FixedLengthPDR;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.strategy.KFUleeStrategy;
@@ -114,7 +119,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
         private File mWifiFingerprintMap;
         private File mMagneticFingerprintMap;
 
-        private Logger mDataLogger;
+        private Writer mLogWriter;
         private PositionLogger mWifiFingerprintPositionLogger;
         private PositionLogger mMMPositionLogger;
 
@@ -151,11 +156,11 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
         }
 
         /**
-         * Set logger for data.
-         * @param logger
+         * Set writer for data logging.
+         * @param writer
          */
-        public void setDataLogger(Logger logger) {
-            mDataLogger = logger;
+        public void setLogWriter(Writer writer) {
+            mLogWriter = writer;
         }
 
         /**
@@ -189,14 +194,23 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                 for (StartableStoppable s : mSources) {
                     Class<?> type = s.getClass();
                     Log.d("ITERATION", "Current class is " + type.getName());
-                    if (type == AccelerometerHandler.class)
+                    if (type == AccelerometerHandler.class) {
                         acc = (AccelerometerHandler) s;
-                    else if (type == GyroscopeHandler.class)
+                        if (mLogWriter != null)
+                            acc.register(new Logger<Acceleration>(mLogWriter));
+                    } else if (type == GyroscopeHandler.class) {
                         gyro = (GyroscopeHandler) s;
-                    else if (type == MagneticFieldHandler.class)
+                        if(mLogWriter != null)
+                            gyro.register(new Logger<Rotation>(mLogWriter));
+                    } else if (type == MagneticFieldHandler.class) {
                         mag = (MagneticFieldHandler) s;
-                    else if (type == WifiScanner.class)
+                        if(mLogWriter != null)
+                            mag.register(new Logger<MagneticField>(mLogWriter));
+                    } else if (type == WifiScanner.class) {
                         wifi = (WifiScanner) s;
+                        if(mLogWriter != null)
+                            wifi.register(new Logger<WifiFingerprint>(mLogWriter));
+                    }
                 }
                 Log.d("SCANRESULT", "sources empty? " + mSources.isEmpty() + " | " +
                         "acc" + acc + ", gyro " + gyro + ", mag " + mag + ", wifi " + wifi);
