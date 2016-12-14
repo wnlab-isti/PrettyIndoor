@@ -4,14 +4,13 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigator.android.Logger;
 import it.cnr.isti.wnlab.indoornavigator.android.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.Compass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.LawitzkiCompass;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.SimpleGyroCompass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.MagneticFieldHandler;
@@ -24,7 +23,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
 import it.cnr.isti.wnlab.indoornavigator.framework.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
-import it.cnr.isti.wnlab.indoornavigator.framework.types.Rotation;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularVelocity;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.WifiFingerprint;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.geomagnetic.mm.MagneticMismatchLocator;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.FixedLengthPDR;
@@ -203,7 +202,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                     } else if (type == GyroscopeHandler.class) {
                         gyro = (GyroscopeHandler) s;
                         if(mLogWriter != null)
-                            gyro.register(new Logger<Rotation>(mLogWriter));
+                            gyro.register(new Logger<AngularVelocity>(mLogWriter));
                     } else if (type == MagneticFieldHandler.class) {
                         mag = (MagneticFieldHandler) s;
                         if(mLogWriter != null)
@@ -249,7 +248,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                     // Pseudo-You Li strategy
                     FixedLengthPDR pdr = new FixedLengthPDR(0.f);
                     // Heading
-                    Compass heading = new LawitzkiCompass(pdr, acc, gyro, mag, 30);
+                    Compass heading = new SimpleGyroCompass(pdr,gyro);
                     mSources.add(heading);
                     // Step detection
                     StepDetector sd = new FasterStepDetector(pdr, acc);
