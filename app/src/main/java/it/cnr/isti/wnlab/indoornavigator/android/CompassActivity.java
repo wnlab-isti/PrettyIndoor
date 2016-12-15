@@ -15,10 +15,12 @@ import android.view.ViewGroup;
 import it.cnr.isti.wnlab.indoornavigator.R;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.Compass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.LawitzkiCompass;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.RelativeCompass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.MagneticFieldHandler;
-import it.cnr.isti.wnlab.indoornavigator.framework.callbacks.HeadingChangeCallback;
+import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Heading;
 
 public class CompassActivity extends AppCompatActivity {
 
@@ -101,25 +103,32 @@ public class CompassActivity extends AppCompatActivity {
                 }, gh);*/
 
         // Lawitzki-only compass
-        int rate = 60;
-        Compass compass = new LawitzkiCompass(
-                new HeadingChangeCallback() {
-                    @Override
-                    public void onHeadingChange(float newHeading, long timestamp) {
-                        updateHeading(newHeading);
-                    }
-                }, ah, gh, mh, rate);
+        /*Compass compass = new LawitzkiCompass(ah, gh, mh, LawitzkiCompass.RATE);
+        compass.register(new Observer<Heading>() {
+            @Override
+            public void notify(Heading newHeading) {
+                updateHeading(newHeading.heading);
+            }
+        });*/
+        // Lawitzi relative compass
+        Compass compass = new RelativeCompass(ah, gh, mh, LawitzkiCompass.RATE);
+        compass.register(new Observer<Heading>() {
+            @Override
+            public void notify(Heading newHeading) {
+                updateHeading(newHeading);
+            }
+        });
 
         // Start everything
         ah.start();
         gh.start();
         mh.start();
-        compass.start();
     }
 
-    private void updateHeading(float newHeading) {
-        mView.rotate = newHeading;
-        Log.d("COMPASS", newHeading + "");
+    private void updateHeading(Heading newHeading) {
+        float heading = newHeading.heading;
+        mView.rotate = heading;
         mView.invalidate();
+        Log.d("COMPASSACT", "New heading: " + heading);
     }
 }

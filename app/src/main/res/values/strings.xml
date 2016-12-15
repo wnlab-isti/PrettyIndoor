@@ -1,3 +1,11 @@
 <resources>
+    <!-- App -->
     <string name="app_name">PrettyIndoorNavigator</string>
+
+    <!-- Compass -->
+    <string name="compass_calibration_end">Compass calibration ended successfully.</string>
+
+    <!-- Test activities -->
+    <string name="title_compass_test">CompassTestActivity</string>
+    <string name="title_step_detection_test">StepDetectionActivity</string>
 </resources>

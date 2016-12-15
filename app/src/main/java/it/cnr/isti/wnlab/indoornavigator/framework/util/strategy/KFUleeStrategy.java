@@ -35,7 +35,8 @@ public class KFUleeStrategy extends LocationStrategy {
             MagneticMismatchLocator mmLocator
     ) {
         // Initialize KF
-        kf = new IndoorKalmanFilter(startPosition, 5.0f, (float) Math.toRadians(10.0f), 0.5f); // with You Li's initialization
+        //kf = new IndoorKalmanFilter(startPosition, 5.0f, (float) Math.toRadians(10.0f), 0.5f); // with You Li's initialization
+        kf = new IndoorKalmanFilter(startPosition, 1.f, 1.f, 1.f); // Let's try identity covariance
         pdr2kf = new PDRPredictor(kf);
         wifi2kf = new WifiFingerprintUpdater(kf);
         mm2kf = new MagneticMismatchUpdater(kf);

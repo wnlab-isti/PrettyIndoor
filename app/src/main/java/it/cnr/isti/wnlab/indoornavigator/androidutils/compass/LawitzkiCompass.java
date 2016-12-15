@@ -9,23 +9,28 @@ import java.util.TimerTask;
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.Emitter;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
-import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularVelocity;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Heading;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
-import it.cnr.isti.wnlab.indoornavigator.framework.callbacks.HeadingChangeCallback;
 
 /**
  * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/
  */
 
-public class LawitzkiCompass implements Compass {
+public class LawitzkiCompass extends Compass {
+
+    // Initial delay before first measurement
+    public static final int INITIAL_DELAY = 0;
+
+    // Milliseconds delay between each update
+    public static final int RATE = 60;
 
     // Compass configuration
     private final int mRate;
     private static final float FILTER_COEFFICIENT = 0.98f;
-    private HeadingChangeCallback mCallback;
 
     // angular speeds from gyro
-    private AngularVelocity gyro;
+    private AngularSpeed gyro;
 
     // rotation matrix from gyro data
     private float[] gyroMatrix = new float[9];
@@ -51,12 +56,8 @@ public class LawitzkiCompass implements Compass {
     // PositionFilter2D's timer
     private Timer mTimer;
 
-    // Start stuff
-    private boolean started = false;
-
-    public LawitzkiCompass(HeadingChangeCallback callback,
-                           Emitter<Acceleration> accelerometer,
-                           Emitter<AngularVelocity> gyroscope,
+    public LawitzkiCompass(Emitter<Acceleration> accelerometer,
+                           Emitter<AngularSpeed> gyroscope,
                            Emitter<MagneticField> magnetometer,
                            int rate
     ) {
@@ -79,9 +80,9 @@ public class LawitzkiCompass implements Compass {
                 onAccelerometer(data);
             }
         });
-        gyroscope.register(new DataObserver<AngularVelocity>() {
+        gyroscope.register(new DataObserver<AngularSpeed>() {
             @Override
-            public void notify(AngularVelocity data) {
+            public void notify(AngularSpeed data) {
                 gyroFunction(data);
             }
         });
@@ -92,44 +93,21 @@ public class LawitzkiCompass implements Compass {
             }
         });
 
-        // Callback to call for updating
-        mCallback = callback;
-    }
-
-    @Override
-    public void start() {
-        if(!started) {
-            // wait for one second until gyroscope and magnetometer/accelerometer
-            // data is initialised then schedule the complementary filter task
-            mTimer = new Timer();
-            mHandler = new Handler();
-            mTimer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            calculateFusedOrientation();
-                        }
-                    });
-                }
-            }, 1000, mRate);
-
-            started = true;
-        }
-    }
-
-    @Override
-    public void stop() {
-        if(started) {
-            mTimer.cancel();
-            started = false;
-        }
-    }
-
-    @Override
-    public boolean isStarted() {
-        return started;
+        // wait for one second until gyroscope and magnetometer/accelerometer
+        // data is initialised then schedule the complementary filter task
+        mTimer = new Timer();
+        mHandler = new Handler();
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        calculateFusedOrientation();
+                    }
+                });
+            }
+        }, INITIAL_DELAY, mRate);
     }
 
     /* ***************************************
@@ -152,7 +130,7 @@ public class LawitzkiCompass implements Compass {
     private long timestamp;
     private boolean initState = true;
 
-    public void gyroFunction(AngularVelocity data) {
+    public void gyroFunction(AngularSpeed data) {
         // don't start until first accelerometer/magnetometer orientation has been acquired
         if (accMagOrientation == null)
             return;
@@ -262,7 +240,16 @@ public class LawitzkiCompass implements Compass {
         System.arraycopy(fusedOrientation, 0, gyroOrientation, 0, 3);
 
         // Update heading
-        mCallback.onHeadingChange(-fusedOrientation[0], timestamp);
+        onHeadingChange(fusedOrientation[0], timestamp);
+    }
+
+    /**
+     * Notify observers on heading changes.
+     * @param heading New heading.
+     * @param timestamp Timestamp of last gyroscope measure.
+     */
+    protected void onHeadingChange(float heading, long timestamp) {
+        notifyObservers(new Heading(heading, timestamp));
     }
 
     // Utils

@@ -1,12 +1,14 @@
 package it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr;
 
-import it.cnr.isti.wnlab.indoornavigator.framework.callbacks.HeadingChangeCallback;
-import it.cnr.isti.wnlab.indoornavigator.framework.callbacks.StepDetectedCallback;
+import it.cnr.isti.wnlab.indoornavigator.framework.Emitter;
+import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Heading;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Step;
 
 /**
  * PDR utility methods.
  */
-public class FixedLengthPDR extends PDR implements HeadingChangeCallback, StepDetectedCallback {
+public class FixedLengthPDR extends PDR {
 
     // Assume fixed-length steps
     private final float STEP_LENGTH = 0.6f;
@@ -14,32 +16,45 @@ public class FixedLengthPDR extends PDR implements HeadingChangeCallback, StepDe
     // Heading
     private float mHeading;
 
-    public FixedLengthPDR(float initialHeading) {
+    public FixedLengthPDR(Emitter<Heading> heading, Emitter<Step> stepDetector, float initialHeading) {
         // Initialize heading
         mHeading = initialHeading;
+
+        // Register for heading changes
+        heading.register(new Observer<Heading>() {
+            @Override
+            public void notify(Heading data) {
+                onHeadingChange(data.heading);
+            }
+        });
+
+        // Register for step detection
+        stepDetector.register(new Observer<Step>() {
+            @Override
+            public void notify(Step step) {
+                onStep(step);
+            }
+        });
     }
 
     /**
      * Update heading when possible.
-     * @param newHeading In RADIANTS.
+     * @param newHeading in RADIANTS.
      */
-    @Override
-    public void onHeadingChange(float newHeading, long timestamp) {
+    private void onHeadingChange(float newHeading) {
         mHeading = newHeading;
     }
 
     /**
      * For each step, make a KF prediction from PDR and notify new position.
-     * @param timestamp
+     * @param step
      */
-    @Override
-    public void onStep(long timestamp) {
+    private void onStep(Step step) {
         notifyObservers(
                 new PDR.Result(
                         -(STEP_LENGTH * (float) Math.sin(mHeading)),
                         STEP_LENGTH * (float) Math.cos(mHeading),
                         mHeading,
-                        timestamp));
+                        step.timestamp));
     }
-
 }

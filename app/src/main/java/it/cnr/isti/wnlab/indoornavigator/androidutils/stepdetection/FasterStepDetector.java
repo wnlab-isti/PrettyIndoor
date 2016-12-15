@@ -6,12 +6,12 @@ import android.util.Log;
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.Emitter;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
-import it.cnr.isti.wnlab.indoornavigator.framework.callbacks.StepDetectedCallback;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Step;
 
 
-public class FasterStepDetector implements StepDetector {
+public class FasterStepDetector extends StepDetector {
 
-    private float   mLimit = 10;
+    private float   mLimit = 2.4f; // Sperimentally found on my slow walk. It was 10.0 before
     private float   mLastValues[] = new float[3*2];
     private float   mScale[] = new float[2];
     private float   mYOffset;
@@ -21,17 +21,12 @@ public class FasterStepDetector implements StepDetector {
     private float   mLastDiff[] = new float[3*2];
     private int     mLastMatch = -1;
 
-    private boolean started = false;
-
-    private StepDetectedCallback mCallback;
-
-    public FasterStepDetector(StepDetectedCallback callback, Emitter<Acceleration> accelerometer) {
+    public FasterStepDetector(Emitter<Acceleration> accelerometer) {
         int h = 480; // TODO: remove this constant
         mYOffset = h * 0.5f;
         mScale[0] = - (h * 0.5f * (1.0f / (SensorManager.STANDARD_GRAVITY * 2)));
         mScale[1] = - (h * 0.5f * (1.0f / (SensorManager.MAGNETIC_FIELD_EARTH_MAX)));
 
-        mCallback = callback;
         accelerometer.register(
                 new DataObserver<Acceleration>() {
                     @Override
@@ -74,10 +69,7 @@ public class FasterStepDetector implements StepDetector {
                 boolean isNotContra = (mLastMatch != 1 - extType);
 
                 if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough && isNotContra) {
-                    if(started) {
-                        mCallback.onStep(System.currentTimeMillis());
-                        Log.d("STEPD", "Step!");
-                    }
+                    onStep(System.currentTimeMillis());
                     mLastMatch = extType;
                 }
                 else {
@@ -90,18 +82,11 @@ public class FasterStepDetector implements StepDetector {
         mLastValues[k] = v;
     }
 
-    @Override
-    public void start() {
-        started = true;
-    }
-
-    @Override
-    public void stop() {
-        started = false;
-    }
-
-    @Override
-    public boolean isStarted() {
-        return started;
+    /**
+     * Notify observers on step.
+     * @param timestamp
+     */
+    private void onStep(long timestamp) {
+        notifyObservers(new Step(timestamp));
     }
 }

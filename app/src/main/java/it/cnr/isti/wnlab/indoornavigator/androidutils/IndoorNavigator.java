@@ -1,15 +1,20 @@
 package it.cnr.isti.wnlab.indoornavigator.androidutils;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.Writer;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
+import it.cnr.isti.wnlab.indoornavigator.R;
 import it.cnr.isti.wnlab.indoornavigator.android.Logger;
 import it.cnr.isti.wnlab.indoornavigator.android.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.Compass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.LawitzkiCompass;
+import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.RelativeCompass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.SimpleGyroCompass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.GyroscopeHandler;
@@ -17,13 +22,15 @@ import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.MagneticFie
 import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.FasterStepDetector;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.StepDetector;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.wifi.WifiScanner;
+import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.LocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
 import it.cnr.isti.wnlab.indoornavigator.framework.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.Acceleration;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Heading;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
-import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularVelocity;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.WifiFingerprint;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.geomagnetic.mm.MagneticMismatchLocator;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.FixedLengthPDR;
@@ -108,17 +115,47 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
      */
     public static class Builder {
 
+        // Sources which send data to the whole thing
         private List<StartableStoppable> mSources;
+
+        // Preferred strategy (if any)
         private LocationStrategy mStrategy;
+
+        // Observer for new positions
         private Observer<IndoorPosition> mUpdater;
+
+        // Wifi fingerprint map
         private File mWifiFingerprintMap;
+        // Geomagnetic fingerprint map
         private File mMagneticFingerprintMap;
 
+        // Logging
         private Writer mLogWriter;
         private PositionLogger mWifiFingerprintPositionLogger;
         private PositionLogger mMMPositionLogger;
 
+        // Position where user starts
         private IndoorPosition mInitialPosition;
+
+        // Members for output communication
+        private boolean builderIsSocial;
+        private WeakReference<Context> context;
+
+        /**
+         * A silent IndoorNavigator factory object.
+         */
+        public Builder() {
+            builderIsSocial = false;
+        }
+
+        /**
+         * A communicative IndoorNavigator factory object (mainly through Toast notifications).
+         * @param context The context to communicate to.
+         */
+        public Builder(Context context) {
+            builderIsSocial = true;
+            this.context = new WeakReference<>(context);
+        }
 
         /**
          * Set data sources and pre-filter fusion techniques like Step Detection and Heading.
@@ -202,7 +239,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                     } else if (type == GyroscopeHandler.class) {
                         gyro = (GyroscopeHandler) s;
                         if(mLogWriter != null)
-                            gyro.register(new Logger<AngularVelocity>(mLogWriter));
+                            gyro.register(new Logger<AngularSpeed>(mLogWriter));
                     } else if (type == MagneticFieldHandler.class) {
                         mag = (MagneticFieldHandler) s;
                         if(mLogWriter != null)
@@ -245,14 +282,39 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                 // Choose strategy and link everything
                 if (acc != null && mag != null && gyro != null) {
                     Log.d("INBUILDER","PDR recognised");
-                    // Pseudo-You Li strategy
-                    FixedLengthPDR pdr = new FixedLengthPDR(0.f);
+
                     // Heading
-                    Compass heading = new SimpleGyroCompass(pdr,gyro);
-                    mSources.add(heading);
+                    final Compass heading = new RelativeCompass(acc,gyro,mag, LawitzkiCompass.RATE);
+                    if(builderIsSocial) {
+                        // Observer for first-heading notification: when it occurs,
+                        // compass is calibrated and active.
+                        // Indeed, RelativeCompass doesn't send heading notification until it has done
+                        // with calibration.
+                        final Observer<Heading> calibrationNotificator = new Observer<Heading>() {
+
+                            private boolean done = false;
+
+                            @Override
+                            public void notify(Heading data) {
+                                if(!done) {
+                                    Context c;
+                                    if ((c = context.get()) != null)
+                                        Toast.makeText(c,
+                                                c.getString(R.string.compass_calibration_end),
+                                                Toast.LENGTH_SHORT)
+                                                .show();
+                                    done = true;
+                                }
+                            }
+                        };
+                        heading.register(calibrationNotificator);
+                    }
+
                     // Step detection
-                    StepDetector sd = new FasterStepDetector(pdr, acc);
-                    mSources.add(sd);
+                    StepDetector sd = new FasterStepDetector(acc);
+
+                    // Pseudo-You Li strategy
+                    FixedLengthPDR pdr = new FixedLengthPDR(heading,sd,0.f);
 
                     // Pseudo-You Li strategy with KF
                     mStrategy = new KFUleeStrategy(
