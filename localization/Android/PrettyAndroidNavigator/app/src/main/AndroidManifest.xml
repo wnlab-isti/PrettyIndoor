@@ -22,12 +22,22 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".android.IndoorService"
-            android:enabled="true"
-            android:exported="true" />
+        <activity
+            android:name=".android.CompassActivity"
+            android:label="Compass"
+            android:theme="@style/AppTheme"
+            android:icon="@android:drawable/ic_menu_compass">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <activity android:name=".android.CompassActivity">
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".android.StepDetectionActivity"
+            android:label="Step Detection"
+            android:theme="@style/AppTheme"
+            android:icon="@android:drawable/ic_input_get">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

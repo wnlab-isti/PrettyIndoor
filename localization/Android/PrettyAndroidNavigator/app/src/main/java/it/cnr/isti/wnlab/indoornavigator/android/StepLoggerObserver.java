@@ -18,7 +18,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
 public class StepLoggerObserver implements Observer<IndoorPosition>, Closeable {
 
     private final String APP_NAME = "PrettyIndoorNavigator";
-    public final String POSITION_LOG_FILE_NAME = "pin_positions.log";
+    public final String POSITION_LOG_FILE_NAME = "pin_positions" + System.currentTimeMillis() + ".log";
     private BufferedWriter mWriter;
     private IndoorPosition data;
 

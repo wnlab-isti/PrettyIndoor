@@ -1,20 +1,14 @@
-// Progetto
-- Android UI:
-    PER OGNI sensore disponibile & interessante:
-        Toggle button per attivarlo, toggle button per il log (disattivato se si disattiva il
-        sensore).
-        Toggle per logging su file.
-- Logger per sensori come DataObserver
-- Comunicazione AIDL steplogger
-- Sistemare dati vari WiFi e MM
-- WifiFingerprint localization
-- KF updater
-- Wifi2KF adapter
-- MM localization
-- MM2KF adapter
+TODO (a breve)
+M
+- Correggere direzione (la bussola ora cambia verso, ma la x è al contrario)
+- Implementare KF Update
+- Tante misurazioni e prove
+- Rendere SD un po' meno sensibile (magari provando il path con il tester di SD. Provarlo anche con il tester bussola?)
+S
+- Plottaggio punti in qualche modo per farlo comodo
+- Separation of concerns tra builder e activity/GUI
+- Architettura Android (service...)
+C
+- Sistemare GUI
 
-// Altro
-- Floor localization?
-- Studiare meglio step detection e codice
-- Studiare meglio codice bussola
-- Scrivere cose
+!!!LUNEDì PUNTO DELLA SITUAZIONE!!!

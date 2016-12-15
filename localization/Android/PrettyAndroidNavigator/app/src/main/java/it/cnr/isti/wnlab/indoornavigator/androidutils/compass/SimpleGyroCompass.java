@@ -1,23 +1,16 @@
 package it.cnr.isti.wnlab.indoornavigator.androidutils.compass;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.Emitter;
-import it.cnr.isti.wnlab.indoornavigator.framework.callbacks.HeadingChangeCallback;
-import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularVelocity;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigator.framework.types.Heading;
 
 
-public class SimpleGyroCompass implements Compass, DataObserver<AngularVelocity> {
+public class SimpleGyroCompass extends Compass {
 
     // Callback for signaling an heading change
-    private HeadingChangeCallback mCallback;
-
-    // Gyroscope data emitter
-    private Emitter<AngularVelocity> mGyroscope;
 
     // Current heading (starts from N)
     private float heading;
@@ -30,11 +23,21 @@ public class SimpleGyroCompass implements Compass, DataObserver<AngularVelocity>
     private boolean isStarted = false;
 
     public SimpleGyroCompass (
-            HeadingChangeCallback callback,
-            Emitter<AngularVelocity> gyroscope) {
-        mCallback = callback;
-        mGyroscope = gyroscope;
-        window = new ArrayList<Float>(WINDOW_SIZE);
+            Emitter<AngularSpeed> gyroscope) {
+        // Initialize window
+        window = new ArrayList<>(WINDOW_SIZE);
+
+        // Initialize values
+        heading = 0.f;
+        timestamp = System.currentTimeMillis();
+        isStarted = true;
+
+        gyroscope.register(new DataObserver<AngularSpeed>() {
+            @Override
+            public void notify(AngularSpeed data) {
+                onGyroscope(data);
+            }
+        });
     }
 
     // Because speed is rad/s
@@ -46,9 +49,7 @@ public class SimpleGyroCompass implements Compass, DataObserver<AngularVelocity>
     // Epsilon for magnitude check
     private static final float EPSILON = 0.000000001f;
 
-    @Override
-    public void notify(AngularVelocity v) {
-        Log.d("SGYROCOMPASS", "Accuracy: " + v.accuracy);
+    public void onGyroscope(AngularSpeed v) {
         updateHeading(v);
         if(window.size() == WINDOW_SIZE) {
             float averageHeading = 0.f;
@@ -56,13 +57,13 @@ public class SimpleGyroCompass implements Compass, DataObserver<AngularVelocity>
                 averageHeading += h;
             }
             averageHeading /= WINDOW_SIZE;
-            mCallback.onHeadingChange(averageHeading, v.timestamp);
+            notifyObservers(new Heading(averageHeading, v.timestamp));
             window.remove(0);
         }
         window.add(heading);
     }
 
-    private void updateHeading(AngularVelocity v) {
+    private void updateHeading(AngularSpeed v) {
         final float dT = (v.timestamp - timestamp) * NS2S;
 
         // Axis of the rotation sample, not normalized yet.
@@ -102,28 +103,5 @@ public class SimpleGyroCompass implements Compass, DataObserver<AngularVelocity>
         deltaRotationVector[1] = sinThetaOverTwo * axisY;
         deltaRotationVector[2] = sinThetaOverTwo * axisZ;
         deltaRotationVector[3] = cosThetaOverTwo;*/
-    }
-
-    @Override
-    public void start() {
-        if(!isStarted) {
-            heading = 0.f;
-            timestamp = System.currentTimeMillis();
-            isStarted = true;
-            mGyroscope.register(this);
-        }
-    }
-
-    @Override
-    public void stop() {
-        if(isStarted) {
-            isStarted = false;
-            mGyroscope.unregister(this);
-        }
-    }
-
-    @Override
-    public boolean isStarted() {
-        return isStarted;
     }
 }

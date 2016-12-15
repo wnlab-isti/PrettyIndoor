@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int MAGNETIC_REQUEST_CODE = 1337;
 
     // Writer for logging
-    private final String RAW_LOG_FILE_NAME = "pin_raw.log";
+    private final String RAW_LOG_FILE_NAME = "pin_raw" + System.currentTimeMillis() + ".log";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private IndoorNavigator initNavigator(int radio) {
         // Builder for Indoor Navigator
-        IndoorNavigator.Builder builder = new IndoorNavigator.Builder();
+        IndoorNavigator.Builder builder = new IndoorNavigator.Builder(this);
 
         // Set initial position
         builder.setInitialPosition(mInitialPosition);
@@ -345,8 +345,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
 
         if(mLogWriter != null)
             try {
