@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr;
+package it.cnr.isti.wnlab.indoornavigator.framework.utils.intertial.pdr;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.Emitter;
 import it.cnr.isti.wnlab.indoornavigator.framework.Observer;

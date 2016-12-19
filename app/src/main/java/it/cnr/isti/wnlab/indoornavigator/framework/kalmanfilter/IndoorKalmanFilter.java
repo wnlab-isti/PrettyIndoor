@@ -1,71 +1,123 @@
 package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter;
 
-import android.util.Log;
+import org.apache.commons.math3.filter.KalmanFilter;
+import org.apache.commons.math3.filter.MeasurementModel;
+import org.apache.commons.math3.filter.ProcessModel;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.PositionFilter2D;
 import it.cnr.isti.wnlab.indoornavigator.framework.XYPosition;
-import it.cnr.isti.wnlab.indoornavigator.framework.util.Matrices;
 
 /**
  * Kalman Filter for indoor localization.
  * Initializes x vector = (x,y,1,1) and P matrix
  * with d(P) = (initPosVar, initPosVar, heading, stepLength).
  */
-public class IndoorKalmanFilter extends AbstractSimpleKalmanFilter implements PositionFilter2D {
+public class IndoorKalmanFilter implements IKalmanFilter, PositionFilter2D {
 
-    public static final int N = 4;
     public static final int X_POSITION_IN_VECTOR = 0;
     public static final int Y_POSITION_IN_VECTOR = 1;
 
-    // For initialization
-    private XYPosition startPosition;
-    private float initialPositionVar, heading, stepLength;
+    private final KalmanFilter kf;
 
-    /**
-     * @param startPosition The position where the filtering starts from.
-     * @param heading Initial P[2][2]
-     * @param stepLength Initial P[3][3]
-     */
+    private final RealMatrix matrixA;
+    private final RealMatrix matrixB;
+    private final RealMatrix matrixH;
+    private final RealMatrix matrixQ;
+    private final RealMatrix matrixR;
+
     public IndoorKalmanFilter(
-            XYPosition startPosition,
-            float initialPositionVar,
-            float heading,
-            float stepLength) {
+            final double[] x0,
+            double[][] mA, double[][] mB,
+            double[][] mH, double[][] mQ, double[][] mR,
+            final double[][] mP0
+    ) {
+        // Constants
+        this.matrixA = MatrixUtils.createRealMatrix(mA);
+        this.matrixB = MatrixUtils.createRealMatrix(mB);
+        this.matrixH = MatrixUtils.createRealMatrix(mH);
+        this.matrixQ = MatrixUtils.createRealMatrix(mQ);
+        this.matrixR = MatrixUtils.createRealMatrix(mR);
 
-        this.startPosition = startPosition;
-        this.initialPositionVar = initialPositionVar;
-        this.heading = heading;
-        this.stepLength = stepLength;
+        // Process
+        ProcessModel process = new ProcessModel() {
+
+            @Override
+            public RealMatrix getStateTransitionMatrix() {
+                return matrixA;
+            }
+
+            @Override
+            public RealMatrix getControlMatrix() {
+                return matrixB;
+            }
+
+            @Override
+            public RealMatrix getProcessNoise() {
+                return matrixQ;
+            }
+
+            @Override
+            public RealVector getInitialStateEstimate() {
+                return new ArrayRealVector(x0);
+            }
+
+            @Override
+            public RealMatrix getInitialErrorCovariance() {
+                return MatrixUtils.createRealMatrix(mP0);
+            }
+        };
+
+        // Measurement
+        MeasurementModel measure = new MeasurementModel() {
+            @Override
+            public RealMatrix getMeasurementMatrix() {
+                return matrixH;
+            }
+
+            @Override
+            public RealMatrix getMeasurementNoise() {
+                return matrixR;
+            }
+        };
+
+        // Initialize KF
+        kf = new KalmanFilter(process, measure);
     }
 
     @Override
-    public IndoorPosition positionInstance(int floor, long timestamp) {
-        return new IndoorPosition(x[X_POSITION_IN_VECTOR], x[Y_POSITION_IN_VECTOR], floor, timestamp);
+    public IndoorPosition getPosition(int floor, long timestamp) {
+        RealVector x = kf.getStateEstimationVector();
+        return new IndoorPosition(
+                (float) x.getEntry(X_POSITION_IN_VECTOR),
+                (float) x.getEntry(Y_POSITION_IN_VECTOR),
+                floor, timestamp);
+    }
+
+    public XYPosition get2DPosition() {
+        RealVector x = kf.getStateEstimationVector();
+        return new XYPosition(
+                (float) x.getEntry(X_POSITION_IN_VECTOR),
+                (float) x.getEntry(Y_POSITION_IN_VECTOR));
     }
 
     @Override
-    public float[] initX() {
-        // Initial x vector
-        float[] x = new float[N];
-        x[0] = startPosition.x; // x
-        x[1] = startPosition.y; // y
-        x[2] = 1.f;
-        x[3] = 1.f;
-        Log.d("INDOOR X VECTOR", x[0] + "," + x[1] + "," + x[2] + "," + x[3]);
-
-        return x;
+    public void predict(float[] u) {
+        double[] uu = new double[u.length];
+        for(int i = 0; i < u.length; i++)
+            uu[i] = (double) u[i];
+        kf.predict(uu);
     }
 
     @Override
-    public float[][] initP() {
-        // Initial P matrix
-        float[][] mP = Matrices.zero(N);
-        mP[0][0] = initialPositionVar*initialPositionVar;
-        mP[1][1] = initialPositionVar*initialPositionVar;
-        mP[2][2] = heading*heading;
-        mP[3][3] = stepLength*stepLength;
-
-        return mP;
+    public void update(float[] z) {
+        double[] zz = new double[z.length];
+        for(int i = 0; i < z.length; i++)
+            zz[i] = (double) z[i];
+        kf.correct(zz);
     }
 }
