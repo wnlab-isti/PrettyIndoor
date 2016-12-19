@@ -1,14 +1,14 @@
 package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.adapters;
 
-import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.KalmanFilter;
+import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IKalmanFilter;
 
 public abstract class KalmanFilterUpdater {
-    protected KalmanFilter filter;
+    protected IKalmanFilter filter;
     protected float[][] mH;
     protected float[][] mR;
 
 
-    protected KalmanFilterUpdater(KalmanFilter filter) {
+    protected KalmanFilterUpdater(IKalmanFilter filter) {
         this.filter = filter;
         mH = initH();
         mR = initR();

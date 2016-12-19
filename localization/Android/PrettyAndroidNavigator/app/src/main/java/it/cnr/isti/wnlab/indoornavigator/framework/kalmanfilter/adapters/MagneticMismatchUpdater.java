@@ -2,11 +2,11 @@ package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.adapters;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IndoorKalmanFilter;
-import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.KalmanFilter;
+import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IKalmanFilter;
 
 public class MagneticMismatchUpdater extends KalmanFilterUpdater {
 
-    public MagneticMismatchUpdater(KalmanFilter filter) {
+    public MagneticMismatchUpdater(IKalmanFilter filter) {
         super(filter);
     }
 
