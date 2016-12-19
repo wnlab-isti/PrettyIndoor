@@ -1,7 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.adapters;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IndoorKalmanFilter;
-import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.KalmanFilter;
+import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IKalmanFilter;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.PDR;
 
 /**
@@ -10,7 +10,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.PDR;
  */
 public class PDRPredictor extends KalmanFilterPredictor {
 
-    public PDRPredictor(KalmanFilter filter) {
+    public PDRPredictor(IKalmanFilter filter) {
         super(filter);
     }
 

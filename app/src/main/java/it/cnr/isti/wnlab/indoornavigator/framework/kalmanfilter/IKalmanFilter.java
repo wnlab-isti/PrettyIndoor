@@ -5,7 +5,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.Filter;
 /**
  * Kalman Filter interface without control matrix and vector (B and u).
  */
-public interface KalmanFilter extends Filter {
+public interface IKalmanFilter extends Filter {
 
     /**
      * Kalman Filter prediction.

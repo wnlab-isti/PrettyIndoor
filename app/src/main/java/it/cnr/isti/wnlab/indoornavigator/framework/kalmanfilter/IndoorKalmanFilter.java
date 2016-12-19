@@ -5,6 +5,7 @@ import android.util.Log;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.PositionFilter2D;
 import it.cnr.isti.wnlab.indoornavigator.framework.XYPosition;
+import it.cnr.isti.wnlab.indoornavigator.framework.util.Matrices;
 
 /**
  * Kalman Filter for indoor localization.
@@ -17,6 +18,10 @@ public class IndoorKalmanFilter extends AbstractSimpleKalmanFilter implements Po
     public static final int X_POSITION_IN_VECTOR = 0;
     public static final int Y_POSITION_IN_VECTOR = 1;
 
+    // For initialization
+    private XYPosition startPosition;
+    private float initialPositionVar, heading, stepLength;
+
     /**
      * @param startPosition The position where the filtering starts from.
      * @param heading Initial P[2][2]
@@ -27,24 +32,40 @@ public class IndoorKalmanFilter extends AbstractSimpleKalmanFilter implements Po
             float initialPositionVar,
             float heading,
             float stepLength) {
-        super(N);
 
+        this.startPosition = startPosition;
+        this.initialPositionVar = initialPositionVar;
+        this.heading = heading;
+        this.stepLength = stepLength;
+    }
+
+    @Override
+    public IndoorPosition positionInstance(int floor, long timestamp) {
+        return new IndoorPosition(x[X_POSITION_IN_VECTOR], x[Y_POSITION_IN_VECTOR], floor, timestamp);
+    }
+
+    @Override
+    public float[] initX() {
         // Initial x vector
+        float[] x = new float[N];
         x[0] = startPosition.x; // x
         x[1] = startPosition.y; // y
         x[2] = 1.f;
         x[3] = 1.f;
         Log.d("INDOOR X VECTOR", x[0] + "," + x[1] + "," + x[2] + "," + x[3]);
 
+        return x;
+    }
+
+    @Override
+    public float[][] initP() {
         // Initial P matrix
+        float[][] mP = Matrices.zero(N);
         mP[0][0] = initialPositionVar*initialPositionVar;
         mP[1][1] = initialPositionVar*initialPositionVar;
         mP[2][2] = heading*heading;
         mP[3][3] = stepLength*stepLength;
-    }
 
-    @Override
-    public IndoorPosition positionInstance(int floor, long timestamp) {
-        return new IndoorPosition(x[X_POSITION_IN_VECTOR], x[Y_POSITION_IN_VECTOR], floor, timestamp);
+        return mP;
     }
 }
