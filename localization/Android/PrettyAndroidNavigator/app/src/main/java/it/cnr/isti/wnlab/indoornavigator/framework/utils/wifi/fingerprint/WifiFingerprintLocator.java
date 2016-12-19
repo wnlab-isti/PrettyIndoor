@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util.wifi.fingerprint;
+package it.cnr.isti.wnlab.indoornavigator.framework.utils.wifi.fingerprint;
 
 import android.util.Log;
 
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 

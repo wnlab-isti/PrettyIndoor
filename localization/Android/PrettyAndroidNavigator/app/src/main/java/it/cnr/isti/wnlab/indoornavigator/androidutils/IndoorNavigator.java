@@ -15,14 +15,12 @@ import it.cnr.isti.wnlab.indoornavigator.android.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.Compass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.LawitzkiCompass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.RelativeCompass;
-import it.cnr.isti.wnlab.indoornavigator.androidutils.compass.SimpleGyroCompass;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.FasterStepDetector;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.StepDetector;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.wifi.WifiScanner;
-import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.LocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.framework.Observer;
@@ -32,10 +30,10 @@ import it.cnr.isti.wnlab.indoornavigator.framework.types.Heading;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.WifiFingerprint;
-import it.cnr.isti.wnlab.indoornavigator.framework.util.geomagnetic.mm.MagneticMismatchLocator;
-import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.FixedLengthPDR;
-import it.cnr.isti.wnlab.indoornavigator.framework.util.strategy.KFUleeStrategy;
-import it.cnr.isti.wnlab.indoornavigator.framework.util.wifi.fingerprint.WifiFingerprintLocator;
+import it.cnr.isti.wnlab.indoornavigator.framework.utils.geomagnetic.mm.MagneticMismatchLocator;
+import it.cnr.isti.wnlab.indoornavigator.framework.utils.intertial.pdr.FixedLengthPDR;
+import it.cnr.isti.wnlab.indoornavigator.framework.utils.strategy.KFUleeStrategy;
+import it.cnr.isti.wnlab.indoornavigator.framework.utils.wifi.fingerprint.WifiFingerprintLocator;
 
 /**
  * IndoorNavigator object for the user.
@@ -47,6 +45,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
     private Observer<IndoorPosition> mUpdater;
 
     private static final int WIFI_FINGERPRINT_THRESHOLD = Integer.MAX_VALUE;
+    private static final int MM_KNN = 10;
     private static final float MM_THRESHOLD = 10.f;
 
     private boolean started = false;
@@ -222,7 +221,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
          */
         public IndoorNavigator create() {
             // Check if there's everything
-            if(mSources != null && mUpdater != null) {
+            if(mSources != null && mUpdater != null && mInitialPosition != null) {
 
                 // Scan available sources
                 AccelerometerHandler acc = null;
@@ -259,8 +258,10 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                     // Build locator instance
                     wifiLoc = WifiFingerprintLocator.makeInstance(
                             mWifiFingerprintMap, 0, WIFI_FINGERPRINT_THRESHOLD);
+
                     // Register locator to wifi emitter
                     wifi.register(wifiLoc);
+
                     // Register logger to wifi location
                     if(mWifiFingerprintPositionLogger != null)
                         wifiLoc.register(mWifiFingerprintPositionLogger);
@@ -271,7 +272,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                 if (mag != null && mMagneticFingerprintMap != null) {
                     // Build locator instance
                     mm = MagneticMismatchLocator.makeInstance(
-                            mMagneticFingerprintMap, 0, MM_THRESHOLD);
+                            mMagneticFingerprintMap, 0, MM_KNN, MM_THRESHOLD);
                     // Register locator to magnetic emitter
                     mag.register(mm);
                     // Register logger to mm location
@@ -317,6 +318,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                     FixedLengthPDR pdr = new FixedLengthPDR(heading,sd,0.f);
 
                     // Pseudo-You Li strategy with KF
+                    Log.d("BUILDER", "Initial position is " + mInitialPosition);
                     mStrategy = new KFUleeStrategy(
                             mInitialPosition,
                             pdr,

@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.framework.util.geomagnetic.mm;
+package it.cnr.isti.wnlab.indoornavigator.framework.utils.geomagnetic.mm;
 
 import android.util.Log;
 
@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigator.framework.DataObserver;
@@ -15,6 +16,7 @@ import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.LocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.framework.XYPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.types.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.framework.utils.Utils;
 
 public class MagneticMismatchLocator extends LocationStrategy implements DataObserver<MagneticField> {
 
@@ -27,8 +29,13 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
     // Selected floor. Note it's constant, so it's needed one WifiFingerprintLocator per floor
     private int mFloor;
 
+    // Limit for K-NN
+    private int mK;
+    private boolean isKnn = false;
+
     // Maximum threshold for distance: if position's row distance is over this, it isn't accepted
     private float mThreshold;
+    private boolean isThreshold = false;
 
     /**
      * Custom position subtype.
@@ -44,16 +51,26 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
         }
     }
 
-    /**
-     * @param positions Positions list (rows).
-     * @param values Measured magnetic field values.
-     * @param floor Floor this localizer refers to.
-     */
-    private MagneticMismatchLocator(XYPosition[] positions, MagneticField[] values, int floor, float threshold) {
+    private MagneticMismatchLocator(XYPosition[] positions, MagneticField[] values, int floor, int knnLimit, float threshold) {
+        initialize(positions, values, floor);
+        initKNN(knnLimit);
+        initThreshold(threshold);
+    }
+
+    private void initialize(XYPosition[] positions, MagneticField[] values, int floor) {
         mAllPositions = positions;
         mValues = values;
         mFloor = floor;
+    }
+
+    private void initKNN(int knnLimit) {
+        mK = knnLimit;
+        isKnn = true;
+    }
+
+    private void initThreshold(float threshold) {
         mThreshold = threshold;
+        isThreshold = true;
     }
 
     @Override
@@ -66,54 +83,62 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
     /**
      * Calculate minimum euclidean distanced row in matrix and find position.
      * @param mf Magnetic field just measured.
-     * @return An average position between the all ones found or null if no one has been found.
+     * @return An average position between all K (if minor than infinity) positions which are
+     * euclidean distanced less than the threshold (if any).
      */
     private MMFingerprintPosition localize(MagneticField mf) {
-        // All positions which are delta-distanced less than the threshold
+        // All K (if minor than infinity) positions which are euclidean distanced less than the threshold (if any).
         List<XYPosition> positions = new ArrayList<>();
+        List<Float> distances = new ArrayList<>();
 
         // Find positions
-        for(int i = 0; i < mAllPositions.length; i++) {
+        for (int i = 0; i < mAllPositions.length; i++) {
             MagneticField v = mValues[i];
-            float delta = 0.f;
-
-            // Check x
-            float diff = v.x - mf.x;
-            delta += diff*diff;
-
-            // Then check y (conditionally)
-            if(delta < mThreshold) {
-                diff = v.y - mf.y;
-                delta += diff*diff;
-
-                // Then check z (conditionally)
-                if(delta < mThreshold) {
-                    diff = v.z - mf.z;
-                    delta += diff*diff;
-
-                    // If x^2+y^2+z^2 < minDelta, update minDelta and position
-                    if(delta < mThreshold) {
-//                        Log.i("MM", "delta X+Y+Z is " + delta + ", adding position");
-                        positions.add(mAllPositions[i]);
-                    }
-                }
+            float euclideanDistance = -1;
+            if (!isThreshold || (euclideanDistance = checkThreshold(v, mf)) != -1) {
+                // Save position if there's no threshold or it is in a valid distance
+                positions.add(mAllPositions[i]);
+                // If K-NN is active, save euclidean distance
+                if(isKnn)
+                    distances.add(euclideanDistance);
             }
         }
 
         // Calculate average between found positions
-        if(!positions.isEmpty()) {
-            float[] newXY = {0.f, 0.f};
-            for (XYPosition p : positions) {
-                newXY[0] += p.x;
-                newXY[1] += p.y;
-            }
-            newXY[0] /= positions.size();
-            newXY[1] /= positions.size();
-
+        if (!positions.isEmpty()) {
+            if(isKnn)
+                positions = Utils.knn(positions,distances,mK);
             // If positions have been found, return an average one
-            return new MMFingerprintPosition(new XYPosition(newXY[0], newXY[1]), mFloor, mf.timestamp);
+            return new MMFingerprintPosition(Utils.averagePosition(positions), mFloor, mf.timestamp);
         } else
             return null;
+    }
+
+    private float checkThreshold(MagneticField v1, MagneticField v2) {
+            float delta = 0.f;
+
+            // Check x
+            float diff = v1.x - v2.x;
+            delta += diff * diff;
+
+            // Then check y (conditionally)
+            if (delta < mThreshold || !isThreshold) {
+                diff = v1.y - v2.y;
+                delta += diff * diff;
+
+                // Then check z (conditionally)
+                if (delta < mThreshold || !isThreshold) {
+                    diff = v1.z - v2.z;
+                    delta += diff * diff;
+
+                    // If x^2+y^2+z^2 < minDelta, OK!
+                    if (delta < mThreshold || !isThreshold) {
+                        return delta;
+                    }
+                }
+        }
+
+        return -1.f;
     }
 
     /**
@@ -128,7 +153,11 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
      *
      * @return A ready-to-use Magnetic Mismatch locator. Null if an error occurs.
      */
-    public static MagneticMismatchLocator makeInstance(File tsvWellFormattedRSSI, int floor, float threshold) {
+    public static MagneticMismatchLocator makeInstance(
+            File tsvWellFormattedRSSI,
+            int floor,
+            int knnLimit,
+            float threshold) {
 
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tsvWellFormattedRSSI)))) {
 
@@ -145,7 +174,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
             // Return the ready-to-use MM locator
             XYPosition[] positionArray = positions.toArray(new XYPosition[positions.size()]);
             MagneticField[] valuesArray = values.toArray(new MagneticField[values.size()]);
-            return new MagneticMismatchLocator(positionArray, valuesArray, floor, threshold);
+            return new MagneticMismatchLocator(positionArray, valuesArray, floor, knnLimit, threshold);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,7 +1,6 @@
 TODO (a breve)
 M
 - Correggere direzione (la bussola ora cambia verso, ma la x è al contrario)
-- Implementare KF Update
 - Tante misurazioni e prove
 - Rendere SD un po' meno sensibile (magari provando il path con il tester di SD. Provarlo anche con il tester bussola?)
 S
@@ -10,5 +9,3 @@ S
 - Architettura Android (service...)
 C
 - Sistemare GUI
-
-!!!LUNEDì PUNTO DELLA SITUAZIONE!!!

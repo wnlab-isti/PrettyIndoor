@@ -9,5 +9,5 @@ public interface PositionFilter2D extends Filter {
      * @param timestamp Timestamp is not stored by default in filter instance.
      * @return Up-to-date IndoorPosition object.
      */
-    IndoorPosition positionInstance(int floor, long timestamp);
+    IndoorPosition getPosition(int floor, long timestamp);
 }

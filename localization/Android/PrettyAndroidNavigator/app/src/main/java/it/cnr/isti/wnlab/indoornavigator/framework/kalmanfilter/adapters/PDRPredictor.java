@@ -1,43 +1,21 @@
 package it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.adapters;
 
-import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IndoorKalmanFilter;
+import android.util.Log;
+
 import it.cnr.isti.wnlab.indoornavigator.framework.kalmanfilter.IKalmanFilter;
-import it.cnr.isti.wnlab.indoornavigator.framework.util.intertial.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigator.framework.utils.intertial.pdr.PDR;
 
 /**
  * Kalman Filter wrapper for prediction with PDR.
- * Adapts PDR's (dN,dE) to a prediction matrix for KF and triggers prediction.
+ * Adapts PDR's (dN, dE) to a prediction matrix for KF and triggers prediction.
  */
 public class PDRPredictor extends KalmanFilterPredictor {
 
-    public PDRPredictor(IKalmanFilter filter) {
+    private final float stepLength;
+
+    public PDRPredictor(IKalmanFilter filter, float stepLength) {
         super(filter);
-    }
-
-    @Override
-    protected float[][] initA() {
-        int n = IndoorKalmanFilter.N;
-        float[][] mA = new float[n][n];
-
-        // Initialize A
-        for(int i = 0; i < n; i++)
-            for(int j = 0; j < n; j++)
-                mA[i][j] = (i == j ? 1.f : 0.f);
-
-        return mA;
-    }
-
-    @Override
-    protected float[][] initQ() {
-        int n = IndoorKalmanFilter.N;
-        float[][] mQ = new float[n][n];
-
-        // Initialize Q as zero matrix
-        for(int i = 0; i < n; i++)
-            for(int j = 0; j < n; j++)
-                mQ[i][j] = 0.f;
-
-        return mQ;
+        this.stepLength = stepLength;
     }
 
     /**
@@ -45,15 +23,13 @@ public class PDRPredictor extends KalmanFilterPredictor {
      */
     public void predict(PDR.Result result) {
         float heading = result.heading;
-        float sinH = (float) Math.sin(heading);
-        float cosH = (float) Math.cos(heading);
-
-        // Transformation matrix: composed stepLength translation and heading rotation
-        mA[0][2] = result.dN; mA[0][3] = cosH;
-        mA[1][2] = result.dE; mA[1][3] = sinH;
+        float dN = stepLength * (float) Math.sin(heading);
+        float dE = stepLength * (float) Math.cos(heading);
 
         // Filter's prediction
-        filter.predict(mA,mQ);
+        float[] u = {dE, dN, 0.f, 0.f}; // [dx, dy, 0, 0]
+        filter.predict(u);
+        Log.d("PDR", "Prediction! N" + dN + " E" + dE);
     }
 
 }
