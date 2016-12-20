@@ -40,7 +40,6 @@ public class StepLoggerObserver implements Observer<IndoorPosition>, Closeable {
             try {
                 mWriter.write(data + "\n");
                 mWriter.flush();
-                Log.d("FAKESTEPLOGGER",data.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -51,8 +51,6 @@ public class LocationStrategyUpdater extends KalmanFilterUpdater {
      * Remove all saved positions.
      */
     public void clearPositions() {
-        Log.d("LSU", "Clear called");
-
         for(int i = 0; i < mPositions.length; i++)
             mPositions[i] = null;
         mPositionCount = 0;
@@ -63,7 +61,6 @@ public class LocationStrategyUpdater extends KalmanFilterUpdater {
      * @param position Found position.
      */
     private void savePosition(int i, XYPosition position) {
-        Log.d("LSU", "Saving from " + i + " position: " + position.x + "," + position.y);
         // Set the received position
         if(mPositions[i] == null)
             mPositionCount++;
@@ -94,8 +91,8 @@ public class LocationStrategyUpdater extends KalmanFilterUpdater {
             float dy = currentPosition.y - p.y;
             // If distance is minor, replace nearest position
             if( ((dx*dx)+(dy*dy)) < ((z[0]*z[0])+(z[1]*z[1])) ) {
-                z[0] = Math.abs(dx);
-                z[1] = Math.abs(dy);
+                z[0] = dx;
+                z[1] = dy;
             }
         }
 

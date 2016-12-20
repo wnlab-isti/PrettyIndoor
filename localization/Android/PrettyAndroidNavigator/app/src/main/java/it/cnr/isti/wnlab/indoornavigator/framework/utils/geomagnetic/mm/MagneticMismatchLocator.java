@@ -65,11 +65,13 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
 
     private void initKNN(int knnLimit) {
         mK = knnLimit;
-        isKnn = true;
+        //isKnn = true;
+        isKnn = false;
     }
 
     private void initThreshold(float threshold) {
-        mThreshold = threshold;
+        //mThreshold = threshold;
+        mThreshold = Float.MAX_VALUE;
         isThreshold = true;
     }
 
@@ -88,30 +90,43 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
      */
     private MMFingerprintPosition localize(MagneticField mf) {
         // All K (if minor than infinity) positions which are euclidean distanced less than the threshold (if any).
-        List<XYPosition> positions = new ArrayList<>();
-        List<Float> distances = new ArrayList<>();
+        //List<XYPosition> positions = new ArrayList<>();
+        //List<Float> distances = new ArrayList<>();
+        float bestDistance = Float.MAX_VALUE;
+        XYPosition position = null;
 
         // Find positions
         for (int i = 0; i < mAllPositions.length; i++) {
             MagneticField v = mValues[i];
             float euclideanDistance = -1;
-            if (!isThreshold || (euclideanDistance = checkThreshold(v, mf)) != -1) {
+            if (!isThreshold || (euclideanDistance = checkThreshold(v, mf)) >= 0) {
+                if(euclideanDistance < bestDistance) {
+                    position = mAllPositions[i];
+                    bestDistance = euclideanDistance;
+                    Log.d("MM", "NEW! " + mAllPositions[i]);
+                }
                 // Save position if there's no threshold or it is in a valid distance
-                positions.add(mAllPositions[i]);
+                //positions.add(mAllPositions[i]);
+
                 // If K-NN is active, save euclidean distance
-                if(isKnn)
-                    distances.add(euclideanDistance);
+                //if(isKnn)
+                    //distances.add(euclideanDistance);
             }
         }
 
+        return new MMFingerprintPosition(position, mFloor, mf.timestamp);
+
         // Calculate average between found positions
-        if (!positions.isEmpty()) {
-            if(isKnn)
-                positions = Utils.knn(positions,distances,mK);
+/*        if (!positions.isEmpty()) {
+            Log.d("MM", "Positions is not empty");
+            XYPosition pos = Utils.averagePosition(positions);
+            Log.d("MM", "Average pos is " + pos);
+//            if(isKnn)
+//                positions = Utils.knn(positions,distances,mK);
             // If positions have been found, return an average one
-            return new MMFingerprintPosition(Utils.averagePosition(positions), mFloor, mf.timestamp);
+            return new MMFingerprintPosition(pos, mFloor, mf.timestamp);
         } else
-            return null;
+            return null;*/
     }
 
     private float checkThreshold(MagneticField v1, MagneticField v2) {
@@ -120,12 +135,12 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
             // Check x
             float diff = v1.x - v2.x;
             delta += diff * diff;
-
+            Log.d("MM","X");
             // Then check y (conditionally)
             if (delta < mThreshold || !isThreshold) {
                 diff = v1.y - v2.y;
                 delta += diff * diff;
-
+                Log.d("MM","Y");
                 // Then check z (conditionally)
                 if (delta < mThreshold || !isThreshold) {
                     diff = v1.z - v2.z;
@@ -133,6 +148,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
 
                     // If x^2+y^2+z^2 < minDelta, OK!
                     if (delta < mThreshold || !isThreshold) {
+                        Log.d("MM","Z");
                         return delta;
                     }
                 }
