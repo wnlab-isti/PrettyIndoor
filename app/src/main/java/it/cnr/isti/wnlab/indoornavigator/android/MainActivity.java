@@ -102,9 +102,6 @@ public class MainActivity extends AppCompatActivity implements
         (new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name)))
                 .mkdirs();
 
-        // Initialize output observer
-        mStepLoggerObserver = new StepLoggerObserver(mInitialPosition);
-
         // Initialize sensors and handlers
         SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         ah = new AccelerometerHandler(manager, SensorManager.SENSOR_DELAY_FASTEST);
@@ -254,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements
                     mNav.stop();
                     mNav = null;
                     resetSwitches();
+                    closeWriters();
                     ((Button) view).setText("START");
                 }
                 break;
@@ -316,7 +314,8 @@ public class MainActivity extends AppCompatActivity implements
         // Set sources
         builder.setSources(sources);
 
-        // Set updater
+        // Initialize output observer
+        mStepLoggerObserver = new StepLoggerObserver(mInitialPosition);
         builder.setPositionObserver(mStepLoggerObserver);
 
         // If checked, initialize data log
@@ -347,7 +346,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onStop() {
         super.onStop();
+        closeWriters();
+    }
 
+    private void closeWriters() {
         if(mLogWriter != null)
             try {
                 mLogWriter.close();

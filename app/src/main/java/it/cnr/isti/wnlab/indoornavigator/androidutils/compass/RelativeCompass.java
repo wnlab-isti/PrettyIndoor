@@ -36,6 +36,7 @@ public class RelativeCompass extends LawitzkiCompass {
     @Override
     protected void onHeadingChange(float newHeading, long timestamp) {
         if(calibration) {
+            Log.d("COMPASSCAL", "heading: " + counter);
             // Check if newHeading is legal for counting (belongs to [H-1; H+1])
             if(lastCalibrationHeading < (newHeading - TOLERANCE) || lastCalibrationHeading > (newHeading + TOLERANCE)) {
                 // Reset counter
@@ -45,13 +46,9 @@ public class RelativeCompass extends LawitzkiCompass {
             } else
                 counter++;
 
-            Log.d("RELCOMPASS", "Counter: " + counter + ", heading: " + newHeading);
-
             // Calibrate until calibration count max is reached
-            if(counter == CALIBRATION_COUNTER_MAX) {
+            if(counter == CALIBRATION_COUNTER_MAX)
                 calibration = false;
-                Log.d("RELCOMPASS", "lastCalibrationHeading = " + lastCalibrationHeading);
-            }
         } else {
             // If not calibrating, update heading with correction
             float correctHeading = newHeading-lastCalibrationHeading;

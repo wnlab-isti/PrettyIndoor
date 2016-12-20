@@ -70,20 +70,20 @@ public class KFUleeStrategy extends LocationStrategy {
     }
 
     /**
-     * You Li-like Kalman Filter initialization.
+     * You Li-like Kalman Filter matrices initialization.
      * @param startPosition Position where the user starts from.
      * @return A ready-to-use KF object for indoor localization.
      */
     private IndoorKalmanFilter initKF(IndoorPosition startPosition) {
         // Initial state vector
-        double[] x0 = {startPosition.x, startPosition.y, 1, 1};
+        double[] x0 = {startPosition.x, startPosition.y, 0, 0};
 
         // Initial error covariance matrix
         double[][] mP0 = {
-                {INI_POS_VAR*INI_POS_VAR, 0, 0, 0},
-                {0, INI_POS_VAR*INI_POS_VAR, 0, 0},
-                {0, 0, INI_HEAD_VAR*INI_HEAD_VAR, 0},
-                {0, 0, 0, STEP_LENGTH*STEP_LENGTH}
+                {/*INI_POS_VAR*/1, 0, 0, 0},
+                {0, /*INI_POS_VAR*/1, 0, 0},
+                {0, 0, /*INI_HEAD_VAR*/1, 0},
+                {0, 0, 0, /*STEP_LENGTH*/1}
         };
 
         // State transition matrix
@@ -104,10 +104,10 @@ public class KFUleeStrategy extends LocationStrategy {
 
         // Process noise covariance matrix
         double[][] mQ = {
-                {POS_PHASE*POS_PHASE, 0, 0, 0},
-                {0, POS_PHASE*POS_PHASE, 0, 0},
-                {0, 0, HEAD_PHASE*HEAD_PHASE, 0},
-                {0, 0, 0, STEP_LENGTH*STEP_LENGTH}
+                {/*POS_PHASE*/1, 0, 0, 0},
+                {0, /*POS_PHASE*/1, 0, 0},
+                {0, 0, /*HEAD_PHASE*/1, 0},
+                {0, 0, 0, /*STEP_LENGTH*/1}
         };
 
         // Measurement matrix

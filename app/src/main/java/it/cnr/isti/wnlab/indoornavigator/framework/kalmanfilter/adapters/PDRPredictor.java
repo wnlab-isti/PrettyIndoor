@@ -29,7 +29,6 @@ public class PDRPredictor extends KalmanFilterPredictor {
         // Filter's prediction
         float[] u = {dE, dN, 0.f, 0.f}; // [dx, dy, 0, 0]
         filter.predict(u);
-        Log.d("PDR", "Prediction! N" + dN + " E" + dE);
     }
 
 }

@@ -44,10 +44,6 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
     private LocationStrategy mStrategy;
     private Observer<IndoorPosition> mUpdater;
 
-    private static final int WIFI_FINGERPRINT_THRESHOLD = Integer.MAX_VALUE;
-    private static final int MM_KNN = 10;
-    private static final float MM_THRESHOLD = 10.f;
-
     private boolean started = false;
 
     protected IndoorNavigator(List<StartableStoppable> sources) {
@@ -114,6 +110,9 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
      */
     public static class Builder {
 
+        // IndoorNavigator that will be made by this builder
+        private IndoorNavigator nav;
+
         // Sources which send data to the whole thing
         private List<StartableStoppable> mSources;
 
@@ -139,6 +138,11 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
         // Members for output communication
         private boolean builderIsSocial;
         private WeakReference<Context> context;
+
+        // Threshold constants
+        private static final int WIFI_FINGERPRINT_THRESHOLD = Integer.MAX_VALUE;
+        private static final int MM_KNN = 10;
+        private static final float MM_THRESHOLD = 10.f;
 
         /**
          * A silent IndoorNavigator factory object.
@@ -298,12 +302,16 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                             @Override
                             public void notify(Heading data) {
                                 if(!done) {
+                                    Log.d("COMPASSCAL","HEADING!");
                                     Context c;
                                     if ((c = context.get()) != null)
                                         Toast.makeText(c,
                                                 c.getString(R.string.compass_calibration_end),
                                                 Toast.LENGTH_SHORT)
                                                 .show();
+                                    // Start navigator after compass calibration
+                                    nav.start();
+                                    // Do this only at first heading data received
                                     done = true;
                                 }
                             }
@@ -336,7 +344,12 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                 }
 
                 // Initialize IndoorNavigator instance
-                IndoorNavigator nav = new IndoorNavigator(mSources);
+                nav = new IndoorNavigator(mSources);
+                if(gyro != null && mStrategy != wifiLoc && mStrategy != mm) {
+                    nav.stop();
+                    gyro.start();
+                } else
+                    nav.start();
 
                 // Set strategy
                 nav.setStrategy(mStrategy);
