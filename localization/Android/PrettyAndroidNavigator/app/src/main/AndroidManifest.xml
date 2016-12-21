@@ -43,7 +43,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".android.MagneticCalibrationActivity">
+        <activity android:name=".android.fingerprint.geomagnetic.GeomagneticFingerprintActivity"
+            android:icon="@android:drawable/btn_radio"
+            android:label="Magnetic Fingerprint Acquisition">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
