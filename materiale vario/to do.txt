@@ -1,11 +1,14 @@
-TODO (a breve)
-M
-- Correggere direzione (la bussola ora cambia verso, ma la x è al contrario)
-- Tante misurazioni e prove
-- Rendere SD un po' meno sensibile (magari provando il path con il tester di SD. Provarlo anche con il tester bussola?)
-S
-- Plottaggio punti in qualche modo per farlo comodo
-- Separation of concerns tra builder e activity/GUI
-- Architettura Android (service...)
-C
-- Sistemare GUI
+TODO
+gio12, ven13
+
+-> riletto fino a IndoorNavigator
+-> IndoorNavigator deve diventare interfaccia, AndroidIndoorNavigator l'implementazione attuale
+-> continuare a leggere, ma penso che non ci sarà nessun'altro refactoring massiccio...
+
+- capire Step Detection (implementazione)
+- app fingerprint wifi
+- k-nn
+
+ven sab dom: studiare PF, implementare
+gio ven sab dom: test, debug, concludere, misurazioni, iniziare a scrivere
+se non tutto, dipende dall'esame di reti).

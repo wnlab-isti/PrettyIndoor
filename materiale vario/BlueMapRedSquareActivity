@@ -26,7 +26,7 @@ import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.FasterStepDe
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.sensorhandlers.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigator.androidutils.stepdetection.StepDetector;
-import it.cnr.isti.wnlab.indoornavigator.framework.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.framework.PositionUpdateCallback;
 import it.cnr.isti.wnlab.indoornavigator.framework.util.strategy.KFUleeStrategy;
 

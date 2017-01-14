@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".android.MainActivity">
+        <activity android:name=".androidapp.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".android.CompassActivity"
+            android:name=".androidapp.CompassActivity"
             android:icon="@android:drawable/ic_menu_compass"
             android:label="Compass"
             android:theme="@style/AppTheme">
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".android.StepDetectionActivity"
+            android:name=".androidapp.StepDetectionActivity"
             android:icon="@android:drawable/ic_input_get"
             android:label="Step Detection"
             android:theme="@style/AppTheme">
@@ -43,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".android.fingerprint.geomagnetic.GeomagneticFingerprintActivity"
+        <activity android:name=".androidapp.fingerprint.geomagnetic.GeomagneticFingerprintActivity"
             android:icon="@android:drawable/btn_radio"
             android:label="Magnetic Fingerprint Acquisition">
             <intent-filter>
