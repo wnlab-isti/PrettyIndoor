@@ -2,6 +2,7 @@ TODO
 -> fare utils
 -> implementare PF
 
+- "define north" un po' più carino sulla RelativeCompass con Future<>
 - capire Step Detection (implementazione)
 - app fingerprint wifi
 - k-nn
