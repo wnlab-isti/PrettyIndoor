@@ -111,7 +111,7 @@ public class CompassActivity extends AppCompatActivity {
             }
         });*/
         // Lawitzi relative compass
-        Compass compass = new RelativeCompass(ah, gh, mh, LawitzkiCompass.RATE);
+        Compass compass = new RelativeCompass(ah, gh, mh, LawitzkiCompass.DEFAULT_RATE);
         compass.register(new Observer<Heading>() {
             @Override
             public void notify(Heading newHeading) {
