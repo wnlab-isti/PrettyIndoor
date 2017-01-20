@@ -26,7 +26,7 @@ import it.cnr.isti.wnlab.indoornavigator.androidapp.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigator.observers.Observer;
 import it.cnr.isti.wnlab.indoornavigator.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigator.types.Heading;
-import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.environmental.MagneticField;
 import it.cnr.isti.wnlab.indoornavigator.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigator.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigator.types.wifi.WifiFingerprint;

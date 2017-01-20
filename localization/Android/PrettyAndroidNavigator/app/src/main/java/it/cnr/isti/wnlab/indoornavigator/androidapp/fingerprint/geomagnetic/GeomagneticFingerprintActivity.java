@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import it.cnr.isti.wnlab.indoornavigator.R;
 import it.cnr.isti.wnlab.indoornavigator.android.handlers.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigator.observers.DataObserver;
-import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.environmental.MagneticField;
 
 public class GeomagneticFingerprintActivity extends AppCompatActivity implements View.OnClickListener {
 

@@ -6,18 +6,17 @@ import it.cnr.isti.wnlab.indoornavigator.emitters.Emitter;
 import it.cnr.isti.wnlab.indoornavigator.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigator.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigator.types.Heading;
-import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.environmental.MagneticField;
 
 /**
- * Calculates an initial direction to refer to as the North.
+ * FOR THE NORTH! (Elaborates an initial direction to refer to as the North.)
  */
-
 public class RelativeCompass extends LawitzkiCompass {
 
     // Constants
     private final static float ONE_DEGREE_IN_RADIANTS = (float) Math.toRadians(1.f);
     private final static float TOLERANCE = 10.f * ONE_DEGREE_IN_RADIANTS;
-    private final static int CALIBRATION_COUNTER_MAX = 100;
+    private final static int CALIBRATION_COUNTER_MAX = 80;
 
     // Variables for calibration
     private boolean calibration = true;
@@ -55,4 +54,6 @@ public class RelativeCompass extends LawitzkiCompass {
             notifyObservers(new Heading(correctHeading,timestamp));
         }
     }
+
+
 }

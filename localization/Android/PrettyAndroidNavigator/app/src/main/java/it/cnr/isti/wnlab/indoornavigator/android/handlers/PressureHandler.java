@@ -5,7 +5,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
 import it.cnr.isti.wnlab.indoornavigator.observers.DataObserver;
-import it.cnr.isti.wnlab.indoornavigator.types.environment.Pressure;
+import it.cnr.isti.wnlab.indoornavigator.types.environmental.Pressure;
 
 /**
  * Handler for Android's pressure events.

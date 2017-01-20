@@ -13,7 +13,7 @@ import it.cnr.isti.wnlab.indoornavigator.observers.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.AbstractLocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.XYPosition;
-import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.environmental.MagneticField;
 
 public class KnnMagneticMismatch
         extends AbstractLocationStrategy

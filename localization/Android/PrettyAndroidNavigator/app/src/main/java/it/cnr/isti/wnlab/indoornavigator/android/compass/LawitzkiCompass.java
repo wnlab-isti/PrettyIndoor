@@ -11,7 +11,7 @@ import it.cnr.isti.wnlab.indoornavigator.emitters.Emitter;
 import it.cnr.isti.wnlab.indoornavigator.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigator.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigator.types.Heading;
-import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.environmental.MagneticField;
 
 /**
  * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/
@@ -20,10 +20,10 @@ import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
 public class LawitzkiCompass extends Compass {
 
     // Initial delay
-    private final static int INITIAL_DELAY = 0;
+    public final static int INITIAL_DELAY = 0;
 
     // Default rate
-    private final static int DEFAULT_RATE = 60;
+    public final static int DEFAULT_RATE = 60;
 
     // Compass configuration
     private final int mRate;

@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.types.environment;
+package it.cnr.isti.wnlab.indoornavigator.types.environmental;
 
 import it.cnr.isti.wnlab.indoornavigator.types.DecomposedSensorData;
 
