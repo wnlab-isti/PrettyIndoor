@@ -1,10 +1,12 @@
-package it.cnr.isti.wnlab.indoornavigator.types;
+package it.cnr.isti.wnlab.indoornavigator.types.environment;
+
+import it.cnr.isti.wnlab.indoornavigator.types.DecomposedSensorData;
 
 /**
  * μT
  */
 
-public class MagneticField extends XYZData {
+public class MagneticField extends DecomposedSensorData {
     public MagneticField(float x, float y, float z, float accuracy, long timestamp) {
         super(x, y, z, accuracy, timestamp);
     }

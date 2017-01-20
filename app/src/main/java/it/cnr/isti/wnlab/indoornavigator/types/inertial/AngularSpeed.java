@@ -1,10 +1,12 @@
-package it.cnr.isti.wnlab.indoornavigator.types;
+package it.cnr.isti.wnlab.indoornavigator.types.inertial;
+
+import it.cnr.isti.wnlab.indoornavigator.types.DecomposedSensorData;
 
 /**
  * rad/s
  */
 
-public class AngularSpeed extends XYZData {
+public class AngularSpeed extends DecomposedSensorData {
 
     public AngularSpeed(float x, float y, float z, float accuracy, long timestamp) {
         super(x, y, z, accuracy, timestamp);

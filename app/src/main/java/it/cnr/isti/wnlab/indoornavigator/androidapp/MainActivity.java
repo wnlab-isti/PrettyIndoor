@@ -24,10 +24,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 import it.cnr.isti.wnlab.indoornavigator.R;
-import it.cnr.isti.wnlab.indoornavigator.android.IndoorNavigator;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.AccelerometerHandler;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.GyroscopeHandler;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigator.IndoorNavigator;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.AccelerometerHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.GyroscopeHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigator.android.wifi.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigator.StartableStoppable;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
         View.OnClickListener {
 
-    // IndoorNavigator instance
+    // AndroidIndoorNavigator instance
     private IndoorNavigator mNav;
     private float INITIAL_X = 19.5f;
     private float INITIAL_Y = 5.7f;

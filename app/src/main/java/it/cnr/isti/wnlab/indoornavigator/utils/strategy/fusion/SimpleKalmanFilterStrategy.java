@@ -1,19 +1,19 @@
-package it.cnr.isti.wnlab.indoornavigator.utils.strategy;
+package it.cnr.isti.wnlab.indoornavigator.utils.strategy.fusion;
 
 import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigator.LocationStrategy;
+import it.cnr.isti.wnlab.indoornavigator.AbstractLocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.observers.Observer;
 import it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.IndoorKalmanFilter;
 import it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.adapters.LocationStrategyUpdater;
 import it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.adapters.PDRPredictor;
-import it.cnr.isti.wnlab.indoornavigator.utils.geomagnetic.mm.MagneticMismatchLocator;
+import it.cnr.isti.wnlab.indoornavigator.utils.strategy.geomagnetic.KnnMagneticMismatch;
 import it.cnr.isti.wnlab.indoornavigator.utils.intertial.pdr.PDR;
-import it.cnr.isti.wnlab.indoornavigator.utils.wifi.fingerprint.WifiFingerprintLocator;
+import it.cnr.isti.wnlab.indoornavigator.utils.strategy.wifi.KnnWifiFingerprint;
 
 /**
  * Implementation of strategy used by You Li.
  */
-public class KFUleeStrategy extends LocationStrategy {
+public class SimpleKalmanFilterStrategy extends AbstractLocationStrategy {
 
     private final static float STEP_LENGTH = 0.5f;
 
@@ -29,11 +29,11 @@ public class KFUleeStrategy extends LocationStrategy {
     private int mStepCount;
     private static final int STEP_LIMIT = 3;
 
-    public KFUleeStrategy(
+    public SimpleKalmanFilterStrategy(
             IndoorPosition startPosition,
             PDR pdr,
-            WifiFingerprintLocator wifiLocator,
-            MagneticMismatchLocator mmLocator
+            KnnWifiFingerprint wifiLocator,
+            KnnMagneticMismatch mmLocator
     ) {
         // Kalman Filter implementation
         kf = initKF(startPosition);

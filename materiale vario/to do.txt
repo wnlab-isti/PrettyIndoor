@@ -1,14 +1,15 @@
 TODO
-gio12, ven13
-
--> riletto fino a IndoorNavigator
--> IndoorNavigator deve diventare interfaccia, AndroidIndoorNavigator l'implementazione attuale
--> continuare a leggere, ma penso che non ci sarà nessun'altro refactoring massiccio...
+-> fare utils
+-> implementare PF
 
 - capire Step Detection (implementazione)
 - app fingerprint wifi
 - k-nn
+- fare service
+- in qualche modo, visualizzare
 
-ven sab dom: studiare PF, implementare
-gio ven sab dom: test, debug, concludere, misurazioni, iniziare a scrivere
-se non tutto, dipende dall'esame di reti).
+- test & debug
+- validazione
+- misurazioni
+
+- tesi

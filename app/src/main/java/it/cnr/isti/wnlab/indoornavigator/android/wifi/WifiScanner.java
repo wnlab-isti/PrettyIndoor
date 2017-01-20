@@ -10,7 +10,7 @@ import java.util.TimerTask;
 
 import it.cnr.isti.wnlab.indoornavigator.emitters.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigator.StartableStoppable;
-import it.cnr.isti.wnlab.indoornavigator.types.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigator.types.wifi.WifiFingerprint;
 
 /**
  * Every mDelay milliseconds scans available access points informations and notifies subscribers.

@@ -1,10 +1,12 @@
-package it.cnr.isti.wnlab.indoornavigator.types;
+package it.cnr.isti.wnlab.indoornavigator.types.inertial;
+
+import it.cnr.isti.wnlab.indoornavigator.types.DecomposedSensorData;
 
 /**
  * m/s^2
  */
 
-public class Acceleration extends XYZData {
+public class Acceleration extends DecomposedSensorData {
     public Acceleration(float x, float y, float z, float accuracy, long timestamp) {
         super(x, y, z, accuracy, timestamp);
     }

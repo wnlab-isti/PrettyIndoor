@@ -9,36 +9,36 @@ import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import it.cnr.isti.wnlab.indoornavigator.IndoorNavigator;
+import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigator.LocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.R;
-import it.cnr.isti.wnlab.indoornavigator.androidapp.Logger;
-import it.cnr.isti.wnlab.indoornavigator.androidapp.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigator.android.compass.Compass;
-import it.cnr.isti.wnlab.indoornavigator.android.compass.LawitzkiCompass;
 import it.cnr.isti.wnlab.indoornavigator.android.compass.RelativeCompass;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.AccelerometerHandler;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.GyroscopeHandler;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.AccelerometerHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.GyroscopeHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigator.android.stepdetection.FasterStepDetector;
 import it.cnr.isti.wnlab.indoornavigator.android.stepdetection.StepDetector;
 import it.cnr.isti.wnlab.indoornavigator.android.wifi.WifiScanner;
-import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigator.LocationStrategy;
+import it.cnr.isti.wnlab.indoornavigator.androidapp.Logger;
+import it.cnr.isti.wnlab.indoornavigator.androidapp.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigator.observers.Observer;
 import it.cnr.isti.wnlab.indoornavigator.StartableStoppable;
-import it.cnr.isti.wnlab.indoornavigator.types.Acceleration;
 import it.cnr.isti.wnlab.indoornavigator.types.Heading;
-import it.cnr.isti.wnlab.indoornavigator.types.MagneticField;
-import it.cnr.isti.wnlab.indoornavigator.types.AngularSpeed;
-import it.cnr.isti.wnlab.indoornavigator.types.WifiFingerprint;
-import it.cnr.isti.wnlab.indoornavigator.utils.geomagnetic.mm.MagneticMismatchLocator;
+import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigator.types.inertial.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigator.types.wifi.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigator.utils.strategy.geomagnetic.KnnMagneticMismatch;
 import it.cnr.isti.wnlab.indoornavigator.utils.intertial.pdr.FixedLengthPDR;
-import it.cnr.isti.wnlab.indoornavigator.utils.strategy.KFUleeStrategy;
-import it.cnr.isti.wnlab.indoornavigator.utils.wifi.fingerprint.WifiFingerprintLocator;
+import it.cnr.isti.wnlab.indoornavigator.utils.strategy.fusion.SimpleKalmanFilterStrategy;
+import it.cnr.isti.wnlab.indoornavigator.utils.strategy.wifi.KnnWifiFingerprint;
 
 /**
- * IndoorNavigator object for the user.
+ * AndroidIndoorNavigator object for the user.
  */
-public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosition> {
+public class AndroidIndoorNavigator implements IndoorNavigator {
 
     private List<StartableStoppable> mSources;
     private LocationStrategy mStrategy;
@@ -46,7 +46,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
 
     private boolean started = false;
 
-    protected IndoorNavigator(List<StartableStoppable> sources) {
+    protected AndroidIndoorNavigator(List<StartableStoppable> sources) {
         mSources = sources;
     }
 
@@ -81,37 +81,38 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
 
     // NOTE: sources are immutable.
 
-    // Strategy getter and (private) setter
-    public LocationStrategy getStrategy() { return mStrategy; }
+    // Strategy setter
     private void setStrategy(LocationStrategy strategy) {
-        // Remove an older strategy, if it exists
-        if(mStrategy != null)
-            mStrategy.unregister(this);
-        // Set new strategy and register the navigator to its updates
-        mStrategy = strategy;
-        mStrategy.register(this);
+        if(strategy != null) {
+            // Remove an older strategy, if it exists
+            if (mUpdater != null) mStrategy.unregister(mUpdater);
+            // Set new strategy and register the navigator to its updates
+            mStrategy = strategy;
+            if (mUpdater != null) mStrategy.register(mUpdater);
+        }
     }
 
     // XYPosition Updater getter and setter
-    public void setPositionUpdater(Observer<IndoorPosition> updater) {
-        mUpdater = updater;
-    }
-    public Observer<IndoorPosition> getPositionUpdater() { return mUpdater; }
-
     @Override
-    public void notify(IndoorPosition strategyPosition) {
-        mUpdater.notify(strategyPosition);
+    public void setPositionUpdater(Observer<IndoorPosition> updater) {
+        if(updater != null) {
+            if (mStrategy != null) mStrategy.unregister(mUpdater);
+            mUpdater = updater;
+            if (mStrategy != null) mStrategy.register(updater);
+        }
     }
+    @Override
+    public Observer<IndoorPosition> getPositionUpdater() { return mUpdater; }
 
     /******************************************************************************************/
 
     /**
-     * Factory class for IndoorNavigator.
+     * Factory class for AndroidIndoorNavigator.
      */
     public static class Builder {
 
-        // IndoorNavigator that will be made by this builder
-        private IndoorNavigator nav;
+        // AndroidIndoorNavigator that will be made by this builder
+        private AndroidIndoorNavigator nav;
 
         // Sources which send data to the whole thing
         private List<StartableStoppable> mSources;
@@ -145,14 +146,14 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
         private static final float MM_THRESHOLD = 10.f;
 
         /**
-         * A silent IndoorNavigator factory object.
+         * A silent AndroidIndoorNavigator factory object.
          */
         public Builder() {
             builderIsSocial = false;
         }
 
         /**
-         * A communicative IndoorNavigator factory object (mainly through Toast notifications).
+         * A communicative AndroidIndoorNavigator factory object (mainly through Toast notifications).
          * @param context The context to communicate to.
          */
         public Builder(Context context) {
@@ -221,7 +222,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
         }
 
         /**
-         * @return A ready-to-use startable IndoorNavigator or null if the builder is not properly configured.
+         * @return A ready-to-use startable AndroidIndoorNavigator or null if the builder is not properly configured.
          */
         public IndoorNavigator create() {
             // Check if there's everything
@@ -257,10 +258,10 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                         "acc" + acc + ", gyro " + gyro + ", mag " + mag + ", wifi " + wifi);
 
                 // Wifi Fingerprint
-                WifiFingerprintLocator wifiLoc = null;
+                KnnWifiFingerprint wifiLoc = null;
                 if (wifi != null && mWifiFingerprintMap != null) {
                     // Build locator instance
-                    wifiLoc = WifiFingerprintLocator.makeInstance(
+                    wifiLoc = KnnWifiFingerprint.makeInstance(
                             mWifiFingerprintMap, 0, WIFI_FINGERPRINT_THRESHOLD);
 
                     // Register locator to wifi emitter
@@ -272,10 +273,10 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                 }
 
                 // Geomagnetic fingerprint
-                MagneticMismatchLocator mm = null;
+                KnnMagneticMismatch mm = null;
                 if (mag != null && mMagneticFingerprintMap != null) {
                     // Build locator instance
-                    mm = MagneticMismatchLocator.makeInstance(
+                    mm = KnnMagneticMismatch.makeInstance(
                             mMagneticFingerprintMap, 0, MM_KNN, MM_THRESHOLD);
                     // Register locator to magnetic emitter
                     mag.register(mm);
@@ -327,7 +328,7 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
 
                     // Pseudo-You Li strategy with KF
                     Log.d("BUILDER", "Initial position is " + mInitialPosition);
-                    mStrategy = new KFUleeStrategy(
+                    mStrategy = new SimpleKalmanFilterStrategy(
                             mInitialPosition,
                             pdr,
                             wifiLoc,
@@ -343,8 +344,8 @@ public class IndoorNavigator implements StartableStoppable, Observer<IndoorPosit
                     mStrategy = mm;
                 }
 
-                // Initialize IndoorNavigator instance
-                nav = new IndoorNavigator(mSources);
+                // Initialize AndroidIndoorNavigator instance
+                nav = new AndroidIndoorNavigator(mSources);
                 if(gyro != null && mStrategy != wifiLoc && mStrategy != mm) {
                     nav.stop();
                     gyro.start();

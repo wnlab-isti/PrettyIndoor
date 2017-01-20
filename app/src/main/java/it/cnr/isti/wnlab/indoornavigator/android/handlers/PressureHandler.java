@@ -1,11 +1,11 @@
-package it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers;
+package it.cnr.isti.wnlab.indoornavigator.android.handlers;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
 import it.cnr.isti.wnlab.indoornavigator.observers.DataObserver;
-import it.cnr.isti.wnlab.indoornavigator.types.Pressure;
+import it.cnr.isti.wnlab.indoornavigator.types.environment.Pressure;
 
 /**
  * Handler for Android's pressure events.

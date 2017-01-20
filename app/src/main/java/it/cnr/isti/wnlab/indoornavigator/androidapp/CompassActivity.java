@@ -16,9 +16,9 @@ import it.cnr.isti.wnlab.indoornavigator.R;
 import it.cnr.isti.wnlab.indoornavigator.android.compass.Compass;
 import it.cnr.isti.wnlab.indoornavigator.android.compass.LawitzkiCompass;
 import it.cnr.isti.wnlab.indoornavigator.android.compass.RelativeCompass;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.AccelerometerHandler;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.GyroscopeHandler;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.AccelerometerHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.GyroscopeHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigator.observers.Observer;
 import it.cnr.isti.wnlab.indoornavigator.types.Heading;
 

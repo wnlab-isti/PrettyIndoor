@@ -2,17 +2,16 @@ package it.cnr.isti.wnlab.indoornavigator.android.compass;
 
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import it.cnr.isti.wnlab.indoornavigator.observers.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.emitters.Emitter;
-import it.cnr.isti.wnlab.indoornavigator.types.Acceleration;
-import it.cnr.isti.wnlab.indoornavigator.types.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigator.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigator.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigator.types.Heading;
-import it.cnr.isti.wnlab.indoornavigator.types.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
 
 /**
  * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/

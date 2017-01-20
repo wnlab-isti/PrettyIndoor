@@ -4,7 +4,7 @@ import android.hardware.SensorManager;
 
 import it.cnr.isti.wnlab.indoornavigator.observers.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.emitters.Emitter;
-import it.cnr.isti.wnlab.indoornavigator.types.Acceleration;
+import it.cnr.isti.wnlab.indoornavigator.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigator.types.Step;
 
 
