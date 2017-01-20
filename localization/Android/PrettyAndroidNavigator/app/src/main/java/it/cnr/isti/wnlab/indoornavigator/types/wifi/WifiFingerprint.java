@@ -1,6 +1,8 @@
-package it.cnr.isti.wnlab.indoornavigator.types;
+package it.cnr.isti.wnlab.indoornavigator.types.wifi;
 
 import java.util.Iterator;
+
+import it.cnr.isti.wnlab.indoornavigator.types.RawData;
 
 /**
  * Immutable WifiFingerprint.

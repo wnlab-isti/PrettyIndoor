@@ -1,10 +1,10 @@
-package it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers;
+package it.cnr.isti.wnlab.indoornavigator.android.handlers;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
-import it.cnr.isti.wnlab.indoornavigator.types.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigator.types.inertial.AngularSpeed;
 
 /**
  * Handler for Android's gyroscope events.

@@ -1,4 +1,6 @@
-package it.cnr.isti.wnlab.indoornavigator.types;
+package it.cnr.isti.wnlab.indoornavigator.types.environment;
+
+import it.cnr.isti.wnlab.indoornavigator.types.RawSensorData;
 
 /**
  * %

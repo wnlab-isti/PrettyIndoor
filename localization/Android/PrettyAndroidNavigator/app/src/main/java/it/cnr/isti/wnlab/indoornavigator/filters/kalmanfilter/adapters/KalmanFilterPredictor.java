@@ -1,11 +1,11 @@
 package it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.adapters;
 
-import it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.IKalmanFilter;
+import it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.KalmanFilter;
 
 public abstract class KalmanFilterPredictor {
-    protected IKalmanFilter filter;
+    protected KalmanFilter filter;
 
-    protected KalmanFilterPredictor(IKalmanFilter filter) {
+    protected KalmanFilterPredictor(KalmanFilter filter) {
         this.filter = filter;
     }
 }

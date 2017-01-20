@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.utils.wifi.fingerprint;
+package it.cnr.isti.wnlab.indoornavigator.utils.strategy.wifi;
 
 import android.util.Log;
 
@@ -14,13 +14,15 @@ import java.util.HashSet;
 
 import it.cnr.isti.wnlab.indoornavigator.observers.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigator.LocationStrategy;
+import it.cnr.isti.wnlab.indoornavigator.AbstractLocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.XYPosition;
-import it.cnr.isti.wnlab.indoornavigator.types.SingleAccessPoint;
-import it.cnr.isti.wnlab.indoornavigator.types.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigator.types.wifi.SingleAccessPoint;
+import it.cnr.isti.wnlab.indoornavigator.types.wifi.WifiFingerprint;
 
 
-public class WifiFingerprintLocator extends LocationStrategy implements DataObserver<WifiFingerprint> {
+public class KnnWifiFingerprint
+        extends AbstractLocationStrategy
+        implements DataObserver<WifiFingerprint> {
 
     // Integer: BSSD code, Set: { (pos1, rss1), (pos2, rss2), ... }
     private HashMap<String, HashSet<PositionRss>> mBssdPositionRssAssociation;
@@ -34,7 +36,7 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
     // Maximum threshold for distance: if position's row distance is over this, it isn't accepted
     private int mThreshold;
 
-    // Selected floor. Note it's constant, so it's needed one WifiFingerprintLocator per floor
+    // Selected floor. Note it's constant, so it's needed one KnnWifiFingerprint per floor
     private final int FLOOR;
 
     // "No/low signal" constant
@@ -68,13 +70,13 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
     }
 
     /**
-     * WifiFingerprintLocator constructor.
+     * KnnWifiFingerprint constructor.
      *
      * @param sets For each BSSD, the positions set where BSSD can be found in.
      * @param positions Possible positions.
      * @param floor Selected floor.
      */
-    private WifiFingerprintLocator(
+    private KnnWifiFingerprint(
             HashMap<String, HashSet<PositionRss>> sets,
             XYPosition[] positions,
             int floor,
@@ -158,7 +160,7 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
      *
      * @return A ready-to-use WiFi fingerprint locator. Null if an error occurs.
      */
-    public static WifiFingerprintLocator makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
+    public static KnnWifiFingerprint makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tsvWellFormattedRSSI)))) {
             // Initialize map of (string, set of positions)
             HashMap<String, HashSet<PositionRss>> sets = new HashMap<>();
@@ -211,7 +213,7 @@ public class WifiFingerprintLocator extends LocationStrategy implements DataObse
                 Log.d("WIFILOCBUILD", setList.indexOf(set) + " has #sets = " + set.size());
 */          // ====================== DEBUG
 
-            return new WifiFingerprintLocator(sets, positionArray, floor, threshold);
+            return new KnnWifiFingerprint(sets, positionArray, floor, threshold);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ArrayIndexOutOfBoundsException e) {

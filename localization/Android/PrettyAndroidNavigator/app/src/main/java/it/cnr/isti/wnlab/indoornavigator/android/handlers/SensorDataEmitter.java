@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers;
+package it.cnr.isti.wnlab.indoornavigator.android.handlers;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

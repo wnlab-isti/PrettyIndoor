@@ -1,6 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.adapters;
 
-import it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.IKalmanFilter;
+import it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter.KalmanFilter;
 import it.cnr.isti.wnlab.indoornavigator.utils.intertial.pdr.PDR;
 
 /**
@@ -11,7 +11,7 @@ public class PDRPredictor extends KalmanFilterPredictor {
 
     private final float stepLength;
 
-    public PDRPredictor(IKalmanFilter filter, float stepLength) {
+    public PDRPredictor(KalmanFilter filter, float stepLength) {
         super(filter);
         this.stepLength = stepLength;
     }

@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator.utils.geomagnetic.mm;
+package it.cnr.isti.wnlab.indoornavigator.utils.strategy.geomagnetic;
 
 import android.util.Log;
 
@@ -11,11 +11,13 @@ import java.util.ArrayList;
 
 import it.cnr.isti.wnlab.indoornavigator.observers.DataObserver;
 import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigator.LocationStrategy;
+import it.cnr.isti.wnlab.indoornavigator.AbstractLocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.XYPosition;
-import it.cnr.isti.wnlab.indoornavigator.types.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
 
-public class MagneticMismatchLocator extends LocationStrategy implements DataObserver<MagneticField> {
+public class KnnMagneticMismatch
+        extends AbstractLocationStrategy
+        implements DataObserver<MagneticField> {
 
     // Positions (rows)
     private XYPosition[] mAllPositions;
@@ -23,7 +25,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
     // Magnetic field measured values
     private MagneticField[] mValues;
 
-    // Selected floor. Note it's constant, so it's needed one WifiFingerprintLocator per floor
+    // Selected floor. Note it's constant, so it's needed one KnnWifiFingerprint per floor
     private int mFloor;
 
     // Limit for K-NN
@@ -48,7 +50,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
         }
     }
 
-    private MagneticMismatchLocator(XYPosition[] positions, MagneticField[] values, int floor, int knnLimit, float threshold) {
+    private KnnMagneticMismatch(XYPosition[] positions, MagneticField[] values, int floor, int knnLimit, float threshold) {
         initialize(positions, values, floor);
         initKNN(knnLimit);
         initThreshold(threshold);
@@ -166,7 +168,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
      *
      * @return A ready-to-use Magnetic Mismatch locator. Null if an error occurs.
      */
-    public static MagneticMismatchLocator makeInstance(
+    public static KnnMagneticMismatch makeInstance(
             File tsvWellFormattedRSSI,
             int floor,
             int knnLimit,
@@ -187,7 +189,7 @@ public class MagneticMismatchLocator extends LocationStrategy implements DataObs
             // Return the ready-to-use MM locator
             XYPosition[] positionArray = positions.toArray(new XYPosition[positions.size()]);
             MagneticField[] valuesArray = values.toArray(new MagneticField[values.size()]);
-            return new MagneticMismatchLocator(positionArray, valuesArray, floor, knnLimit, threshold);
+            return new KnnMagneticMismatch(positionArray, valuesArray, floor, knnLimit, threshold);
 
         } catch (IOException e) {
             e.printStackTrace();

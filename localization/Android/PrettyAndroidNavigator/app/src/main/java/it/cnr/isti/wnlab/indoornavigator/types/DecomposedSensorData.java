@@ -3,12 +3,12 @@ package it.cnr.isti.wnlab.indoornavigator.types;
 /**
  * Abstract XYZ data type.
  */
-public abstract class XYZData extends RawSensorData {
+public abstract class DecomposedSensorData extends RawSensorData {
 
     public final float x, y, z;
     public final float[] array;
 
-    protected XYZData(float x, float y, float z, float accuracy, long timestamp) {
+    protected DecomposedSensorData(float x, float y, float z, float accuracy, long timestamp) {
         super(accuracy, timestamp);
         // Values
         this.x = x;

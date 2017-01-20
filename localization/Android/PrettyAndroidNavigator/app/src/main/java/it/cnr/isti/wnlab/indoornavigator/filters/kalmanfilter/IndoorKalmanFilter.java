@@ -1,6 +1,5 @@
 package it.cnr.isti.wnlab.indoornavigator.filters.kalmanfilter;
 
-import org.apache.commons.math3.filter.KalmanFilter;
 import org.apache.commons.math3.filter.MeasurementModel;
 import org.apache.commons.math3.filter.ProcessModel;
 import org.apache.commons.math3.linear.ArrayRealVector;
@@ -17,12 +16,12 @@ import it.cnr.isti.wnlab.indoornavigator.XYPosition;
  * Initializes x vector = (x,y,1,1) and P matrix
  * with d(P) = (initPosVar, initPosVar, heading, stepLength).
  */
-public class IndoorKalmanFilter implements IKalmanFilter, PositionFilter2D {
+public class IndoorKalmanFilter implements KalmanFilter, PositionFilter2D {
 
     public static final int X_POSITION_IN_VECTOR = 0;
     public static final int Y_POSITION_IN_VECTOR = 1;
 
-    private final KalmanFilter kf;
+    private final org.apache.commons.math3.filter.KalmanFilter kf;
 
     private final RealMatrix matrixA;
     private final RealMatrix matrixB;
@@ -86,7 +85,7 @@ public class IndoorKalmanFilter implements IKalmanFilter, PositionFilter2D {
         };
 
         // Initialize KF
-        kf = new KalmanFilter(process, measure);
+        kf = new org.apache.commons.math3.filter.KalmanFilter(process, measure);
     }
 
     @Override

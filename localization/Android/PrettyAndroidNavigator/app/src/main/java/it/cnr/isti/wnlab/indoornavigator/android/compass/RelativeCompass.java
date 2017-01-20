@@ -3,10 +3,10 @@ package it.cnr.isti.wnlab.indoornavigator.android.compass;
 import android.util.Log;
 
 import it.cnr.isti.wnlab.indoornavigator.emitters.Emitter;
-import it.cnr.isti.wnlab.indoornavigator.types.Acceleration;
-import it.cnr.isti.wnlab.indoornavigator.types.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigator.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigator.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigator.types.Heading;
-import it.cnr.isti.wnlab.indoornavigator.types.MagneticField;
+import it.cnr.isti.wnlab.indoornavigator.types.environment.MagneticField;
 
 /**
  * Calculates an initial direction to refer to as the North.

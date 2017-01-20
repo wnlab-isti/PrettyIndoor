@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigator.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigator.AbstractLocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.LocationStrategy;
 import it.cnr.isti.wnlab.indoornavigator.observers.Observer;
 import it.cnr.isti.wnlab.indoornavigator.XYPosition;

@@ -8,7 +8,7 @@ import java.io.Writer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.MagneticFieldHandler;
 
 public class MagneticAcquireTask implements Runnable {
 

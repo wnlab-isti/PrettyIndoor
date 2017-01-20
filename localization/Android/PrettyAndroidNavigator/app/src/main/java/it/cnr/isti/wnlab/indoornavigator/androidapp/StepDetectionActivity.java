@@ -13,7 +13,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import it.cnr.isti.wnlab.indoornavigator.R;
-import it.cnr.isti.wnlab.indoornavigator.android.sensorhandlers.AccelerometerHandler;
+import it.cnr.isti.wnlab.indoornavigator.android.handlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigator.android.stepdetection.FasterStepDetector;
 import it.cnr.isti.wnlab.indoornavigator.observers.Observer;
 import it.cnr.isti.wnlab.indoornavigator.types.Step;
