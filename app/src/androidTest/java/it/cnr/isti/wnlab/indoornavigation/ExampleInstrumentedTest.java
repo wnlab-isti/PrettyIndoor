@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator;
+package it.cnr.isti.wnlab.indoornavigation;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

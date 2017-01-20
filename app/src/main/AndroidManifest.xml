@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.cnr.isti.wnlab.indoornavigator">
+    package="it.cnr.isti.wnlab.indoornavigation">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".androidapp.MainActivity">
+        <activity android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".androidapp.CompassActivity"
+            android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.CompassActivity"
             android:icon="@android:drawable/ic_menu_compass"
             android:label="Compass"
             android:theme="@style/AppTheme">
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".androidapp.StepDetectionActivity"
+            android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.StepDetectionActivity"
             android:icon="@android:drawable/ic_input_get"
             android:label="Step Detection"
             android:theme="@style/AppTheme">
@@ -43,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".androidapp.fingerprint.geomagnetic.GeomagneticFingerprintActivity"
+        <activity android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint.geomagnetic.GeomagneticFingerprintActivity"
             android:icon="@android:drawable/btn_radio"
             android:label="Magnetic Fingerprint Acquisition">
             <intent-filter>

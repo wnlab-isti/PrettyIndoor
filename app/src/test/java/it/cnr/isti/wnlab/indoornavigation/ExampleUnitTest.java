@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigator;
+package it.cnr.isti.wnlab.indoornavigation;
 
 import org.junit.Test;
 
