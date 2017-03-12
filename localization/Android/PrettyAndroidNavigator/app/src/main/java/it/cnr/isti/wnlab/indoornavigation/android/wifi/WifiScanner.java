@@ -17,6 +17,8 @@ import it.cnr.isti.wnlab.indoornavigation.types.wifi.WifiFingerprint;
  */
 public class WifiScanner extends AbstractEmitter<WifiFingerprint> implements StartableStoppable {
 
+    public static final int DEFAULT_SCANNING_RATE = 1400;
+
     private WifiManager mManager;
     private Timer mTimer;
     private long mRate;
@@ -25,9 +27,26 @@ public class WifiScanner extends AbstractEmitter<WifiFingerprint> implements Sta
 
     private boolean started = false;
 
+    /**
+     * Initialize a WifiScanner with default scanning rate.
+     * @param manager
+     */
+    public WifiScanner(WifiManager manager) {
+        commonConstructor(manager);
+    }
+
+    /**
+     * Initialize a WifiScanner with specified scanning rate.
+     * @param manager
+     * @param milliseconds
+     */
     public WifiScanner(WifiManager manager, long milliseconds) {
-        mManager = manager;
+        commonConstructor(manager);
         mRate = milliseconds;
+    }
+
+    private void commonConstructor(WifiManager manager) {
+        mManager = manager;
         mLastTimestamp = System.currentTimeMillis();
         mHandler = new Handler();
     }
