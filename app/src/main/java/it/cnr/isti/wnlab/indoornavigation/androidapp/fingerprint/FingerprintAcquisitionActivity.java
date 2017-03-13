@@ -54,8 +54,8 @@ public class FingerprintAcquisitionActivity extends AppCompatActivity implements
     private TextView mViewY;
 
     // Coordinates
-    private float x = 0;
-    private float y = 0;
+    private float x = 0.6f;
+    private float y = 5.4f;
     private final static float UNIT = 0.6f;
 
     @Override
@@ -83,8 +83,8 @@ public class FingerprintAcquisitionActivity extends AppCompatActivity implements
         // TextViews
         mViewX = (TextView) findViewById(R.id.tv_x);
         mViewY = (TextView) findViewById(R.id.tv_y);
-        mViewX.setText(x + "");
-        mViewY.setText(y + "");
+        mViewX.setText("x: " + x);
+        mViewY.setText("y: " + y);
 
         // Callback for reactivating button
         mCallback = new Handler.Callback() {
@@ -196,22 +196,22 @@ public class FingerprintAcquisitionActivity extends AppCompatActivity implements
 
             case R.id.btn_left:
                 x -= UNIT;
-                mViewX.setText(x + "");
+                mViewX.setText("x: " + x);
                 break;
 
             case R.id.btn_right:
                 x += UNIT;
-                mViewX.setText(x + "");
+                mViewX.setText("x: " + x);
                 break;
 
             case R.id.btn_up:
                 y += UNIT;
-                mViewY.setText(y + "");
+                mViewY.setText("y: " + y);
                 break;
 
             case R.id.btn_down:
                 y -= UNIT;
-                mViewY.setText(y + "");
+                mViewY.setText("y: " + y);
                 break;
         }
     }
