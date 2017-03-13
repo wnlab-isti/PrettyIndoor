@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.androidapp;
+package it.cnr.isti.wnlab.indoornavigation.androidapp.localization;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,12 +25,15 @@ import java.util.ArrayList;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.IndoorNavigator;
+import it.cnr.isti.wnlab.indoornavigation.android.AndroidIndoorNavigator;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
+import it.cnr.isti.wnlab.indoornavigation.androidapp.PositionLogger;
+import it.cnr.isti.wnlab.indoornavigation.androidapp.StepLoggerObserver;
 
 public class MainActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
@@ -272,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private IndoorNavigator initNavigator(int radio) {
         // Builder for Indoor Navigator
-        IndoorNavigator.Builder builder = new IndoorNavigator.Builder(this);
+        AndroidIndoorNavigator.Builder builder = new AndroidIndoorNavigator.Builder(this);
 
         // Set initial position
         builder.setInitialPosition(mInitialPosition);

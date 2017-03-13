@@ -1,6 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.types.inertial;
 
 import it.cnr.isti.wnlab.indoornavigation.types.DecomposedSensorData;
+import it.cnr.isti.wnlab.indoornavigation.types.RawData;
 
 /**
  * m/s^2
@@ -13,6 +14,6 @@ public class Acceleration extends DecomposedSensorData {
 
     @Override
     public String toString() {
-        return "A " + timestamp + " " + x + " " + y + " " + z;
+        return "A " + timestamp + RawData.LOG_SEPARATOR + x + RawData.LOG_SEPARATOR + y + RawData.LOG_SEPARATOR + z;
     }
 }

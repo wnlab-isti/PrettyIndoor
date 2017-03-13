@@ -1,6 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation;
 
-import it.cnr.isti.wnlab.indoornavigation.emitters.AbstractEmitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.AbstractEmitter;
 
 /**
  * Abstract strategy for 2,5D location (x,y,floor).

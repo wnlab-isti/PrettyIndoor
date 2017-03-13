@@ -2,7 +2,7 @@ package it.cnr.isti.wnlab.indoornavigation.android.compass;
 
 import android.util.Log;
 
-import it.cnr.isti.wnlab.indoornavigation.emitters.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.types.Heading;
@@ -54,6 +54,4 @@ public class RelativeCompass extends LawitzkiCompass {
             notifyObservers(new Heading(correctHeading,timestamp));
         }
     }
-
-
 }

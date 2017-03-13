@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.MainActivity">
+        <activity android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.localization.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.CompassActivity"
+            android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.compass.CompassActivity"
             android:icon="@android:drawable/ic_menu_compass"
             android:label="Compass"
             android:theme="@style/AppTheme">
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.StepDetectionActivity"
+            android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.stepdetection.StepDetectionActivity"
             android:icon="@android:drawable/ic_input_get"
             android:label="Step Detection"
             android:theme="@style/AppTheme">
@@ -43,9 +43,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint.geomagnetic.GeomagneticFingerprintActivity"
+        <activity android:name="it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint.FingerprintAcquisitionActivity"
             android:icon="@android:drawable/btn_radio"
-            android:label="Magnetic Fingerprint Acquisition">
+            android:label="Fingerprint Acquisition">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

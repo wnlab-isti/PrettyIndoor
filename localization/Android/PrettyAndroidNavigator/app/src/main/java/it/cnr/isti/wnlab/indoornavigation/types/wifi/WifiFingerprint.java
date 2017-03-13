@@ -77,7 +77,8 @@ public class WifiFingerprint implements RawData, Iterable<SingleAccessPoint> {
     public String toString() {
         StringBuilder builder = new StringBuilder("W ");
         for(int i = 0; i < mApArray.length; i++) {
-            builder.append(mApArray[i] + " ");
+            builder.append(mApArray[i]);
+            builder.append(RawData.LOG_SEPARATOR);
         }
         builder.append('\n');
         return builder.toString();

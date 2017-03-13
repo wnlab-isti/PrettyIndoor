@@ -2,8 +2,8 @@ package it.cnr.isti.wnlab.indoornavigation.android.stepdetection;
 
 import android.hardware.SensorManager;
 
-import it.cnr.isti.wnlab.indoornavigation.observers.DataObserver;
-import it.cnr.isti.wnlab.indoornavigation.emitters.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.types.Step;
 

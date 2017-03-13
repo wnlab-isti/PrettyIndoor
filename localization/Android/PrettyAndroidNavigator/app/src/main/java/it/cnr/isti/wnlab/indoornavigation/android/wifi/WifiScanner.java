@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.emitters.AbstractEmitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
+import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.WifiFingerprint;
 
 /**
  * Every mDelay milliseconds scans available access points informations and notifies subscribers.
  */
-public class WifiScanner extends AbstractEmitter<WifiFingerprint> implements StartableStoppable {
+public class WifiScanner extends DataEmitter<WifiFingerprint> implements StartableStoppable {
 
     public static final int DEFAULT_SCANNING_RATE = 1400;
 
@@ -95,7 +96,7 @@ public class WifiScanner extends AbstractEmitter<WifiFingerprint> implements Sta
     public void stop() {
         if(started) {
             mTimer.cancel();
-            started = true;
+            started = false;
         }
     }
 

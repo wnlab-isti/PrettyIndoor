@@ -23,7 +23,7 @@ import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.StepDetector;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.androidapp.Logger;
 import it.cnr.isti.wnlab.indoornavigation.androidapp.PositionLogger;
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;

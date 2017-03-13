@@ -1,6 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.types.environmental;
 
 import it.cnr.isti.wnlab.indoornavigation.types.DecomposedSensorData;
+import it.cnr.isti.wnlab.indoornavigation.types.RawData;
 
 /**
  * μT
@@ -13,6 +14,6 @@ public class MagneticField extends DecomposedSensorData {
 
     @Override
     public String toString() {
-        return "M " + timestamp + " " + x + " " + y + " " + z;
+        return "M " + timestamp + RawData.LOG_SEPARATOR + x + RawData.LOG_SEPARATOR + y + RawData.LOG_SEPARATOR + z;
     }
 }

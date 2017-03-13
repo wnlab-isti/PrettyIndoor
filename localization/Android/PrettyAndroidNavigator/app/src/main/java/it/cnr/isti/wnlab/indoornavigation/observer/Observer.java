@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.observers;
+package it.cnr.isti.wnlab.indoornavigation.observer;
 
 /**
  * Generic observer.

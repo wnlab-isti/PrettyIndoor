@@ -6,8 +6,8 @@ import android.os.Handler;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.observers.DataObserver;
-import it.cnr.isti.wnlab.indoornavigation.emitters.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.types.Heading;
@@ -17,7 +17,7 @@ import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
  * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/
  */
 
-public class LawitzkiCompass extends Compass {
+public abstract class LawitzkiCompass extends Compass {
 
     // Initial delay
     public final static int INITIAL_DELAY = 0;
