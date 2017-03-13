@@ -7,7 +7,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,9 +31,6 @@ import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.androidapp.Logger;
 import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
-import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.types.RawData;
-import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
 
 public class FingerprintAcquisitionActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -113,11 +109,10 @@ public class FingerprintAcquisitionActivity extends AppCompatActivity implements
      * Initialize data structures for the data we want to register.
      */
     private void populateMap() {
-        // Fingerprints folder path
+        // Fingerprints folder path (create if it doesn't exist)
         String fingerprintFolderPath = Environment.getExternalStorageDirectory() + "/fingerprints";
         File fingerprintsFolder = new File(fingerprintFolderPath);
         fingerprintsFolder.mkdirs();
-        Log.d("FP FOLD", fingerprintsFolder.getAbsolutePath() + " exists? " + fingerprintsFolder.exists() + ", Is directory? " + fingerprintsFolder.isDirectory());
 
         // Current timestamp (for unique files)
         Long timestamp = System.currentTimeMillis();
@@ -131,8 +126,6 @@ public class FingerprintAcquisitionActivity extends AppCompatActivity implements
         mEmitters.put(
                 new MagneticFieldHandler((SensorManager) getSystemService(SENSOR_SERVICE), SensorManager.SENSOR_DELAY_FASTEST),
                 new File(fingerprintFolderPath + "/fingerprint_magnetic_" + timestamp + " .csv"));
-
-        Log.d("MAP", "#:" + mEmitters.size());
 
         // Register logger observer (I would like to use BiConsumer, but I can't)
         Iterator it = mEmitters.entrySet().iterator();
