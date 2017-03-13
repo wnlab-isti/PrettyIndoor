@@ -1,6 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation;
 
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 
 public interface IndoorNavigator extends StartableStoppable {
     // Position Updater getter and setter

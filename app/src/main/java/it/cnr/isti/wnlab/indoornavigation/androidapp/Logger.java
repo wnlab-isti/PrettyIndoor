@@ -1,9 +1,11 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.Writer;
 
-import it.cnr.isti.wnlab.indoornavigation.observers.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.types.RawData;
 
 public class Logger<T extends RawData> implements DataObserver<T> {
@@ -18,6 +20,7 @@ public class Logger<T extends RawData> implements DataObserver<T> {
     public void notify(T data) {
         try {
             mWriter.write(data + "\n");
+            Log.d("LOGGER", data.toString());
         } catch(IOException e) {
             e.printStackTrace();
         }

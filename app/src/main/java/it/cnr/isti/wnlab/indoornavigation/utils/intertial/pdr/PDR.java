@@ -1,6 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.utils.intertial.pdr;
 
-import it.cnr.isti.wnlab.indoornavigation.emitters.AbstractEmitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.AbstractEmitter;
 
 public abstract class PDR extends AbstractEmitter<PDR.Result> {
 

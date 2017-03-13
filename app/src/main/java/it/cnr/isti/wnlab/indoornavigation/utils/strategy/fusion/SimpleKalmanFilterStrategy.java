@@ -2,7 +2,7 @@ package it.cnr.isti.wnlab.indoornavigation.utils.strategy.fusion;
 
 import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.AbstractLocationStrategy;
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.IndoorKalmanFilter;
 import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.adapters.LocationStrategyUpdater;
 import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.adapters.PDRPredictor;

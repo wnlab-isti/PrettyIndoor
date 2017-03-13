@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.androidapp;
+package it.cnr.isti.wnlab.indoornavigation.androidapp.compass;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -19,7 +19,7 @@ import it.cnr.isti.wnlab.indoornavigation.android.compass.RelativeCompass;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagneticFieldHandler;
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.types.Heading;
 
 public class CompassActivity extends AppCompatActivity {

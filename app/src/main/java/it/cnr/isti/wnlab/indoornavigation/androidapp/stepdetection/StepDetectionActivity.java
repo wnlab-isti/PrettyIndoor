@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.androidapp;
+package it.cnr.isti.wnlab.indoornavigation.androidapp.stepdetection;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,7 +15,7 @@ import android.widget.TextView;
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.FasterStepDetector;
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.types.Step;
 
 public class StepDetectionActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {

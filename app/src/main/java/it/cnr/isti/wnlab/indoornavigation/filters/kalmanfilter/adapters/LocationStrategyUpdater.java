@@ -5,7 +5,7 @@ import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.LocationStrategy;
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.IndoorKalmanFilter;
 

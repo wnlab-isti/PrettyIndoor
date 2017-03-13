@@ -1,5 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.types.environmental;
 
+import it.cnr.isti.wnlab.indoornavigation.types.RawData;
 import it.cnr.isti.wnlab.indoornavigation.types.RawSensorData;
 
 /**
@@ -17,7 +18,7 @@ public class RelativeHumidity extends RawSensorData {
 
     @Override
     public String toString() {
-        return "% " + timestamp + " " + humidity;
+        return "H " + timestamp + RawData.LOG_SEPARATOR + humidity;
     }
 
 }

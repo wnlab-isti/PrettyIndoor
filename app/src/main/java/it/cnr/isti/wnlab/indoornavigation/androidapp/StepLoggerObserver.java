@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 
 public class StepLoggerObserver implements Observer<IndoorPosition>, Closeable {
 

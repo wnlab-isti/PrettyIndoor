@@ -1,9 +1,7 @@
-package it.cnr.isti.wnlab.indoornavigation.emitters;
+package it.cnr.isti.wnlab.indoornavigation.observer;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
 
 /**
  * Common code for all emitters.

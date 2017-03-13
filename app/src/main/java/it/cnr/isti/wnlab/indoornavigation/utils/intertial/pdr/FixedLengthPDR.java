@@ -1,7 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.utils.intertial.pdr;
 
-import it.cnr.isti.wnlab.indoornavigation.emitters.Emitter;
-import it.cnr.isti.wnlab.indoornavigation.observers.Observer;
+import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.types.Step;
 

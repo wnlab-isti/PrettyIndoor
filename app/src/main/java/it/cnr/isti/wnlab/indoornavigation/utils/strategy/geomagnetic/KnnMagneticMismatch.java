@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import it.cnr.isti.wnlab.indoornavigation.observers.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.AbstractLocationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.XYPosition;
