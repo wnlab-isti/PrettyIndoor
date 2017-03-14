@@ -32,7 +32,7 @@ import it.cnr.isti.wnlab.indoornavigation.androidapp.Logger;
 import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
 
-public class FingerprintAcquisitionActivity extends AppCompatActivity implements View.OnClickListener {
+public class AcquisitionActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Observers map
     private Map<DataEmitter, File> mEmitters;
@@ -46,10 +46,6 @@ public class FingerprintAcquisitionActivity extends AppCompatActivity implements
 
     // GUI
     private Button mStartButton;
-    private Button mUpButton;
-    private Button mDownButton;
-    private Button mLeftButton;
-    private Button mRightButton;
     private TextView mViewX;
     private TextView mViewY;
 
@@ -75,10 +71,10 @@ public class FingerprintAcquisitionActivity extends AppCompatActivity implements
         mStartButton.setOnClickListener(this);
 
         // Directional buttons
-        (mUpButton = (Button) findViewById(R.id.btn_up)).setOnClickListener(this);
-        (mDownButton = (Button) findViewById(R.id.btn_down)).setOnClickListener(this);
-        (mLeftButton = (Button) findViewById(R.id.btn_left)).setOnClickListener(this);
-        (mRightButton = (Button) findViewById(R.id.btn_right)).setOnClickListener(this);
+        (findViewById(R.id.btn_up)).setOnClickListener(this);
+        (findViewById(R.id.btn_down)).setOnClickListener(this);
+        (findViewById(R.id.btn_left)).setOnClickListener(this);
+        (findViewById(R.id.btn_right)).setOnClickListener(this);
 
         // TextViews
         mViewX = (TextView) findViewById(R.id.tv_x);

@@ -1,11 +1,16 @@
 TODO
--> fare utils
+-> Finire fingerprint
+-> K-NN
+-> Testare varie strategy di localizzazione "di base"
 -> implementare PF
+
+- Refactoring
+- Debug Kalman
+- Debug PF
+- Front-end più carino
 
 - "define north" un po' più carino sulla RelativeCompass con Future<>
 - capire Step Detection (implementazione)
-- app fingerprint wifi
-- k-nn
 - fare service
 - in qualche modo, visualizzare
 

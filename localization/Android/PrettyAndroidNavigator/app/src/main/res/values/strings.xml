@@ -8,4 +8,5 @@
     <!-- Test activities -->
     <string name="title_compass_test">CompassTestActivity</string>
     <string name="title_step_detection_test">StepDetectionActivity</string>
+    <string name="title_activity_fingerprint_creation">FingerprintCreationActivity</string>
 </resources>
