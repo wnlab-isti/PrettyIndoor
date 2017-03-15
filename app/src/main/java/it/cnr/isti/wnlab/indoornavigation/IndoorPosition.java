@@ -24,6 +24,6 @@ public class IndoorPosition extends XYPosition {
      */
     @Override
     public String toString() {
-        return timestamp + " " + x + " " + y + " " + floor;
+        return timestamp + "," + super.toString() + "," + floor;
     }
 }
