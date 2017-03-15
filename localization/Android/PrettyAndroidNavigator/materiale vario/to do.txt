@@ -1,18 +1,24 @@
 TODO
 -> Testare fingerprint
--> K-NN e refactoring localizzazione per fingerprint
+-> Commentare bene classe Fingerprint
+-> Fare K-NN di Wifi e Geomagnetico
+-> Refactoring fingerprint acquisition con classe Fingerprint?
+-> Refactoring localizzazione per fingerprint
 -> Testare varie strategy di localizzazione "di base"
--> implementare PF
+-> Front-end
+-> Implementare PF
+-> Debug PF
+-> Debug Kalman
+
+- Fare service
+- "define north" un po' più carino sulla RelativeCompass con Future<>
+- capire Step Detection (implementazione)
 
 - Refactoring
 - Debug Kalman
 - Debug PF
 - Front-end più carino
-
-- "define north" un po' più carino sulla RelativeCompass con Future<>
-- capire Step Detection (implementazione)
-- fare service
-- in qualche modo, visualizzare
+- Documentazione
 
 - test & debug
 - validazione
