@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.utils.strategy.wifi;
+package it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi;
 
 import android.util.Log;
 

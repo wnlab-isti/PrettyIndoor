@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.utils.strategy.fusion;
+package it.cnr.isti.wnlab.indoornavigation.utils.strategies.fusion;
 
 import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.AbstractLocationStrategy;
@@ -6,9 +6,9 @@ import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.IndoorKalmanFilter;
 import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.adapters.LocationStrategyUpdater;
 import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.adapters.PDRPredictor;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategy.geomagnetic.KnnMagneticMismatch;
+import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.geomagnetic.KnnMagneticMismatch;
 import it.cnr.isti.wnlab.indoornavigation.utils.intertial.pdr.PDR;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategy.wifi.KnnWifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi.KnnWifiFingerprint;
 
 /**
  * Implementation of strategy used by You Li.

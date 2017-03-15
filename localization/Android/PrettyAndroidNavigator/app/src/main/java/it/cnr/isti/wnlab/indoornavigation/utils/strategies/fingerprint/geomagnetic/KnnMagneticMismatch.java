@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.utils.strategy.geomagnetic;
+package it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.geomagnetic;
 
 import android.util.Log;
 

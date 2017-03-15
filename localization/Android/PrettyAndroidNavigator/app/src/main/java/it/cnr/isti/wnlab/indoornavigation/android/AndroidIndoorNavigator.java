@@ -30,10 +30,10 @@ import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.WifiFingerprint;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategy.geomagnetic.KnnMagneticMismatch;
+import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.geomagnetic.KnnMagneticMismatch;
 import it.cnr.isti.wnlab.indoornavigation.utils.intertial.pdr.FixedLengthPDR;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategy.fusion.SimpleKalmanFilterStrategy;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategy.wifi.KnnWifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fusion.SimpleKalmanFilterStrategy;
+import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi.KnnWifiFingerprint;
 
 /**
  * AndroidIndoorNavigator object for the user.

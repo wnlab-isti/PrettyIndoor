@@ -1,6 +1,6 @@
 TODO
--> Finire fingerprint
--> K-NN
+-> Testare fingerprint
+-> K-NN e refactoring localizzazione per fingerprint
 -> Testare varie strategy di localizzazione "di base"
 -> implementare PF
 
