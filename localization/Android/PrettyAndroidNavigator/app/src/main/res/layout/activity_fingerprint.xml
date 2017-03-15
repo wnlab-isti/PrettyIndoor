@@ -65,11 +65,41 @@
         android:text="0"
         android:id="@+id/tv_y" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Magnetic Fingerprint" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_magnetic_path"
+        android:text="/fingerprints/magnetic" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_make"
-        android:text="Merge them!"
-        android:textSize="5pt"/>
+        android:id="@+id/btn_make_magnetic"
+        android:text="Will magnetic data blend?"
+        android:textSize="5pt" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wifi Fingerprint" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_wifi_path"
+        android:text="/fingerprints/wifi" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_make_wifi"
+        android:text="Will WiFi data blend?"
+        android:textSize="5pt" />
+
 
 </LinearLayout>

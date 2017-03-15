@@ -15,6 +15,6 @@ public class AngularSpeed extends DecomposedSensorData {
 
     @Override
     public String toString() {
-        return "R " + timestamp + RawData.LOG_SEPARATOR + x + RawData.LOG_SEPARATOR + y + RawData.LOG_SEPARATOR + z;
+        return "R" + RawData.LOG_SEPARATOR + timestamp + RawData.LOG_SEPARATOR + x + RawData.LOG_SEPARATOR + y + RawData.LOG_SEPARATOR + z;
     }
 }

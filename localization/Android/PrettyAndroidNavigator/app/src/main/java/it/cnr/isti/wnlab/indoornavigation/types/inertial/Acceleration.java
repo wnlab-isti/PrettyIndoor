@@ -14,6 +14,6 @@ public class Acceleration extends DecomposedSensorData {
 
     @Override
     public String toString() {
-        return "A " + timestamp + RawData.LOG_SEPARATOR + x + RawData.LOG_SEPARATOR + y + RawData.LOG_SEPARATOR + z;
+        return "A" + RawData.LOG_SEPARATOR + timestamp + RawData.LOG_SEPARATOR + x + RawData.LOG_SEPARATOR + y + RawData.LOG_SEPARATOR + z;
     }
 }

@@ -14,6 +14,6 @@ public class MagneticField extends DecomposedSensorData {
 
     @Override
     public String toString() {
-        return "M " + timestamp + RawData.LOG_SEPARATOR + x + RawData.LOG_SEPARATOR + y + RawData.LOG_SEPARATOR + z;
+        return "M" + RawData.LOG_SEPARATOR + timestamp + RawData.LOG_SEPARATOR + x + RawData.LOG_SEPARATOR + y + RawData.LOG_SEPARATOR + z;
     }
 }

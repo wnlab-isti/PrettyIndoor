@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public abstract class Fingerprint {
+public abstract class FingerprintBuilder {
 
     /**
      * Creates a file with a fingerprint made from csv data files.
@@ -36,7 +36,7 @@ public abstract class Fingerprint {
                         // Behaviour depends on the first comma-separated value
                         if(label.equals(splitted[0])) {
                             // If the line starts with the label, it's a measure
-                            insertMeasure(splitted);
+                            insertMeasurement(splitted);
                         } else {
                             // Else it's a coordinate indicator
                             float x = Float.parseFloat(splitted[0]);
@@ -45,14 +45,11 @@ public abstract class Fingerprint {
                         }
                     }
 
-                    // Merge measures of the data structure
-                    merge();
-
                     // Write fingerprint on file
                     try(
                         BufferedWriter writer = new BufferedWriter(new FileWriter(result));
                     ) {
-                        writeOnFile(writer);
+                        merge(writer);
 
                         // Success
                         return true;
@@ -86,18 +83,18 @@ public abstract class Fingerprint {
      * Insert a new measure in the current point's values.
      * @param commaSeparatedValues
      */
-    protected abstract void insertMeasure(String[] commaSeparatedValues);
+    protected abstract void insertMeasurement(String[] commaSeparatedValues);
 
     /**
-     * Merges the values for each point. This method actually prepares the fingerprint and must be
-     * called before writeOnFile.
+     * Merges the values for each point. Equals to call merge(null).
      */
-    protected abstract void merge();
+    protected void merge() throws IOException { merge(null); }
 
     /**
-     * Writes the fingerprint. This method must be called after merge().
-     * @param writer
+     * Merges the values for each point and writes it to the file.
+     * @param writer The writer that writes the result. If null, it merges the data on the structure
+     *               writing it nowhere.
      */
-    protected abstract void writeOnFile(BufferedWriter writer);
+    protected abstract void merge(BufferedWriter writer) throws IOException;
 
 }
