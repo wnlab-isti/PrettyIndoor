@@ -71,16 +71,18 @@ public class WifiFingerprint implements RawData, Iterable<SingleAccessPoint> {
 
 
     /**
-     * @return W (bssid1,rssi1) (bssid2,rssi2) ...
+     * @return W,bssid1,rssi1,bssid2,rssi2, ...
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("W ");
+        StringBuilder builder = new StringBuilder("W");
         for(int i = 0; i < mApArray.length; i++) {
-            builder.append(mApArray[i]);
             builder.append(RawData.LOG_SEPARATOR);
+            builder.append(mApArray[i]);
         }
-        builder.append('\n');
+        // Removes last LOG_SEPARATOR
+        builder.deleteCharAt(builder.length()-1);
+
         return builder.toString();
     }
 }

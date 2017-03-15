@@ -18,7 +18,7 @@ public class Pressure extends RawSensorData {
 
     @Override
     public String toString() {
-        return "P " + timestamp + RawData.LOG_SEPARATOR + pressure;
+        return "P" + RawData.LOG_SEPARATOR + timestamp + RawData.LOG_SEPARATOR + pressure;
     }
 
 }

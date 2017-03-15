@@ -18,7 +18,7 @@ public class RelativeHumidity extends RawSensorData {
 
     @Override
     public String toString() {
-        return "H " + timestamp + RawData.LOG_SEPARATOR + humidity;
+        return "H" + RawData.LOG_SEPARATOR + timestamp + RawData.LOG_SEPARATOR + humidity;
     }
 
 }

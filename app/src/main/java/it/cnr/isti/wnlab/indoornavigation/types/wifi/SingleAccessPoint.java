@@ -3,7 +3,7 @@ package it.cnr.isti.wnlab.indoornavigation.types.wifi;
 import it.cnr.isti.wnlab.indoornavigation.types.RawData;
 
 /**
- * (bssid,level)
+ * (bssd,rssi)
  */
 public class SingleAccessPoint implements RawData {
     public final String bssid;
@@ -16,6 +16,6 @@ public class SingleAccessPoint implements RawData {
 
     @Override
     public String toString() {
-        return "(" + bssid + "," + level + ")";
+        return bssid + RawData.LOG_SEPARATOR + level;
     }
 }
