@@ -18,7 +18,6 @@ public abstract class Fingerprint<XYPosition, T extends RawData> {
     }
 
     public List<XYPosition> findNearestK(T measurement, int k) {
-
         // For each registered position calculate distance between row and measurement
         ArrayList<DistancePair> distancedPositions = new ArrayList<>();
         for(Map.Entry<XYPosition,T> entry : map.entrySet()) {
@@ -33,15 +32,35 @@ public abstract class Fingerprint<XYPosition, T extends RawData> {
         Collections.sort(distancedPositions, new Comparator<DistancePair>() {
             @Override
             public int compare(DistancePair p1, DistancePair p2) {
-                return (int) (p1.distance - p2.distance); // Negative if p1 is nearer than p2
+                return p1.compareTo(p2); // Negative if p1 is nearer than p2
             }
         });
 
-        // Return all or first K values
-        return distancedPositions.subList(0, k-1);
+        // Isolate first K elements
+        List<DistancePair> firstKElements;
+        if(distancedPositions.size() <= k)
+            firstKElements = distancedPositions;
+        else
+            firstKElements = distancedPositions.subList(0,k);
+
+        // Return first K positions
+        ArrayList<XYPosition> result = new ArrayList<>();
+        for(DistancePair p : firstKElements)
+            result.add(p.position);
+        return result;
     }
 
-    public abstract float distanceBetween(T data1, T data2);
+    /**
+     * Calculate the distance between one measurement and another.
+     * @param data1
+     * @param data2
+     * @return The always positive distance between the two measurements.
+     */
+    protected abstract float distanceBetween(T data1, T data2);
+
+    /*
+     * UTILITY CLASSES
+     */
 
     /**
      * Private wrapper class for (position,distance) pairs.
@@ -53,6 +72,14 @@ public abstract class Fingerprint<XYPosition, T extends RawData> {
         private DistancePair(XYPosition position, float distance) {
             this.position = position;
             this.distance = distance;
+        }
+
+        /**
+         * @param p
+         * @return a negative integer if this pair is nearer (less distanced) than the argument's.
+         */
+        public int compareTo(DistancePair p) {
+            return (int) (distance - p.distance);
         }
     }
 }
