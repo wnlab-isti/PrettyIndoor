@@ -1,4 +1,6 @@
 TODO
+-> Aggiungere threshold su findNearestK
+
 -> Testare fingerprint
 -> Commentare bene classe Fingerprint
 -> Fare K-NN di Wifi e Geomagnetico

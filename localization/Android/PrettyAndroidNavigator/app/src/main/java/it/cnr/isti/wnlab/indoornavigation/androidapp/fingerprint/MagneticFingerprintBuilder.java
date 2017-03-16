@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint;
 
+import android.util.Log;
+
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
@@ -47,6 +49,8 @@ public class MagneticFingerprintBuilder extends FingerprintBuilder {
             float my = Float.parseFloat(commaSeparatedValues[3]);
             float mz = Float.parseFloat(commaSeparatedValues[4]);
 
+            Log.d("MAGFP", "Values != null, inserting " + mx + "," + my + "," + mz);
+
             // Update the coordinate measurements
             values[0] += mx;
             values[1] += my;
@@ -58,6 +62,9 @@ public class MagneticFingerprintBuilder extends FingerprintBuilder {
 
     @Override
     protected void merge(BufferedWriter writer) throws IOException {
+
+        Log.d("MAGFP", "Merging now");
+
         Map<Float, Map<Float,Float[]>> rows = measurements.rowMap();
         // For each row
         for(Map.Entry<Float, Map<Float, Float[]>> row : rows.entrySet()) {
@@ -70,6 +77,10 @@ public class MagneticFingerprintBuilder extends FingerprintBuilder {
                 values[1] /= n;
                 values[2] /= n;
                 values[3] = 1.f;
+
+                // Log
+                Log.d("MAGFP", row.getKey() + "," + col.getKey() + "," +
+                        values[0] + "," + values[1] + "," + values[2]);
 
                 // Write on file
                 writer.write(

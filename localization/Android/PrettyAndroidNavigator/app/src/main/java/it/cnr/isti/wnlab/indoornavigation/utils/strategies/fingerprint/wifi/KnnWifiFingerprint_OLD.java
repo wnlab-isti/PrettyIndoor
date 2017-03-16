@@ -16,13 +16,13 @@ import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.AbstractLocationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.XYPosition;
+import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.WifiFingerprint;
 
 
-public class KnnWifiFingerprint
+public class KnnWifiFingerprint_OLD
         extends AbstractLocationStrategy
-        implements DataObserver<WifiFingerprint> {
+        implements DataObserver<AccessPoints> {
 
     // Integer: BSSD code, Set: { (pos1, rss1), (pos2, rss2), ... }
     private HashMap<String, HashSet<PositionRss>> mBssdPositionRssAssociation;
@@ -36,7 +36,7 @@ public class KnnWifiFingerprint
     // Maximum threshold for distance: if position's row distance is over this, it isn't accepted
     private int mThreshold;
 
-    // Selected floor. Note it's constant, so it's needed one KnnWifiFingerprint per floor
+    // Selected floor. Note it's constant, so it's needed one KnnWifiFingerprint_OLD per floor
     private final int FLOOR;
 
     // "No/low signal" constant
@@ -70,13 +70,13 @@ public class KnnWifiFingerprint
     }
 
     /**
-     * KnnWifiFingerprint constructor.
+     * KnnWifiFingerprint_OLD constructor.
      *
      * @param sets For each BSSD, the positions set where BSSD can be found in.
      * @param positions Possible positions.
      * @param floor Selected floor.
      */
-    private KnnWifiFingerprint(
+    private KnnWifiFingerprint_OLD(
             HashMap<String, HashSet<PositionRss>> sets,
             XYPosition[] positions,
             int floor,
@@ -94,7 +94,7 @@ public class KnnWifiFingerprint
      * @param data
      */
     @Override
-    public void notify(WifiFingerprint data) {
+    public void notify(AccessPoints data) {
         IndoorPosition p = localize(data);
         if(p != null)
             notifyObservers(p);
@@ -105,7 +105,7 @@ public class KnnWifiFingerprint
      * @param fingerprint Received fingerprint
      * @return index of the minimum distanced row
      */
-    private WifiFingerprintPosition localize(WifiFingerprint fingerprint) {
+    private WifiFingerprintPosition localize(AccessPoints fingerprint) {
         // Reset every distance
         Arrays.fill(mRowDistances, 0);
 
@@ -123,7 +123,7 @@ public class KnnWifiFingerprint
                 // For each position, add it to solutions set and calculate row distance contribute
                 for (PositionRss pos : positions) {
                     solutions.add(pos.positionIndex);
-                    int diff = pos.rssi - ap.level;
+                    int diff = pos.rssi - ap.rssi;
                     mRowDistances[pos.positionIndex] += diff * diff;
                 }
             }
@@ -160,7 +160,7 @@ public class KnnWifiFingerprint
      *
      * @return A ready-to-use WiFi fingerprint locator. Null if an error occurs.
      */
-    public static KnnWifiFingerprint makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
+    public static KnnWifiFingerprint_OLD makeInstance(File tsvWellFormattedRSSI, int floor, int threshold) {
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tsvWellFormattedRSSI)))) {
             // Initialize map of (string, set of positions)
             HashMap<String, HashSet<PositionRss>> sets = new HashMap<>();
@@ -213,7 +213,7 @@ public class KnnWifiFingerprint
                 Log.d("WIFILOCBUILD", setList.indexOf(set) + " has #sets = " + set.size());
 */          // ====================== DEBUG
 
-            return new KnnWifiFingerprint(sets, positionArray, floor, threshold);
+            return new KnnWifiFingerprint_OLD(sets, positionArray, floor, threshold);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ArrayIndexOutOfBoundsException e) {

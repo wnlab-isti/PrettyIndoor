@@ -5,8 +5,15 @@ import com.google.common.collect.Table;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
 
 public class WifiFingerprintBuilder extends FingerprintBuilder {
 
@@ -44,7 +51,8 @@ public class WifiFingerprintBuilder extends FingerprintBuilder {
      * @param commaSeparatedValues Values of a CSV text's line.
      */
     @Override
-    protected void insertMeasurement(String[] commaSeparatedValues) {
+    protected void insertMeasurement(String[] commaSeparatedValues)
+            throws NullPointerException, NumberFormatException {
         if (values != null) {
 
             for(int i = 1; i < commaSeparatedValues.length; i+=2) {
@@ -78,34 +86,37 @@ public class WifiFingerprintBuilder extends FingerprintBuilder {
             for(Map.Entry<Float, HashMap<String,Integer[]>> col : row.getValue().entrySet()) { // I'm really sorry for this
 
                 /*
-                 * Write x,y, in the beginning of each line.
+                 * List for sorting. This will be written down on file.
                  */
-                if(writer != null)
-                    writer.write(row.getKey() + "," + col.getKey());
+                ArrayList<SingleAccessPoint> aps = new ArrayList<>();
 
-                // For each BSSID in that coordinate
+                // For each BSSID in that coordinate, calculate average value and add a new AP object to the list.
                 for(Map.Entry<String, Integer[]> e : col.getValue().entrySet()) { // Ok, here we are ;)
-
                     /*
-                     * Merge measurements (average)
+                     * Merge measurements (average) and add them to the list.
                      */
                     Integer[] rssi = e.getValue();
                     rssi[0] /= rssi[1];
                     rssi[1] = 1;
-
-                    /*
-                     * Write on file
-                     */
-                    if(writer != null) {
-                        writer.write("," + e.getKey() + "," + rssi[0]);
-                    }
+                    aps.add(new SingleAccessPoint(e.getKey(),rssi[0]));
                 }
 
                 /*
-                 * End of the point, write '\n'.
-                 * Rule: #(x,y) == #'\n'
+                 * Sort point's BSSID list
+                 */
+                Collections.sort(aps, AccessPoints.getComparator(WifiFingerprint.AP_ORDER_IN_ROW));
+
+                /*
+                 * Write down fingerprint row in this format:
+                 * x,y,bssid1,rssi1,bssid2,rssi2,bssid3, .. ,rssiN\n
                  */
                 if(writer != null) {
+                    // Write initial x,y
+                    writer.write(row.getKey() + "," + col.getKey());
+                    // Write every AP (sorted)
+                    for(SingleAccessPoint ap : aps)
+                        writer.write("," + ap);
+                    // Write newline
                     writer.write("\n");
                 }
             }

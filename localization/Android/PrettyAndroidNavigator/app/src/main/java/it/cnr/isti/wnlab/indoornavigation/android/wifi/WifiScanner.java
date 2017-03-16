@@ -8,15 +8,14 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
 
 /**
  * Every mDelay milliseconds scans available access points informations and notifies subscribers.
  */
-public class WifiScanner extends DataEmitter<WifiFingerprint> implements StartableStoppable {
+public class WifiScanner extends DataEmitter<AccessPoints> implements StartableStoppable {
 
     public static final int DEFAULT_SCANNING_RATE = 1400;
 
@@ -64,7 +63,7 @@ public class WifiScanner extends DataEmitter<WifiFingerprint> implements Startab
                 public void run() {
                     // Adapt previous results and send data to related source
                     List<ScanResult> results = mManager.getScanResults();
-                    final WifiFingerprint data = new WifiFingerprint(results.size(), mLastTimestamp);
+                    final AccessPoints data = new AccessPoints(results.size(), mLastTimestamp);
                     for (ScanResult res : results)
                         data.add(res.BSSID, res.level);
                     // Notify observers on main thread
@@ -85,7 +84,7 @@ public class WifiScanner extends DataEmitter<WifiFingerprint> implements Startab
         }
     }
 
-    private void notifyNewFingerprint(WifiFingerprint f) {
+    private void notifyNewFingerprint(AccessPoints f) {
         notifyObservers(f);
     }
 

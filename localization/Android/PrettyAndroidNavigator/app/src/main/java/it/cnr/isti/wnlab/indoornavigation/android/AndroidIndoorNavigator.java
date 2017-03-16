@@ -29,11 +29,11 @@ import it.cnr.isti.wnlab.indoornavigation.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.types.inertial.AngularSpeed;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.geomagnetic.KnnMagneticMismatch;
 import it.cnr.isti.wnlab.indoornavigation.utils.intertial.pdr.FixedLengthPDR;
 import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fusion.SimpleKalmanFilterStrategy;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi.KnnWifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi.KnnWifiFingerprint_OLD;
 
 /**
  * AndroidIndoorNavigator object for the user.
@@ -251,17 +251,17 @@ public class AndroidIndoorNavigator implements IndoorNavigator {
                     } else if (type == WifiScanner.class) {
                         wifi = (WifiScanner) s;
                         if(mLogWriter != null)
-                            wifi.register(new Logger<WifiFingerprint>(mLogWriter));
+                            wifi.register(new Logger<AccessPoints>(mLogWriter));
                     }
                 }
                 Log.d("SCANRESULT", "sources empty? " + mSources.isEmpty() + " | " +
                         "acc" + acc + ", gyro " + gyro + ", mag " + mag + ", wifi " + wifi);
 
                 // Wifi Fingerprint
-                KnnWifiFingerprint wifiLoc = null;
+                KnnWifiFingerprint_OLD wifiLoc = null;
                 if (wifi != null && mWifiFingerprintMap != null) {
                     // Build locator instance
-                    wifiLoc = KnnWifiFingerprint.makeInstance(
+                    wifiLoc = KnnWifiFingerprint_OLD.makeInstance(
                             mWifiFingerprintMap, 0, WIFI_FINGERPRINT_THRESHOLD);
 
                     // Register locator to wifi emitter

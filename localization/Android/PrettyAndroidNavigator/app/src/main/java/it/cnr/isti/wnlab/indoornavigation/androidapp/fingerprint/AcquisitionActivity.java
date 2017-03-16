@@ -9,7 +9,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +40,7 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
 
     // Writers
     private Collection<BufferedWriter> mWriters;
+    private boolean first = true;
 
     // Data structures for acquisition
     private ExecutorService mExecutorService;
@@ -51,15 +51,16 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
     private TextView mViewX;
     private TextView mViewY;
 
-    // Coordinates
-    private float x = 0.6f;
-    private float y = 5.4f;
-    private final static float UNIT = 0.6f;
+    // Coordinates in MILLIMETERS
+    private int y = 5400;
+    private int x = 6000;
+    private final static int STEP = 600;
+    private final static float DIVISOR = 1000.f;
 
     // Folder path constants
-    public static final String FINGERPRINT_FOLDER = Environment.getExternalStorageDirectory() + "/fingerprints/";
-    public static final String MAGNETIC_DATA_FOLDER = FINGERPRINT_FOLDER + "magnetic/";
-    public static final String WIFI_DATA_FOLDER = FINGERPRINT_FOLDER + "wifi/";
+    public static final String FINGERPRINT_FOLDER = Environment.getExternalStorageDirectory() + "/fingerprints";
+    public static final String MAGNETIC_DATA_FOLDER = FINGERPRINT_FOLDER + "/magnetic";
+    public static final String WIFI_DATA_FOLDER = FINGERPRINT_FOLDER + "/wifi";
 
     // Data file prefixes
     public static final String WIFI_DATA_FILE_PREFIX = "wifi_";
@@ -92,8 +93,8 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
         // TextViews
         mViewX = (TextView) findViewById(R.id.tv_x);
         mViewY = (TextView) findViewById(R.id.tv_y);
-        mViewX.setText("x: " + x);
-        mViewY.setText("y: " + y);
+        mViewX.setText("x: " + x/DIVISOR);
+        mViewY.setText("y: " + y/DIVISOR);
 
         // Callback for reactivating button
         mCallback = new Handler.Callback() {
@@ -125,37 +126,6 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
         wifiDataFolder.mkdir();
         File magneticDataFolder = new File(MAGNETIC_DATA_FOLDER);
         magneticDataFolder.mkdir();
-
-        // Current timestamp (for unique files)
-        Long timestamp = System.currentTimeMillis();
-
-        // Wifi initialization
-        mEmitters.put(
-                new WifiScanner((WifiManager) getSystemService(WIFI_SERVICE), WifiScanner.DEFAULT_SCANNING_RATE),
-                new File(WIFI_DATA_FOLDER + WIFI_DATA_FILE_PREFIX + timestamp + ".csv"));
-
-        // MF initialization
-        mEmitters.put(
-                new MagneticFieldHandler((SensorManager) getSystemService(SENSOR_SERVICE), SensorManager.SENSOR_DELAY_FASTEST),
-                new File(MAGNETIC_DATA_FOLDER + MAGNETIC_DATA_FILE_PREFIX + timestamp + " .csv"));
-
-        // Register logger observer (I would like to use BiConsumer, but I can't)
-        Iterator it = mEmitters.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<Emitter,File> acquisition = (Map.Entry)it.next();
-            try {
-                // Create a writer for fingerprint acquisition
-                BufferedWriter writer = new BufferedWriter(new FileWriter(acquisition.getValue()));
-
-                // Register logger and add writer to collection
-                acquisition.getKey().register(new Logger(writer));
-                mWriters.add(writer);
-            } catch (IOException e) {
-                Toast.makeText(getApplicationContext(),
-                        "Error while opening " + acquisition.getValue().toString(),
-                        Toast.LENGTH_SHORT);
-            }
-        }
     }
 
     /**
@@ -197,6 +167,42 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
              * Button for start the data acquisition.
              */
             case R.id.btn_start_fingerprint:
+                // Initialize writers before first write
+                if(first) {
+                    // Current timestamp (for unique files)
+                    Long timestamp = System.currentTimeMillis();
+
+                    // Wifi initialization
+                    mEmitters.put(
+                            new WifiScanner((WifiManager) getSystemService(WIFI_SERVICE), WifiScanner.DEFAULT_SCANNING_RATE),
+                            new File(WIFI_DATA_FOLDER + "/" + WIFI_DATA_FILE_PREFIX + timestamp + ".csv"));
+
+                    // MF initialization
+                    mEmitters.put(
+                            new MagneticFieldHandler((SensorManager) getSystemService(SENSOR_SERVICE), SensorManager.SENSOR_DELAY_FASTEST),
+                            new File(MAGNETIC_DATA_FOLDER + "/" + MAGNETIC_DATA_FILE_PREFIX + timestamp + " .csv"));
+
+                    // Register logger observer (I would like to use BiConsumer, but I can't)
+                    Iterator it = mEmitters.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry<Emitter,File> acquisition = (Map.Entry)it.next();
+                        try {
+                            // Create a writer for fingerprint acquisition
+                            BufferedWriter writer = new BufferedWriter(new FileWriter(acquisition.getValue()));
+
+                            // Register logger and add writer to collection
+                            acquisition.getKey().register(new Logger(writer));
+                            mWriters.add(writer);
+                        } catch (IOException e) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Error while opening " + acquisition.getValue().toString(),
+                                    Toast.LENGTH_SHORT);
+                        }
+                    }
+
+                    first = false;
+                }
+
                 // Change button's visibility
                 mStartButton.setVisibility(View.INVISIBLE);
 
@@ -213,29 +219,35 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
              * Buttons for moving.
              */
             case R.id.btn_left:
-                x -= UNIT;
-                mViewX.setText("x: " + x);
+                x -= STEP;
+                //COORDINATE_FORMAT.format(x);
+                mViewX.setText("x: " + x/DIVISOR);
                 break;
 
             case R.id.btn_right:
-                x += UNIT;
-                mViewX.setText("x: " + x);
+                x += STEP;
+                //COORDINATE_FORMAT.format(x);
+                mViewX.setText("x: " + x/DIVISOR);
                 break;
 
             case R.id.btn_up:
-                y += UNIT;
-                mViewY.setText("y: " + y);
+                y += STEP;
+                //COORDINATE_FORMAT.format(y);
+                mViewY.setText("y: " + y/DIVISOR);
                 break;
 
             case R.id.btn_down:
-                y -= UNIT;
-                mViewY.setText("y: " + y);
+                y -= STEP;
+                //COORDINATE_FORMAT.format(y);
+                mViewY.setText("y: " + y/DIVISOR);
                 break;
 
             /**
              * Button for making the magnetic fingerprint.
              */
             case R.id.btn_make_magnetic:
+                Toast.makeText(getApplicationContext(), "Starting fingerprint creation", Toast.LENGTH_SHORT).show();
+
                 // Initialize fingerprint builder
                 MagneticFingerprintBuilder magneticBuilder = new MagneticFingerprintBuilder();
 
@@ -244,11 +256,19 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
 
                 // Check for magnetic data files
                 if(magDataFiles != null) {
+                    Toast.makeText(getApplicationContext(),"Found " + magDataFiles.length + " files with Wifi data", Toast.LENGTH_SHORT).show();
+
                     // The resulting file the fingerprint has to be saved in
-                    File result = new File(((EditText) findViewById(R.id.edit_magnetic_path)).getText().toString());
+                    File result = new File(FINGERPRINT_FOLDER + "/magnetic_fingerprint.csv");
 
                     // Make fingerprint
-                    magneticBuilder.make(result, magDataFiles);
+                    try {
+                        magneticBuilder.make(result, magDataFiles);
+                    } catch(IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(getApplicationContext(), "Fingerprint made!", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getApplicationContext(), "No data files found for magnetic field.", Toast.LENGTH_SHORT);
                 break;
@@ -257,6 +277,8 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
              * Button for making the wifi fingerprint.
              */
             case R.id.btn_make_wifi:
+                Toast.makeText(getApplicationContext(), "Starting fingerprint creation", Toast.LENGTH_SHORT).show();
+
                 // Initialize fingerprint builder
                 WifiFingerprintBuilder wifiBuilder = new WifiFingerprintBuilder();
 
@@ -265,11 +287,19 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
 
                 // Check for magnetic data files
                 if(wifiDataFiles != null) {
+                    Toast.makeText(getApplicationContext(),"Found " + wifiDataFiles.length + " files with Wifi data", Toast.LENGTH_SHORT).show();
+
                     // The resulting file the fingerprint has to be saved in
-                    File result = new File(((EditText) findViewById(R.id.edit_wifi_path)).getText().toString());
+                    File result = new File(FINGERPRINT_FOLDER + "/wifi_fingerprint.csv");
 
                     // Make fingerprint
-                    wifiBuilder.make(result, wifiDataFiles);
+                    try {
+                        wifiBuilder.make(result, wifiDataFiles);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(getApplicationContext(), "Fingerprint made!", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getApplicationContext(), "No data files found for wifi.", Toast.LENGTH_SHORT);
                 break;
@@ -284,7 +314,7 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
         for(BufferedWriter w : mWriters)
             try {
                 w.flush();
-                w.write(x + "\t" + y + "\n");
+                w.write(x/DIVISOR + "\t" + y/DIVISOR + "\n");
             } catch (IOException e) {
                 Toast.makeText(getApplicationContext(), "Impossible flushing " + e.getLocalizedMessage(),  Toast.LENGTH_LONG).show();
             }

@@ -70,12 +70,6 @@
         android:layout_height="wrap_content"
         android:text="Magnetic Fingerprint" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/edit_magnetic_path"
-        android:text="/fingerprints/magnetic" />
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -87,12 +81,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Wifi Fingerprint" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/edit_wifi_path"
-        android:text="/fingerprints/wifi" />
 
     <Button
         android:layout_width="match_parent"
