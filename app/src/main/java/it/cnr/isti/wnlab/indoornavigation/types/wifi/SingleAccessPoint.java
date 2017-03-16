@@ -7,15 +7,15 @@ import it.cnr.isti.wnlab.indoornavigation.types.RawData;
  */
 public class SingleAccessPoint implements RawData {
     public final String bssid;
-    public final int level;
+    public final int rssi;
 
-    public SingleAccessPoint(String bssid , int level) {
+    public SingleAccessPoint(String bssid , int rssi) {
         this.bssid = bssid;
-        this.level = level;
+        this.rssi = rssi;
     }
 
     @Override
     public String toString() {
-        return bssid + RawData.LOG_SEPARATOR + level;
+        return bssid + RawData.LOG_SEPARATOR + rssi;
     }
 }

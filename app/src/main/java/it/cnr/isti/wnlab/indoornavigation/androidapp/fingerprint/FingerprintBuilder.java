@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,9 +18,13 @@ public abstract class FingerprintBuilder {
      * @param filesWithData Files containing data.
      * @return true if the fingerprint has been correctly written, false if an error occurred.
      */
-    public boolean make(File result, File... filesWithData) {
-        if(filesWithData != null) {
+    public void make(File result, File... filesWithData) throws IOException {
 
+        Log.d("FP", "Merging ");
+        for(int i = 0; i < filesWithData.length; i++)
+            Log.d("FP", "File: " + filesWithData[i].getName());
+
+        if(filesWithData != null) {
             // For each file, add the measures to the map
             for(File f : filesWithData) {
                 try (
@@ -41,27 +47,21 @@ public abstract class FingerprintBuilder {
                             // Else it's a coordinate indicator
                             float x = Float.parseFloat(splitted[0]);
                             float y = Float.parseFloat(splitted[1]);
+
+                            Log.d("FP","Changing point to: " + x + "," + y);
                             setCoordinates(x,y);
                         }
                     }
-
-                    // Write fingerprint on file
-                    try(
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(result));
-                    ) {
-                        merge(writer);
-
-                        // Success
-                        return true;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
 
-            // An error occurred
-            return false;
-
+            // Merge and write everything on file
+            try(
+                BufferedWriter writer = new BufferedWriter(new FileWriter(result))
+            ) {
+                // Merge and write
+                merge(writer);
+            }
         } else
             throw new NullPointerException("You must specify at least one file for this operation.");
     }

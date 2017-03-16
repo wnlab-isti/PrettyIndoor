@@ -8,7 +8,7 @@ import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.adapters.Location
 import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.adapters.PDRPredictor;
 import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.geomagnetic.KnnMagneticMismatch;
 import it.cnr.isti.wnlab.indoornavigation.utils.intertial.pdr.PDR;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi.KnnWifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi.KnnWifiFingerprint_OLD;
 
 /**
  * Implementation of strategy used by You Li.
@@ -32,7 +32,7 @@ public class SimpleKalmanFilterStrategy extends AbstractLocationStrategy {
     public SimpleKalmanFilterStrategy(
             IndoorPosition startPosition,
             PDR pdr,
-            KnnWifiFingerprint wifiLocator,
+            KnnWifiFingerprint_OLD wifiLocator,
             KnnMagneticMismatch mmLocator
     ) {
         // Kalman Filter implementation

@@ -25,7 +25,7 @@ public class KnnMagneticMismatch
     // Magnetic field measured values
     private MagneticField[] mValues;
 
-    // Selected floor. Note it's constant, so it's needed one KnnWifiFingerprint per floor
+    // Selected floor. Note it's constant, so it's needed one KnnWifiFingerprint_OLD per floor
     private int mFloor;
 
     // Limit for K-NN

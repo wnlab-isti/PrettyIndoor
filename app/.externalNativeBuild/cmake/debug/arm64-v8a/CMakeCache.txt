@@ -254,7 +254,7 @@ CMAKE_GENERATOR:INTERNAL=Ninja
 CMAKE_GENERATOR_PLATFORM:INTERNAL=
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
-//Source directory with the top level CMakeLists.txt file for this
+//Source directory with the top rssi CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=C:/Users/WNLab/Desktop/PrettyIndoorNavigator/app
 //Install .so files without execute permission.
