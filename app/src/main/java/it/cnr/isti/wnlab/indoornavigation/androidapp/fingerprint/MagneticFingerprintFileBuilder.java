@@ -9,7 +9,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Map;
 
-public class MagneticFingerprintBuilder extends FingerprintBuilder {
+public class MagneticFingerprintFileBuilder extends FingerprintFileBuilder {
 
     // Map of measurements <(x,y),(mx,my,mz)>
     private Table<Float,Float,Float[]> measurements;
@@ -17,7 +17,7 @@ public class MagneticFingerprintBuilder extends FingerprintBuilder {
     // Current array of values
     private Float[] values = null;
 
-    public MagneticFingerprintBuilder() {
+    public MagneticFingerprintFileBuilder() {
         measurements = HashBasedTable.create();
     }
 

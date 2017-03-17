@@ -26,12 +26,18 @@ public class WifiFingerprintStrategy
 
     @Override
     public void notify(AccessPoints data) {
+        System.out.println("Data arrived " + data);
+
         // Sort APs in the occurred order for K-NN
         // NO THREAD SAFETY!!!!!!!!
+        System.out.println("Sorting...");
         data.sort(WifiFingerprint.AP_ORDER_IN_ROW);
+        System.out.println("Sorting finished:" + data);
 
         // Do K-NN
+        System.out.println("Doing K-NN...");
         List<XYPosition> positions = mFingerprint.findNearestK(data, mK);
+        System.out.println("Positions available: " + positions.size());
 
         // Find middle position
         float avgX = 0.f;

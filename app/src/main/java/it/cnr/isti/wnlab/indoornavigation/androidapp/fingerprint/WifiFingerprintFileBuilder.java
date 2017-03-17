@@ -8,14 +8,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.WifiFingerprint;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
 
-public class WifiFingerprintBuilder extends FingerprintBuilder {
+public class WifiFingerprintFileBuilder extends FingerprintFileBuilder {
 
     // Map of measurements <(x,y),{(String BSSDi, int RSSIi), ...}>
     private Table<Float, Float, HashMap<String, Integer[]>> measurements;
@@ -23,7 +22,7 @@ public class WifiFingerprintBuilder extends FingerprintBuilder {
     // (bssid,rssi) map of the current point
     private HashMap<String, Integer[]> values = null;
 
-    public WifiFingerprintBuilder() {
+    public WifiFingerprintFileBuilder() {
         measurements = HashBasedTable.create();
     }
 

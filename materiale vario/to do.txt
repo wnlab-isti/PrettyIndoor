@@ -1,6 +1,4 @@
 TODO
--> Aggiungere threshold su findNearestK
-
 -> Testare fingerprint
 -> Commentare bene classe Fingerprint
 -> Fare K-NN di Wifi e Geomagnetico
@@ -16,6 +14,7 @@ TODO
 - "define north" un po' più carino sulla RelativeCompass con Future<>
 - capire Step Detection (implementazione)
 
+- Il past participle di split è split, non splitted
 - Refactoring
 - Debug Kalman
 - Debug PF

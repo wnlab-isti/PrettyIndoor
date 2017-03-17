@@ -24,27 +24,13 @@ public class AccessPoints implements RawData, Iterable<SingleAccessPoint> {
 
     // Private members
     private final SingleAccessPoint[] mApArray;
-    private int i = 0;
     private final int mSize;
 
-    public AccessPoints(int size, long timestamp) {
-        mApArray = new SingleAccessPoint[size];
+    public AccessPoints(List<SingleAccessPoint> accessPoints, long timestamp) {
+        int size = accessPoints.size();
+        mApArray = accessPoints.toArray(new SingleAccessPoint[size]);
         mSize = size;
         this.timestamp = timestamp;
-    }
-
-    /**
-     * @param bssid
-     * @param level
-     * @return true if the element was successfully insterted, false otherwise.
-     */
-    public boolean add(String bssid, int level) {
-        if(i < mSize) {
-            mApArray[i] = new SingleAccessPoint(bssid, level);
-            i++;
-            return true;
-        } else
-            return false;
     }
 
     /**
