@@ -11,9 +11,10 @@ import it.cnr.isti.wnlab.indoornavigation.types.RawData;
 
 public abstract class Fingerprint<XYPosition, T extends RawData> {
 
-    private HashMap<XYPosition,T> map;
+    protected HashMap<XYPosition,T> map;
 
     protected Fingerprint() {
+        // Initialize map and populate with elements
         map = new HashMap<>();
     }
 
@@ -35,6 +36,9 @@ public abstract class Fingerprint<XYPosition, T extends RawData> {
                 return p1.compareTo(p2); // Negative if p1 is nearer than p2
             }
         });
+
+        for(DistancePair p : distancedPositions)
+                System.out.println(p);
 
         // Isolate first K elements
         List<DistancePair> firstKElements;
@@ -81,5 +85,11 @@ public abstract class Fingerprint<XYPosition, T extends RawData> {
         public int compareTo(DistancePair p) {
             return (int) (distance - p.distance);
         }
+
+        @Override
+        public String toString() {
+            return position + "," + distance;
+        }
     }
+
 }

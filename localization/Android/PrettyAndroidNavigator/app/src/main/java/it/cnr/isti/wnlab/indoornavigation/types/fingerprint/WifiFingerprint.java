@@ -1,5 +1,11 @@
 package it.cnr.isti.wnlab.indoornavigation.types.fingerprint;
 
+import com.google.common.io.Files;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigation.XYPosition;
@@ -9,6 +15,8 @@ import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
 public class WifiFingerprint extends Fingerprint<XYPosition,AccessPoints> {
 
     public static final int AP_ORDER_IN_ROW = AccessPoints.ORDER_BY_BSSID_ASC;
+    public static final float MIN_RSSI_VALUE = -100.f;
+    public static final float MAX_ROW_DISTANCE = MIN_RSSI_VALUE * MIN_RSSI_VALUE;
 
     // Sort the measurement before calculating nearest K rows.
     @Override
@@ -43,19 +51,74 @@ public class WifiFingerprint extends Fingerprint<XYPosition,AccessPoints> {
 
         // Compare arrays (Computer Science first year excercise)
         while(i1 < l1 && i2 < l2) {
+            System.out.println("Comparing " + i1 + " and " + i2);
             int comparation = array1[i1].bssid.compareTo(array2[i2].bssid);
             // Same BSSID
             if(comparation == 0) {
+                // Calculate distance
                 float drssi = array1[i1].rssi - array2[i2].rssi;
                 distance += drssi*drssi;
+                // Increment both
+                i1++;
+                i2++;
             }
             // Different BSSID, go on
-            else if(comparation < 0)
+            else if(comparation < 0) {
                 i1++;
-            else if(comparation > 0)
+                distance += MAX_ROW_DISTANCE;
+            } else if(comparation > 0) {
                 i2++;
+                distance += MAX_ROW_DISTANCE;
+            }
         }
 
         return distance;
+    }
+
+    /**
+     * Builder class for WifiFingerprints.
+     */
+    public static class Builder {
+
+        /**
+         * @param file The fingerprint file.
+         * @return A ready-to-use WifiFingerprint instance.
+         */
+        public WifiFingerprint buildFromFile(File file) {
+            try {
+                // Read all lines from file
+                List<String> lines = Files.readLines(file, StandardCharsets.UTF_8);
+
+                // Instantiate fingerprint object
+                WifiFingerprint fingerprint = new WifiFingerprint();
+
+                // Parse the text lines
+                for (String l : lines) {
+                    // Split CSV file
+                    String[] splitted = l.split(",");
+
+                    // Parse coordinate
+                    XYPosition position = new XYPosition(
+                            Float.parseFloat(splitted[0]),Float.parseFloat(splitted[1]));
+
+                    // Create BSSID,RSSI instances and the wrapper object
+                    List<SingleAccessPoint> apList = new ArrayList<>();
+                    for(int i = 2; i < splitted.length-1; i+=2)
+                        apList.add(new SingleAccessPoint(splitted[i],Integer.parseInt(splitted[i+1])));
+                    AccessPoints aps = new AccessPoints(apList,System.currentTimeMillis());
+
+                    // Populate map
+                    fingerprint.map.put(position, aps);
+                }
+
+                // Return fingerprint instance
+                return fingerprint;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
     }
 }

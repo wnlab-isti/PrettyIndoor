@@ -249,7 +249,7 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(getApplicationContext(), "Starting fingerprint creation", Toast.LENGTH_SHORT).show();
 
                 // Initialize fingerprint builder
-                MagneticFingerprintBuilder magneticBuilder = new MagneticFingerprintBuilder();
+                MagneticFingerprintFileBuilder magneticBuilder = new MagneticFingerprintFileBuilder();
 
                 // Get data files from default folder
                 File[] magDataFiles = getDataFiles(MAGNETIC_DATA_FILE_PREFIX, new File(MAGNETIC_DATA_FOLDER));
@@ -280,7 +280,7 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(getApplicationContext(), "Starting fingerprint creation", Toast.LENGTH_SHORT).show();
 
                 // Initialize fingerprint builder
-                WifiFingerprintBuilder wifiBuilder = new WifiFingerprintBuilder();
+                WifiFingerprintFileBuilder wifiBuilder = new WifiFingerprintFileBuilder();
 
                 // Get data files from default folder
                 File[] wifiDataFiles = getDataFiles(WIFI_DATA_FILE_PREFIX, new File(WIFI_DATA_FOLDER));

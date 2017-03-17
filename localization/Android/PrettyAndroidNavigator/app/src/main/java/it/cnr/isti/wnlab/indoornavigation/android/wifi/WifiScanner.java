@@ -4,6 +4,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,6 +12,7 @@ import java.util.TimerTask;
 import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
 
 /**
  * Every mDelay milliseconds scans available access points informations and notifies subscribers.
@@ -33,6 +35,7 @@ public class WifiScanner extends DataEmitter<AccessPoints> implements StartableS
      */
     public WifiScanner(WifiManager manager) {
         commonConstructor(manager);
+        mRate = DEFAULT_SCANNING_RATE;
     }
 
     /**
@@ -63,9 +66,13 @@ public class WifiScanner extends DataEmitter<AccessPoints> implements StartableS
                 public void run() {
                     // Adapt previous results and send data to related source
                     List<ScanResult> results = mManager.getScanResults();
-                    final AccessPoints data = new AccessPoints(results.size(), mLastTimestamp);
+                    List<SingleAccessPoint> aps = new ArrayList<>();
                     for (ScanResult res : results)
-                        data.add(res.BSSID, res.level);
+                        aps.add(new SingleAccessPoint(res.BSSID, res.level));
+
+                    // Create the AccessPoints instance to return
+                    final AccessPoints data = new AccessPoints(aps, mLastTimestamp);
+
                     // Notify observers on main thread
                     mHandler.post(new Runnable() {
                         @Override

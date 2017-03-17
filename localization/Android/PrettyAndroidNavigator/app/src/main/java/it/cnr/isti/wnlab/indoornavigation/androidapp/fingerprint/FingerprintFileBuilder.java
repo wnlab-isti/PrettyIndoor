@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public abstract class FingerprintBuilder {
+public abstract class FingerprintFileBuilder {
 
     /**
      * Creates a file with a fingerprint made from csv data files.
