@@ -1,5 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint;
 
+import android.content.Intent;
 import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -27,13 +28,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
-import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.androidapp.Logger;
 import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
 
-public class AcquisitionActivity extends AppCompatActivity implements View.OnClickListener {
+public class FingerprintActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Observers map
     private Map<DataEmitter, File> mEmitters;
@@ -90,11 +91,27 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
         (findViewById(R.id.btn_make_magnetic)).setOnClickListener(this);
         (findViewById(R.id.btn_make_wifi)).setOnClickListener(this);
 
+        // Test buttons
+        (findViewById(R.id.btn_test_wifi)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startTestActivity(FingerprintTestActivity.TEST_WIFI);
+            }
+        });
+        (findViewById(R.id.btn_test_magnetic)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startTestActivity(FingerprintTestActivity.TEST_MAGNETIC);
+            }
+        });
+
         // TextViews
         mViewX = (TextView) findViewById(R.id.tv_x);
         mViewY = (TextView) findViewById(R.id.tv_y);
         mViewX.setText("x: " + x/DIVISOR);
         mViewY.setText("y: " + y/DIVISOR);
+
+        // Threads and callbacks
 
         // Callback for reactivating button
         mCallback = new Handler.Callback() {
@@ -126,6 +143,16 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
         wifiDataFolder.mkdir();
         File magneticDataFolder = new File(MAGNETIC_DATA_FOLDER);
         magneticDataFolder.mkdir();
+    }
+
+    /**
+     * Start test activity.
+     * @param testType Fingerprint type for test activity.
+     */
+    private void startTestActivity(String testType) {
+        Intent intent = new Intent(this, FingerprintTestActivity.class);
+        intent.putExtra(FingerprintTestActivity.FINGERPRINT_TYPE, testType);
+        startActivity(intent);
     }
 
     /**
@@ -249,7 +276,7 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(getApplicationContext(), "Starting fingerprint creation", Toast.LENGTH_SHORT).show();
 
                 // Initialize fingerprint builder
-                MagneticFingerprintFileBuilder magneticBuilder = new MagneticFingerprintFileBuilder();
+                MagneticDataMerger magneticBuilder = new MagneticDataMerger();
 
                 // Get data files from default folder
                 File[] magDataFiles = getDataFiles(MAGNETIC_DATA_FILE_PREFIX, new File(MAGNETIC_DATA_FOLDER));
@@ -280,7 +307,7 @@ public class AcquisitionActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(getApplicationContext(), "Starting fingerprint creation", Toast.LENGTH_SHORT).show();
 
                 // Initialize fingerprint builder
-                WifiFingerprintFileBuilder wifiBuilder = new WifiFingerprintFileBuilder();
+                WifiDataMerger wifiBuilder = new WifiDataMerger();
 
                 // Get data files from default folder
                 File[] wifiDataFiles = getDataFiles(WIFI_DATA_FILE_PREFIX, new File(WIFI_DATA_FOLDER));

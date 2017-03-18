@@ -1,13 +1,10 @@
-package it.cnr.isti.wnlab.indoornavigation.android.handlers;
+package it.cnr.isti.wnlab.indoornavigation.android.sensors;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
-import it.cnr.isti.wnlab.indoornavigation.observer.AbstractEmitter;
-import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.types.RawSensorData;
 
@@ -69,7 +66,7 @@ public abstract class SensorDataEmitter<T extends RawSensorData>
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        Log.d("MAG", sensorEvent.timestamp + ""); notifyObservers(adapt(sensorEvent));
+        notifyObservers(adapt(sensorEvent));
     }
 
     @Override

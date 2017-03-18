@@ -5,30 +5,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="it.cnr.isti.wnlab.indoornavigation.androidapp.localization.FingerprintTestActivity">
+    tools:context="it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint.FingerprintTestActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Wifi fingerprint test" />
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="50dp"
+        android:id="@+id/fp_test_tv_title" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Load wifi fingerprint file"
-        android:id="@+id/fp_test_btn_load_wifi" />
+        android:text="Load fingerprint file"
+        android:id="@+id/fp_test_btn_load" />
 
     <ToggleButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start Wifi Scanning"
-        android:id="@+id/fp_test_toggle_scanning_wifi" />
+        android:id="@+id/fp_test_toggle_scanning" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Localize"
-        android:id="@+id/fp_test_btn_localize_wifi" />
+        android:id="@+id/fp_test_btn_localize" />
 
     <TextView
         android:layout_width="wrap_content"
