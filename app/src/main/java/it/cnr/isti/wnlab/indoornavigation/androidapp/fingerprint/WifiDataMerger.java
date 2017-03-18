@@ -14,7 +14,7 @@ import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.WifiFingerprint;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
 
-public class WifiFingerprintFileBuilder extends FingerprintFileBuilder {
+public class WifiDataMerger extends FingerprintDataMerger {
 
     // Map of measurements <(x,y),{(String BSSDi, int RSSIi), ...}>
     private Table<Float, Float, HashMap<String, Integer[]>> measurements;
@@ -22,7 +22,7 @@ public class WifiFingerprintFileBuilder extends FingerprintFileBuilder {
     // (bssid,rssi) map of the current point
     private HashMap<String, Integer[]> values = null;
 
-    public WifiFingerprintFileBuilder() {
+    public WifiDataMerger() {
         measurements = HashBasedTable.create();
     }
 

@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.android.handlers;
+package it.cnr.isti.wnlab.indoornavigation.android.sensors;
 
 public class SensorException extends RuntimeException {
 

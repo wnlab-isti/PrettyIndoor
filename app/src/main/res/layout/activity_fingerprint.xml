@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint.AcquisitionActivity">
+    tools:context="it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint.FingerprintActivity">
 
     <Button
         android:layout_width="match_parent"
@@ -77,6 +77,13 @@
         android:text="Will magnetic data blend?"
         android:textSize="5pt" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_test_magnetic"
+        android:text="Test Magnetic Fingerprint"
+        android:textSize="5pt" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -87,6 +94,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/btn_make_wifi"
         android:text="Will WiFi data blend?"
+        android:textSize="5pt" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_test_wifi"
+        android:text="Test Wifi Fingerprint"
         android:textSize="5pt" />
 
 

@@ -44,9 +44,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".androidapp.fingerprint.AcquisitionActivity"
+            android:name=".androidapp.fingerprint.FingerprintActivity"
             android:icon="@android:drawable/btn_radio"
-            android:label="Fingerprint Acquisition">
+            android:label="FingerFood">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,13 +54,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".androidapp.localization.FingerprintTestActivity"
+            android:name=".androidapp.fingerprint.FingerprintTestActivity"
             android:label="@string/title_activity_fingerprint_test"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

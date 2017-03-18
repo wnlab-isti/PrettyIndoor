@@ -1,28 +1,55 @@
 TODO
--> Testare fingerprint
--> Commentare bene classe Fingerprint
--> Fare K-NN di Wifi e Geomagnetico
--> Refactoring fingerprint acquisition con classe Fingerprint?
--> Refactoring localizzazione per fingerprint
--> Testare varie strategy di localizzazione "di base"
--> Front-end
--> Implementare PF
--> Debug PF
--> Debug Kalman
+Requisiti app Android:
+    - IndoorLocalization con IndoorService (che usa la liba e libj)
+    - Mappa grafica (semplice, ma tanto la devo fare per il PF)
 
-- Fare service
-- "define north" un po' più carino sulla RelativeCompass con Future<>
-- capire Step Detection (implementazione)
+Lib android:
+    - Handlers
+    - Service
 
-- Il past participle di split è split, non splitted
-- Refactoring
-- Debug Kalman
-- Debug PF
-- Front-end più carino
-- Documentazione
+Lib java:
+    - Location abstractions (type and strategies)
+    - Logger
+    - Compass
+    - Step Detection
+    - Fusion Filters
+    - Observer pattern abstractions
+    - Types
+        -> Simple data types (Wifi, sensor data types, ecc...)
+        -> Fingerprint
 
-- test & debug
-- validazione
-- misurazioni
+Lib java commons:
+    - Localization
+        -> You Li - like Kalman Localization Strategy
+        -> Particle Filter simple strategy
 
-- tesi
+-> Refactoring (2h)
+    - Check eccezioni (soprattutto fingerprint)
+    - Fare FingerprintWriter e FingerprintReader?
+    - Lavorare con XYPosition quando non conosco il piano (cioè quasi sempre)
+    - Compass, Step Detection e Loggers: android/androidapp -> libjava
+    - "define north" un po' più carino sulla RelativeCompass con Future<>
+    - Il past participle di split è split, non splitted
+-> Distinguere tra: librerie java, librerie android, app android e validare (1h)
+-> Progettazione & sviluppo front-end (2h30)
+-> Fare service (2h)
+
+-> Mappa (2h)
+    public XYPosition nearestValidPosition(XYPosition position);
+    public boolean isValid(XYPosition position);
+
+- 18/3
+
+-> Implementare PF & debug (6h)
+
+- 19/3
+
+-> Debug (e refactoring?) Kalman (3h)
+
+-> Validazione (2h)
+-> Documentazione
+
+-> Misurazioni
+-> capire Step Detection (implementazione & teoria)
+-> capire bussola (implementazione & teoria)
+-> Tesi
