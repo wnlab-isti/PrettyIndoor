@@ -16,14 +16,14 @@ import java.io.File;
 import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
-import it.cnr.isti.wnlab.indoornavigation.XYPosition;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
-import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
-import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.MagneticFingerprint;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.WifiFingerprint;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 
 public class FingerprintTestActivity extends AppCompatActivity {
 
@@ -110,7 +110,7 @@ public class FingerprintTestActivity extends AppCompatActivity {
                         int k = 3;
 
                         Toast.makeText(getApplicationContext(), "Doing K-NN", Toast.LENGTH_SHORT).show();
-                        List<XYPosition> positions = wiFing.findNearestK(data,k);
+                        List<XYPosition> positions = wiFing.findNearestK(data,k,1000.f);
                         Toast.makeText(getApplicationContext(),positions.size() + " positions found",Toast.LENGTH_SHORT).show();
                         StringBuilder string = new StringBuilder();
 
@@ -175,7 +175,7 @@ public class FingerprintTestActivity extends AppCompatActivity {
                         int k = 1;
 
                         Toast.makeText(getApplicationContext(), "Doing K-NN", Toast.LENGTH_SHORT).show();
-                        List<XYPosition> positions = mFing.findNearestK(data,k);
+                        List<XYPosition> positions = mFing.findNearestK(data,k,1000.f);
                         Toast.makeText(getApplicationContext(),positions.size() + " positions found",Toast.LENGTH_SHORT).show();
                         StringBuilder string = new StringBuilder();
 

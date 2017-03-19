@@ -6,7 +6,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import it.cnr.isti.wnlab.indoornavigation.IndoorNavigator;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorNavigator;
 
 public class IndoorService extends Service {
 

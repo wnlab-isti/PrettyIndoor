@@ -1,48 +1,17 @@
-TODO
-Requisiti app Android:
-    - IndoorLocalization con IndoorService (che usa la liba e libj)
-    - Mappa grafica (semplice, ma tanto la devo fare per il PF)
+--- TODO
 
-Lib android:
-    - Handlers
-    - Service
-
-Lib java:
-    - Location abstractions (type and strategies)
-    - Logger
-    - Compass
-    - Step Detection
-    - Fusion Filters
-    - Observer pattern abstractions
-    - Types
-        -> Simple data types (Wifi, sensor data types, ecc...)
-        -> Fingerprint
-
-Lib java commons:
-    - Localization
-        -> You Li - like Kalman Localization Strategy
-        -> Particle Filter simple strategy
+-> Finire implementazione PF (2h)
+-> Debug (2h)
 
 -> Refactoring (2h)
     - Check eccezioni (soprattutto fingerprint)
     - Fare FingerprintWriter e FingerprintReader?
     - Lavorare con XYPosition quando non conosco il piano (cioè quasi sempre)
-    - Compass, Step Detection e Loggers: android/androidapp -> libjava
     - "define north" un po' più carino sulla RelativeCompass con Future<>
     - Il past participle di split è split, non splitted
 -> Distinguere tra: librerie java, librerie android, app android e validare (1h)
 -> Progettazione & sviluppo front-end (2h30)
 -> Fare service (2h)
-
--> Mappa (2h)
-    public XYPosition nearestValidPosition(XYPosition position);
-    public boolean isValid(XYPosition position);
-
-- 18/3
-
--> Implementare PF & debug (6h)
-
-- 19/3
 
 -> Debug (e refactoring?) Kalman (3h)
 
@@ -53,3 +22,30 @@ Lib java commons:
 -> capire Step Detection (implementazione & teoria)
 -> capire bussola (implementazione & teoria)
 -> Tesi
+
+--- TODO WHAT
+Requisiti app Android:
+    - IndoorLocalization con IndoorService (che usa la liba e libj)
+    - Mappa grafica (semplice, ma tanto la devo fare per il PF)
+
+Lib android:
+    - Handlers
+    - Service
+    - Compass
+    - Step Detection
+
+Lib java:
+    - Localization abstractions (type and strategies)
+    - Logger
+    - Compass
+    - Step Detection
+    - Fusion Filters
+    - Observer pattern abstractions
+    - Types
+        -> Simple data types (wifi, sensor data types, ecc...)
+        -> Fingerprint
+
+Lib java commons:
+    - Localization implementations
+        -> You Li - like Kalman Localization Strategy
+        -> Particle Filter simple strategy

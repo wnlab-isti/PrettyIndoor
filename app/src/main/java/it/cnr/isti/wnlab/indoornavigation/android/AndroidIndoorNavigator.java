@@ -9,11 +9,10 @@ import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import it.cnr.isti.wnlab.indoornavigation.IndoorNavigator;
-import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.LocationStrategy;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorNavigator;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorLocalizationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.R;
-import it.cnr.isti.wnlab.indoornavigation.android.compass.Compass;
 import it.cnr.isti.wnlab.indoornavigation.android.compass.RelativeCompass;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.GyroscopeHandler;
@@ -21,19 +20,20 @@ import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.FasterStepDetector;
 import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.StepDetector;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
-import it.cnr.isti.wnlab.indoornavigation.androidapp.Logger;
-import it.cnr.isti.wnlab.indoornavigation.androidapp.PositionLogger;
-import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
-import it.cnr.isti.wnlab.indoornavigation.types.Heading;
-import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
-import it.cnr.isti.wnlab.indoornavigation.types.inertial.AngularSpeed;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.geomagnetic.KnnMagneticMismatch;
-import it.cnr.isti.wnlab.indoornavigation.utils.intertial.pdr.FixedLengthPDR;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fusion.SimpleKalmanFilterStrategy;
-import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi.KnnWifiFingerprint_OLD;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.log.DataLogger;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.log.PositionLogger;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.StartableStoppable;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.fingerprint.geomagnetic.KnnMagneticMismatch;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.intertial.pdr.FixedLengthPDR;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleKalmanFilterStrategy;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.fingerprint.wifi.KnnWifiFingerprint_OLD;
 
 /**
  * AndroidIndoorNavigator object for the user.
@@ -41,7 +41,7 @@ import it.cnr.isti.wnlab.indoornavigation.utils.strategies.fingerprint.wifi.KnnW
 public class AndroidIndoorNavigator implements IndoorNavigator {
 
     private List<StartableStoppable> mSources;
-    private LocationStrategy mStrategy;
+    private IndoorLocalizationStrategy mStrategy;
     private Observer<IndoorPosition> mUpdater;
 
     private boolean started = false;
@@ -82,7 +82,7 @@ public class AndroidIndoorNavigator implements IndoorNavigator {
     // NOTE: sources are immutable.
 
     // Strategy setter
-    private void setStrategy(LocationStrategy strategy) {
+    private void setStrategy(IndoorLocalizationStrategy strategy) {
         if(strategy != null) {
             // Remove an older strategy, if it exists
             if (mUpdater != null) mStrategy.unregister(mUpdater);
@@ -118,7 +118,7 @@ public class AndroidIndoorNavigator implements IndoorNavigator {
         private List<StartableStoppable> mSources;
 
         // Preferred strategy (if any)
-        private LocationStrategy mStrategy;
+        private IndoorLocalizationStrategy mStrategy;
 
         // Observer for new positions
         private Observer<IndoorPosition> mUpdater;
@@ -239,19 +239,19 @@ public class AndroidIndoorNavigator implements IndoorNavigator {
                     if (type == AccelerometerHandler.class) {
                         acc = (AccelerometerHandler) s;
                         if (mLogWriter != null)
-                            acc.register(new Logger<Acceleration>(mLogWriter));
+                            acc.register(new DataLogger<Acceleration>(mLogWriter));
                     } else if (type == GyroscopeHandler.class) {
                         gyro = (GyroscopeHandler) s;
                         if(mLogWriter != null)
-                            gyro.register(new Logger<AngularSpeed>(mLogWriter));
+                            gyro.register(new DataLogger<AngularSpeed>(mLogWriter));
                     } else if (type == MagneticFieldHandler.class) {
                         mag = (MagneticFieldHandler) s;
                         if(mLogWriter != null)
-                            mag.register(new Logger<MagneticField>(mLogWriter));
+                            mag.register(new DataLogger<MagneticField>(mLogWriter));
                     } else if (type == WifiScanner.class) {
                         wifi = (WifiScanner) s;
                         if(mLogWriter != null)
-                            wifi.register(new Logger<AccessPoints>(mLogWriter));
+                            wifi.register(new DataLogger<AccessPoints>(mLogWriter));
                     }
                 }
                 Log.d("SCANRESULT", "sources empty? " + mSources.isEmpty() + " | " +
@@ -290,7 +290,7 @@ public class AndroidIndoorNavigator implements IndoorNavigator {
                     Log.d("INBUILDER","PDR recognised");
 
                     // Heading
-                    final Compass heading = new RelativeCompass(acc,gyro,mag,60);
+                    final AbstractEmitter<Heading> heading = new RelativeCompass(acc,gyro,mag,60);
                     if(builderIsSocial) {
                         // Observer for first-heading notification: when it occurs,
                         // compass is calibrated and active.

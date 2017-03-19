@@ -6,18 +6,20 @@ import android.os.Handler;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
-import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
-import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
-import it.cnr.isti.wnlab.indoornavigation.types.inertial.AngularSpeed;
-import it.cnr.isti.wnlab.indoornavigation.types.Heading;
-import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.MatrixUtils;
 
 /**
  * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/
  */
 
-public abstract class LawitzkiCompass extends Compass {
+public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
 
     // Initial delay
     public final static int INITIAL_DELAY = 0;
@@ -142,7 +144,7 @@ public abstract class LawitzkiCompass extends Compass {
             float[] initMatrix = getRotationMatrixFromOrientation(accMagOrientation);
             float[] test = new float[3];
             SensorManager.getOrientation(initMatrix, test);
-            gyroMatrix = matrixMultiplication(gyroMatrix, initMatrix);
+            gyroMatrix = MatrixUtils.multiplication3x3(gyroMatrix, initMatrix);
             initState = false;
         }
 
@@ -163,7 +165,7 @@ public abstract class LawitzkiCompass extends Compass {
         SensorManager.getRotationMatrixFromVector(deltaMatrix, deltaVector);
 
         // apply the new rotation interval on the gyroscope based rotation matrix
-        gyroMatrix = matrixMultiplication(gyroMatrix, deltaMatrix);
+        gyroMatrix = MatrixUtils.multiplication3x3(gyroMatrix, deltaMatrix);
 
         // get the gyroscope based orientation from the rotation matrix
         SensorManager.getOrientation(gyroMatrix, gyroOrientation);
@@ -254,19 +256,17 @@ public abstract class LawitzkiCompass extends Compass {
         notifyObservers(new Heading(heading, timestamp));
     }
 
-    // Utils
-
-    private float[] getRotationMatrixFromOrientation(float[] o) {
+    private static float[] getRotationMatrixFromOrientation(float[] orientation) {
         float[] xM = new float[9];
         float[] yM = new float[9];
         float[] zM = new float[9];
 
-        float sinX = (float)Math.sin(o[1]);
-        float cosX = (float)Math.cos(o[1]);
-        float sinY = (float)Math.sin(o[2]);
-        float cosY = (float)Math.cos(o[2]);
-        float sinZ = (float)Math.sin(o[0]);
-        float cosZ = (float)Math.cos(o[0]);
+        float sinX = (float)Math.sin(orientation[1]);
+        float cosX = (float)Math.cos(orientation[1]);
+        float sinY = (float)Math.sin(orientation[2]);
+        float cosY = (float)Math.cos(orientation[2]);
+        float sinZ = (float)Math.sin(orientation[0]);
+        float cosZ = (float)Math.cos(orientation[0]);
 
         // rotation about x-axis (pitch)
         xM[0] = 1.0f; xM[1] = 0.0f; xM[2] = 0.0f;
@@ -284,27 +284,9 @@ public abstract class LawitzkiCompass extends Compass {
         zM[6] = 0.0f; zM[7] = 0.0f; zM[8] = 1.0f;
 
         // rotation order is y, x, z (roll, pitch, azimuth)
-        float[] resultMatrix = matrixMultiplication(xM, yM);
-        resultMatrix = matrixMultiplication(zM, resultMatrix);
+        float[] resultMatrix = MatrixUtils.multiplication3x3(xM, yM);
+        resultMatrix = MatrixUtils.multiplication3x3(zM, resultMatrix);
         return resultMatrix;
-    }
-
-    private float[] matrixMultiplication(float[] A, float[] B) {
-        float[] result = new float[9];
-
-        result[0] = A[0] * B[0] + A[1] * B[3] + A[2] * B[6];
-        result[1] = A[0] * B[1] + A[1] * B[4] + A[2] * B[7];
-        result[2] = A[0] * B[2] + A[1] * B[5] + A[2] * B[8];
-
-        result[3] = A[3] * B[0] + A[4] * B[3] + A[5] * B[6];
-        result[4] = A[3] * B[1] + A[4] * B[4] + A[5] * B[7];
-        result[5] = A[3] * B[2] + A[4] * B[5] + A[5] * B[8];
-
-        result[6] = A[6] * B[0] + A[7] * B[3] + A[8] * B[6];
-        result[7] = A[6] * B[1] + A[7] * B[4] + A[8] * B[7];
-        result[8] = A[6] * B[2] + A[7] * B[5] + A[8] * B[8];
-
-        return result;
     }
 
 }

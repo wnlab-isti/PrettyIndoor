@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
-import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.StartableStoppable;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.SingleAccessPoint;
 
 /**
  * Every mDelay milliseconds scans available access points informations and notifies subscribers.

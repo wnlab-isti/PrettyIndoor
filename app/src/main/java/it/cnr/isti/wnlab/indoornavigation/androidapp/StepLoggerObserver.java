@@ -11,8 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 
 public class StepLoggerObserver implements Observer<IndoorPosition>, Closeable {
 
