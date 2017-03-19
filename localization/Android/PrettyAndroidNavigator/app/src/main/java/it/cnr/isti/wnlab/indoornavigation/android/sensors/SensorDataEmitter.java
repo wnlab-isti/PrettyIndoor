@@ -5,8 +5,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
-import it.cnr.isti.wnlab.indoornavigation.types.RawSensorData;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawSensorData;
 
 /**
  * Abstract class that manages SensorManager, event listening and subscribers.

@@ -1,7 +1,5 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint;
 
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,11 +17,6 @@ public abstract class FingerprintDataMerger {
      * @return true if the fingerprint has been correctly written, false if an error occurred.
      */
     public void make(File result, File... filesWithData) throws IOException {
-
-        Log.d("FP", "Merging ");
-        for(int i = 0; i < filesWithData.length; i++)
-            Log.d("FP", "File: " + filesWithData[i].getName());
-
         if(filesWithData != null) {
             // For each file, add the measures to the map
             for(File f : filesWithData) {
@@ -48,7 +41,6 @@ public abstract class FingerprintDataMerger {
                             float x = Float.parseFloat(splitted[0]);
                             float y = Float.parseFloat(splitted[1]);
 
-                            Log.d("FP","Changing point to: " + x + "," + y);
                             setCoordinates(x,y);
                         }
                     }

@@ -10,13 +10,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.WifiFingerprint;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.SingleAccessPoint;
 
 public class WifiDataMerger extends FingerprintDataMerger {
 
-    // Map of measurements <(x,y),{(String BSSDi, int RSSIi), ...}>
+    // Map of measurements <(x,y),{(String BSSIDi, int RSSIi), ...}>
     private Table<Float, Float, HashMap<String, Integer[]>> measurements;
 
     // (bssid,rssi) map of the current point

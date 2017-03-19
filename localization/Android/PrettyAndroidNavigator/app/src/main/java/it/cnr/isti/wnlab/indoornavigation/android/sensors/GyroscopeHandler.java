@@ -4,7 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
-import it.cnr.isti.wnlab.indoornavigation.types.inertial.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
 
 /**
  * Handler for Android's gyroscope events.

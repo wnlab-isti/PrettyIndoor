@@ -24,15 +24,15 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
-import it.cnr.isti.wnlab.indoornavigation.IndoorNavigator;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorNavigator;
 import it.cnr.isti.wnlab.indoornavigation.android.AndroidIndoorNavigator;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
-import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.StartableStoppable;
-import it.cnr.isti.wnlab.indoornavigation.androidapp.PositionLogger;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.StartableStoppable;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.log.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigation.androidapp.StepLoggerObserver;
 
 public class MainActivity extends AppCompatActivity implements

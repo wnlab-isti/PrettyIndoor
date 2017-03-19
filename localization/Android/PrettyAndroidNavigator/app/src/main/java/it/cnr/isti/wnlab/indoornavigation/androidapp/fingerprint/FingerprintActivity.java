@@ -30,9 +30,9 @@ import java.util.concurrent.Executors;
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
-import it.cnr.isti.wnlab.indoornavigation.androidapp.Logger;
-import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
-import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.log.DataLogger;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
 
 public class FingerprintActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -218,7 +218,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
                             BufferedWriter writer = new BufferedWriter(new FileWriter(acquisition.getValue()));
 
                             // Register logger and add writer to collection
-                            acquisition.getKey().register(new Logger(writer));
+                            acquisition.getKey().register(new DataLogger(writer));
                             mWriters.add(writer);
                         } catch (IOException e) {
                             Toast.makeText(getApplicationContext(),
