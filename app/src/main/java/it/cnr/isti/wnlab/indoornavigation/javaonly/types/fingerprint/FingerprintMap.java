@@ -7,49 +7,60 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
 
-public abstract class Fingerprint<XYPosition, T extends RawData> {
+public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
 
-    protected HashMap<XYPosition,T> map;
+    protected HashMap<P,T> map;
 
-    protected Fingerprint() {
+    protected FingerprintMap() {
         // Initialize map and populate with elements
         map = new HashMap<>();
     }
 
-    public List<XYPosition> findNearestK(T measurement, int k, float threshold) {
+    /**
+     * @param measurement
+     * @param threshold
+     * @return An unordered list of all points in database with their row-distances from measurement.
+     */
+    public List<PositionDistance<P>> getDistancedPoints(T measurement, float threshold) {
         // For each registered position calculate distance between row and measurement
-        ArrayList<DistancePair> distancedPositions = new ArrayList<>();
-        for(Map.Entry<XYPosition,T> entry : map.entrySet()) {
+        ArrayList<PositionDistance<P>> distancedPositions = new ArrayList<>();
+        for(Map.Entry<P,T> entry : map.entrySet()) {
             // Add results to a list if distance is acceptable
             float distance = distanceBetween(measurement,entry.getValue());
             if(distance <= threshold)
                 distancedPositions.add(
-                        new DistancePair(entry.getKey(), distance));
+                        new PositionDistance(entry.getKey(), distance));
         }
+        return distancedPositions;
+    }
+
+    public List<P> findNearestK(T measurement, int k, float threshold) {
+        List<PositionDistance<P>> distancedPositions = getDistancedPoints(measurement, threshold);
 
         // Sort per distance
-        Collections.sort(distancedPositions, new Comparator<DistancePair>() {
+        Collections.sort(distancedPositions, new Comparator<PositionDistance>() {
             @Override
-            public int compare(DistancePair p1, DistancePair p2) {
+            public int compare(PositionDistance p1, PositionDistance p2) {
                 return p1.compareTo(p2); // Negative if p1 is nearer than p2
             }
         });
 
-        for(DistancePair p : distancedPositions)
+        for(PositionDistance p : distancedPositions)
                 System.out.println(p);
 
         // Isolate first K elements
-        List<DistancePair> firstKElements;
+        List<PositionDistance<P>> firstKElements;
         if(distancedPositions.size() <= k)
             firstKElements = distancedPositions;
         else
             firstKElements = distancedPositions.subList(0,k);
 
         // Return first K positions
-        ArrayList<XYPosition> result = new ArrayList<>();
-        for(DistancePair p : firstKElements)
+        ArrayList<P> result = new ArrayList<>();
+        for(PositionDistance<P> p : firstKElements)
             result.add(p.position);
         return result;
     }
@@ -69,11 +80,11 @@ public abstract class Fingerprint<XYPosition, T extends RawData> {
     /**
      * Private wrapper class for (position,distance) pairs.
      */
-    private class DistancePair {
-        public final XYPosition position;
+    public static class PositionDistance<P extends XYPosition> {
+        public final P position;
         public final float distance;
 
-        private DistancePair(XYPosition position, float distance) {
+        private PositionDistance(P position, float distance) {
             this.position = position;
             this.distance = distance;
         }
@@ -82,7 +93,7 @@ public abstract class Fingerprint<XYPosition, T extends RawData> {
          * @param p
          * @return a negative integer if this pair is nearer (less distanced) than the argument's.
          */
-        public int compareTo(DistancePair p) {
+        public int compareTo(PositionDistance p) {
             return (int) (distance - p.distance);
         }
 

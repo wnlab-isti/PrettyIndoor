@@ -7,13 +7,13 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.SingleAccessPoint;
 
-public class WifiFingerprint extends Fingerprint<XYPosition,AccessPoints> {
+public class WifiFingerprintMap extends FingerprintMap<XYPosition,AccessPoints> {
 
     public static final int AP_ORDER_IN_ROW = AccessPoints.ORDER_BY_BSSID_ASC;
     public static final float MIN_RSSI_VALUE = -100.f;
     public static final float MAX_ROW_DISTANCE = MIN_RSSI_VALUE * MIN_RSSI_VALUE;
 
-    private WifiFingerprint() {}
+    private WifiFingerprintMap() {}
 
     // Sort the measurement before calculating nearest K rows.
     @Override
@@ -73,13 +73,13 @@ public class WifiFingerprint extends Fingerprint<XYPosition,AccessPoints> {
     }
 
     /**
-     * Builder class for WifiFingerprint.
+     * Builder class for WifiFingerprintMap.
      */
-    public static class Builder extends FingerprintBuilder<WifiFingerprint> {
+    public static class Builder extends FingerprintMapBuilder<WifiFingerprintMap> {
 
-        public WifiFingerprint build(List<String> lines) {
+        public WifiFingerprintMap build(List<String> lines) {
             // Instantiate fingerprint object
-            WifiFingerprint fingerprint = new WifiFingerprint();
+            WifiFingerprintMap fingerprint = new WifiFingerprintMap();
 
             // Parse the text lines
             for (String l : lines) {

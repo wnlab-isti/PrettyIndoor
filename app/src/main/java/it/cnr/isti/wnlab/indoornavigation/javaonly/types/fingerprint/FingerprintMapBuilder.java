@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public abstract class FingerprintBuilder<F extends Fingerprint> {
+public abstract class FingerprintMapBuilder<F extends FingerprintMap> {
     /**
      * @param file The fingerprint file.
-     * @return A ready-to-use Fingerprint instance.
+     * @return A ready-to-use FingerprintMap instance.
      */
     public F build(File file) {
         try {

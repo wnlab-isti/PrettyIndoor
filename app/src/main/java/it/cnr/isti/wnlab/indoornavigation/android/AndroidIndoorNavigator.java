@@ -257,7 +257,7 @@ public class AndroidIndoorNavigator implements IndoorNavigator {
                 Log.d("SCANRESULT", "sources empty? " + mSources.isEmpty() + " | " +
                         "acc" + acc + ", gyro " + gyro + ", mag " + mag + ", wifi " + wifi);
 
-                // Wifi Fingerprint
+                // Wifi FingerprintMap
                 KnnWifiFingerprint_OLD wifiLoc = null;
                 if (wifi != null && mWifiFingerprintMap != null) {
                     // Build locator instance

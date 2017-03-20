@@ -21,20 +21,20 @@ import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprint;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 
 public class FingerprintTestActivity extends AppCompatActivity {
 
     // Wifi data
     private WifiScanner wifiScanner;
-    private WifiFingerprint wiFing;
+    private WifiFingerprintMap wiFing;
     private String wiFingPath = Environment.getExternalStorageDirectory() + "/fingerprints/wifi_fingerprint.csv";
 
     // Magnetic data
     private MagneticFieldHandler mHandler;
-    private MagneticFingerprint mFing;
+    private MagneticFingerprintMap mFing;
     private String mFingPath = Environment.getExternalStorageDirectory() + "/fingerprints/magnetic_fingerprint.csv";
 
     // GUI
@@ -79,11 +79,11 @@ public class FingerprintTestActivity extends AppCompatActivity {
         // Wifi Scanner
         wifiScanner = new WifiScanner((WifiManager) getSystemService(WIFI_SERVICE));
 
-        // Load Fingerprint button
+        // Load FingerprintMap button
         (findViewById(R.id.fp_test_btn_load)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                WifiFingerprint.Builder wifiBuilder = new WifiFingerprint.Builder();
+                WifiFingerprintMap.Builder wifiBuilder = new WifiFingerprintMap.Builder();
                 wiFing = wifiBuilder.build(new File(wiFingPath));
             }
         });
@@ -144,11 +144,11 @@ public class FingerprintTestActivity extends AppCompatActivity {
         int speed = 1500;
         mHandler = new MagneticFieldHandler((SensorManager) getSystemService(SENSOR_SERVICE), speed);
 
-        // Load Fingerprint button
+        // Load FingerprintMap button
         (findViewById(R.id.fp_test_btn_load)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MagneticFingerprint.Builder magBuilder = new MagneticFingerprint.Builder();
+                MagneticFingerprintMap.Builder magBuilder = new MagneticFingerprintMap.Builder();
                 mFing = magBuilder.build(new File(mFingPath));
             }
         });
