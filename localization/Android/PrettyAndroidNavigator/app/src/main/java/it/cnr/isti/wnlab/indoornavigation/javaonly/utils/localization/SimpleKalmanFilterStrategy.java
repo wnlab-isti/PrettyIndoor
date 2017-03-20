@@ -54,7 +54,7 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
             }
         });
 
-        // KF update with MM and Wifi Fingerprint
+        // KF update with MM and Wifi FingerprintMap
         //loc2kf = new LocationStrategyUpdater(kf, wifiLocator, mmLocator);
 
         // Initialize step count

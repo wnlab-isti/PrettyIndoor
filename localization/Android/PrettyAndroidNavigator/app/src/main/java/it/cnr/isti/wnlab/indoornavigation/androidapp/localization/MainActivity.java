@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
     private WifiScanner wifi;
     private final int WIFI_RATE = 1400;
 
-    // Fingerprint maps
+    // FingerprintMap maps
     private File wifiFingerprintDB;
     private File magneticFingerprintDB;
 

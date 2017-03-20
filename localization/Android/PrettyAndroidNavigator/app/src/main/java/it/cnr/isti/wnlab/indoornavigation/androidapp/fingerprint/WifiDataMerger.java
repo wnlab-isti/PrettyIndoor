@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprint;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.SingleAccessPoint;
 
@@ -103,7 +103,7 @@ public class WifiDataMerger extends FingerprintDataMerger {
                 /*
                  * Sort point's BSSID list
                  */
-                Collections.sort(aps, AccessPoints.getComparator(WifiFingerprint.AP_ORDER_IN_ROW));
+                Collections.sort(aps, AccessPoints.getComparator(WifiFingerprintMap.AP_ORDER_IN_ROW));
 
                 /*
                  * Write down fingerprint row in this format:

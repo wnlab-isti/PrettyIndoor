@@ -147,7 +147,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
 
     /**
      * Start test activity.
-     * @param testType Fingerprint type for test activity.
+     * @param testType FingerprintMap type for test activity.
      */
     private void startTestActivity(String testType) {
         Intent intent = new Intent(this, FingerprintTestActivity.class);
@@ -295,7 +295,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
                         e.printStackTrace();
                     }
 
-                    Toast.makeText(getApplicationContext(), "Fingerprint made!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "FingerprintMap made!", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getApplicationContext(), "No data files found for magnetic field.", Toast.LENGTH_SHORT);
                 break;
@@ -326,7 +326,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
                         e.printStackTrace();
                     }
 
-                    Toast.makeText(getApplicationContext(), "Fingerprint made!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "FingerprintMap made!", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getApplicationContext(), "No data files found for wifi.", Toast.LENGTH_SHORT);
                 break;

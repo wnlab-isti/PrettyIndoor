@@ -5,7 +5,7 @@ import java.util.List;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
 
-public class MagneticFingerprint extends Fingerprint<XYPosition,MagneticField> {
+public class MagneticFingerprintMap extends FingerprintMap<XYPosition,MagneticField> {
     @Override
     protected float distanceBetween(MagneticField data1, MagneticField data2) {
         float dx = data1.x - data2.x;
@@ -15,13 +15,13 @@ public class MagneticFingerprint extends Fingerprint<XYPosition,MagneticField> {
     }
 
     /**
-     * Builder class for MagneticFingerprint.
+     * Builder class for MagneticFingerprintMap.
      */
-    public static class Builder extends FingerprintBuilder<MagneticFingerprint> {
+    public static class Builder extends FingerprintMapBuilder<MagneticFingerprintMap> {
 
-        public MagneticFingerprint build(List<String> lines) {
+        public MagneticFingerprintMap build(List<String> lines) {
             // Instantiate fingerprint object
-            MagneticFingerprint fingerprint = new MagneticFingerprint();
+            MagneticFingerprintMap fingerprint = new MagneticFingerprintMap();
 
             // Parse the text lines
             for (String l : lines) {

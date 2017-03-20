@@ -15,7 +15,7 @@ public class IndoorParticleFilter<T extends PositionParticle> extends ParticleFi
             UpdateStrategy updateStep,
             FilteringStrategy filteringStep,
             RegenerationStrategy regenerationStep,
-            PositionPickingStrategy positionPicking
+            PositionPickingStrategy<T,XYPosition> positionPicking
     ) {
         super(particles, updateStep, filteringStep, regenerationStep);
         this.mPositionPicking = positionPicking;
@@ -29,6 +29,6 @@ public class IndoorParticleFilter<T extends PositionParticle> extends ParticleFi
     @Override
     public XYPosition get2DPosition() {
         super.filter();
-        return mPositionPicking.getPosition(mParticles);
+        return mPositionPicking.getPosition(particles);
     }
 }
