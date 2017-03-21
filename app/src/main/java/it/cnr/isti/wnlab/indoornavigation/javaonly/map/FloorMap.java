@@ -1,10 +1,22 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.map;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public interface FloorMap {
-    boolean isValid(XYPosition p);
-    boolean isValid(float x, float y);
-    XYPosition getNearestValidPosition(XYPosition p);
-    XYPosition getNearestValidPosition(float x, float y);
+public class FloorMap implements XYMap {
+
+    private Collection<RoomMap> rooms;
+
+    public FloorMap() {
+        rooms = new ArrayList<>();
+    }
+
+    @Override
+    public boolean isValid(float x, float y) {
+        for(RoomMap room : rooms) {
+            if(room.isValid(x,y))
+                return true;
+        }
+        return false;
+    }
 }
