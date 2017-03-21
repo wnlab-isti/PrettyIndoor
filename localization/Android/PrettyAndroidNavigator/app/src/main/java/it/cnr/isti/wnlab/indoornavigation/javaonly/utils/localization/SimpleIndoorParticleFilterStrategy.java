@@ -173,8 +173,8 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     }
 
     /**********************************************************************
-     * FIRST STEP: MOVE PARTICLES
-     * SECOND STEP: FILTER PARTICLES
+     * FIRST STEP: Move particles
+     * SECOND STEP: Filter particles
      * (these steps are exceptionally together)
      *********************************************************************/
 
