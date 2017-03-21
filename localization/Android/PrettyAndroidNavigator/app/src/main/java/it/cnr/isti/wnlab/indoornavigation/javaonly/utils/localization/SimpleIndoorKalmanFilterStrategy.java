@@ -11,7 +11,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.kalmanfilter.PDRPredict
 /**
  * Implementation of strategy used by You Li.
  */
-public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrategy {
+public class SimpleIndoorKalmanFilterStrategy extends AbstractIndoorLocalizationStrategy {
 
     private final static float STEP_LENGTH = 0.5f;
 
@@ -27,7 +27,7 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
     private int mStepCount;
     private static final int STEP_LIMIT = 3;
 
-    public SimpleKalmanFilterStrategy(
+    public SimpleIndoorKalmanFilterStrategy(
             IndoorPosition startPosition,
             PDR pdr/*,
             KnnWifiFingerprint_OLD wifiLocator,

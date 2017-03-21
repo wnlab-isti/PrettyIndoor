@@ -7,7 +7,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.Filter;
 public class ParticleFilter<T extends Particle> implements Filter {
 
     protected Collection<T> particles;
-    protected final int originalParticlesNumber;
+    protected final int beginningParticlesNumber;
 
     private UpdateStrategy<T> updateStrategy;
     private FilteringStrategy<T> filteringStrategy;
@@ -20,7 +20,7 @@ public class ParticleFilter<T extends Particle> implements Filter {
             RegenerationStrategy<T> regenerationStrategy) {
         // Set particles
         this.particles = particles;
-        this.originalParticlesNumber = particles.size();
+        this.beginningParticlesNumber = particles.size();
 
         // Set strategies
         this.updateStrategy = updateStrategy;

@@ -32,7 +32,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.fingerprint.geomagnetic.KnnMagneticMismatch;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.intertial.pdr.FixedLengthPDR;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleKalmanFilterStrategy;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleIndoorKalmanFilterStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.fingerprint.wifi.KnnWifiFingerprint_OLD;
 
 /**
@@ -328,7 +328,7 @@ public class AndroidIndoorNavigator implements IndoorNavigator {
 
                     // Pseudo-You Li strategy with KF
                     Log.d("BUILDER", "Initial position is " + mInitialPosition);
-                    mStrategy = new SimpleKalmanFilterStrategy(
+                    mStrategy = new SimpleIndoorKalmanFilterStrategy(
                             mInitialPosition,
                             pdr,
                             wifiLoc,

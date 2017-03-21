@@ -66,4 +66,33 @@ public class PositionParticle implements Particle {
         }
         return particles;
     }
+
+    /**
+     * @param initialPosition
+     * @param particlesNumber
+     * @return A collection of particlesNumber particles on initialPosition.
+     */
+    public static Collection<PositionParticle> createParticles(XYPosition initialPosition, int particlesNumber) {
+        ArrayList<PositionParticle> particles = new ArrayList<>();
+        for(int i = 0; i < particlesNumber; i++)
+            particles.add(new PositionParticle(initialPosition.x, initialPosition.y, 1.f/particlesNumber));
+        return particles;
+    }
+
+
+    /**
+     * @return A particle with same x,y and weight.
+     */
+    @Override
+    public PositionParticle clone() {
+        return new PositionParticle(x,y,weight);
+    }
+
+    /**
+     * @param weight The new weight the particle has to have got.
+     * @return A particle with same x,y and specified weight.
+     */
+    public PositionParticle clone(float weight) {
+        return new PositionParticle(x,y,weight);
+    }
 }
