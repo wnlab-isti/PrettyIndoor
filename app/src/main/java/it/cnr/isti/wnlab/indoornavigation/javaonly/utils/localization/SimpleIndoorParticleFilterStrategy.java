@@ -2,7 +2,6 @@ package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -35,6 +34,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
 
     // Particle Filter
     private IndoorParticleFilter<PositionParticle> particleFilter;
+    private final int particlesNumber;
 
     // Map
     private FloorMap floorMap;
@@ -80,11 +80,15 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         /*
          * Particle Filter
          */
+
+        // Save for regeneration
+        this.particlesNumber = particlesNumber;
+        // Initialize PF
         particleFilter = new IndoorParticleFilter<>(
                 /*
                  * Initial particles are all on the initial position.
                  */
-                getInitialParticles(initialPosition, particlesNumber),
+                PositionParticle.createParticles(initialPosition, particlesNumber),
                 // Move particles
                 new UpdateStrategy<PositionParticle>() {
                     @Override
@@ -105,7 +109,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
                 new PositionPickingStrategy<PositionParticle, XYPosition>() {
                     @Override
                     public XYPosition getPosition(Collection<PositionParticle> particles) {
-                        return pickPosition(particles);
+                        return pickWeightAvgPosition(particles);
                     }
                 });
 
@@ -166,18 +170,6 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
          * Randomness
          */
         r = new Random();
-    }
-
-    /**
-     * @param initialPosition
-     * @param particlesNumber
-     * @return A collection of particlesNumber particles on initialPosition.
-     */
-    private static Collection<PositionParticle> getInitialParticles(XYPosition initialPosition, int particlesNumber) {
-        ArrayList<PositionParticle> particles = new ArrayList<>();
-        for(int i = 0; i < particlesNumber; i++)
-            particles.add(new PositionParticle(initialPosition.x, initialPosition.y, 1.f/particlesNumber));
-        return particles;
     }
 
     /**********************************************************************
@@ -279,18 +271,53 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      * THIRD STEP: Regenerate lost particles
      *********************************************************************/
 
-    // TODO regeneration
+    private void regenerate(Collection<PositionParticle> particles) {
+        // Duplicate old particles in order to create new N = originalNumber-M particles.
+        // All the particles have ALWAYS THE SAME WEIGHT.
+        int survivedParticlesN = particles.size();
+        int newParticlesN = particlesNumber - particles.size();
+        float newParticlesWeight = 1.f/particlesNumber;
+        PositionParticle[] particlesArray = particles.toArray(new PositionParticle[survivedParticlesN]);
+        for(int i = 0; i < newParticlesN; i++) {
+            // Iterate on first survived particles and add new ones
+            PositionParticle newParticle = particlesArray[i%survivedParticlesN].clone(newParticlesWeight);
+            particles.add(newParticle);
+        }
+
+        /*
+        // Set weight of M survived particles as 1/(M+1)
+        int survivedParticlesN = particles.size();
+        float survivedParticlesWeight = 1.f/(survivedParticlesN+1);
+        for(PositionParticle p : particles)
+            p.setWeight(survivedParticlesWeight);
+
+        // Duplicate old particles in order to create new N = originalNumber-M particles.
+        // New particles' weights are 1/(M+1) * 1/N
+        int newParticlesN = particlesNumber - survivedParticlesN;
+        float newParticlesWeight = 1.f/( (survivedParticlesN+1)*newParticlesN );
+        PositionParticle[] particlesArray = particles.toArray(new PositionParticle[survivedParticlesN]);
+        for(int i = 0; i < newParticlesN; i++) {
+            PositionParticle newParticle = particlesArray[i%survivedParticlesN].clone(newParticlesWeight);
+            particles.add(newParticle);
+        }*/
+    }
 
     /**********************************************************************
-     * FIRST STEP: MOVE PARTICLES
+     * Pick a position to signal from particles.
      *********************************************************************/
 
     /**
-     * TODO position picking
      * @param particles
-     * @return A position between particles.
+     * @return A position between particles in respecting particles weights.
      */
-    private XYPosition pickPosition(Collection<PositionParticle> particles) {
-        return null;
+    private XYPosition pickWeightAvgPosition(Collection<PositionParticle> particles) {
+        float avgX = 0.f;
+        float avgY = 0.f;
+        for(PositionParticle p : particles) {
+            float weight = p.getWeight();
+            avgX += weight * p.getX();
+            avgY += weight * p.getY();
+        }
+        return new XYPosition(avgX,avgY);
     }
 }
