@@ -2,6 +2,14 @@
     <!-- App -->
     <string name="app_name">PrettyIndoorNavigator</string>
 
+    <string name="toggle_accelerometer">acc</string>
+    <string name="toggle_gyroscope">gyro</string>
+    <string name="toggle_magnetic">mag</string>
+    <string name="toggle_wifi">wifi</string>
+    <string name="radio_kalmanfilter">Kalman Filter</string>
+    <string name="radio_particlefilter">Particle Filter</string>
+    <string name="et_startPosition">0,0</string>
+
     <!-- Compass -->
     <string name="compass_calibration_end">Compass calibration ended successfully.</string>
 

@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
-import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
+import it.cnr.isti.wnlab.indoornavigation.android.handlers.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.log.DataLogger;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
