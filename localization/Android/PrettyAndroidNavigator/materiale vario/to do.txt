@@ -1,9 +1,8 @@
 --- TODO
-
--> Finire implementazione PF (2h)
 -> Debug (2h)
 
 -> Refactoring (2h)
+    - Estrarre costanti in una classe statica da mettere in APP
     - Check eccezioni (soprattutto fingerprint)
     - Fare FingerprintWriter e FingerprintReader?
     - Lavorare con XYPosition quando non conosco il piano (cioè quasi sempre)

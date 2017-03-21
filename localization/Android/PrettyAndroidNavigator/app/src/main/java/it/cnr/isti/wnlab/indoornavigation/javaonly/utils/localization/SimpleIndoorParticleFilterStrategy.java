@@ -191,7 +191,6 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         Log.d("PF","Update step");
 
         for(PositionParticle p : particles) {
-            // TODO
             Log.d("PF", "Updating " + p);
 
             boolean valid = true;
@@ -308,7 +307,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         PositionParticle[] particlesArray = particles.toArray(new PositionParticle[survivedParticlesN]);
         for(int i = 0; i < newParticlesN; i++) {
             Log.d("PF", "Duplicating " + particlesArray[i%survivedParticlesN]);
-            // Iterate on first survived particles and add new ones
+            // Iterate on first survived particles and add new ones.
             PositionParticle newParticle = particlesArray[i%survivedParticlesN].clone(newParticlesWeight);
             particles.add(newParticle);
         }

@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.android.wifi;
+package it.cnr.isti.wnlab.indoornavigation.android.handlers;
 
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
