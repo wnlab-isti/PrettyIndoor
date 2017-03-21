@@ -10,7 +10,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorNavigator;
 
 public class IndoorService extends Service {
 
-    // AndroidIndoorNavigator's creation
+    // AndroidIndoorNavigator_OLD's creation
 
     public static final String BUNDLE_HANDLERS = "INDOORHANDLERS";
     public static final String BUNDLE_UPDATER = "INDOORUPDATER";

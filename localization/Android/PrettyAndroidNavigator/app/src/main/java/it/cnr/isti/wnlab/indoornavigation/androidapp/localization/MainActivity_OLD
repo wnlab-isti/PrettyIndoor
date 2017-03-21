@@ -24,17 +24,17 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorNavigator;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.wifi.WifiScanner;
+import it.cnr.isti.wnlab.indoornavigation.androidapp.StepLoggerObserver;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorNavigator;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.log.PositionLogger;
-import it.cnr.isti.wnlab.indoornavigation.androidapp.StepLoggerObserver;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity_OLD extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
         View.OnClickListener {
 
@@ -143,8 +143,26 @@ public class MainActivity extends AppCompatActivity implements
         // TextViews
         textWifiDB = (TextView) findViewById(R.id.wifidb_text);
         textMMDB = (TextView) findViewById(R.id.mmdb_text);
+        initFingerprintLoad();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            switch(requestCode) {
+                // From WifiDB file request
+                case WIFI_REQUEST_CODE:
+                    setWifiDB(data.getData().getPath());
+                    break;
+                // From geomagnetic DB file request
+                case MAGNETIC_REQUEST_CODE:
+                    setMMDB(data.getData().getPath());
+                    break;
+            }
+        }
+    }
 
     private void setWifiDB(String path) {
         wifiFingerprintDB = new File(path);

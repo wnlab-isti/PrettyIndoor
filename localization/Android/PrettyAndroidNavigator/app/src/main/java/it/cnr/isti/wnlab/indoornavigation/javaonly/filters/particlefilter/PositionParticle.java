@@ -95,4 +95,12 @@ public class PositionParticle implements Particle {
     public PositionParticle clone(float weight) {
         return new PositionParticle(x,y,weight);
     }
+
+    /**
+     * @return "PositionParticle($x,$y,$weight)"
+     */
+    @Override
+    public String toString() {
+        return "PositionParticle(" + x + "," + y + "," + weight + ")";
+    }
 }
