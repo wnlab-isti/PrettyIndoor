@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization;
 
+import android.util.Log;
+
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.util.Collection;
@@ -124,6 +126,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         pdr.register(new Observer<PDR.Result>() {
             @Override
             public void notify(PDR.Result data) {
+                Log.d("PFS", "PDR arrived " + data);
                 lastPDRResult = data;
                 particleFilter.filter();
             }
@@ -143,6 +146,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         wifi.register(new Observer<AccessPoints>() {
             @Override
             public void notify(AccessPoints data) {
+                Log.d("PFS", "Wifi arrived, invalidating lastWifiDistances");
                 lastWifiList = data;
                 lastWifiDistances = null;
             }
@@ -161,6 +165,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         magnetic.register(new Observer<MagneticField>() {
             @Override
             public void notify(MagneticField data) {
+                Log.d("PFS", "MagneticField arrived, invalidating lastWifiDistances");
                 lastMagField = data;
                 lastMagDistances = null;
             }
@@ -183,7 +188,12 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      * Second step: filter invalid particles.
      */
     private void updateAndFilter(Collection<PositionParticle> particles) {
+        Log.d("PF","Update step");
+
         for(PositionParticle p : particles) {
+            // TODO
+            Log.d("PF", "Updating " + p);
+
             boolean valid = true;
             // Update x
             float dx = (lastPDRResult.dE + (float) speedDistribution.sample()) *
@@ -206,6 +216,11 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
                 p.setX(newx);
                 p.setY(newy);
             }
+
+            if(valid)
+                Log.d("PF", "Survived");
+            else
+                Log.d("PF", "Killed");
         }
     }
 
@@ -215,8 +230,13 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      */
     private boolean wifiFilterCheck(PositionParticle p) {
         // Check if distances are up-to-date
-        if(lastWifiDistances == null)
+        if(lastWifiDistances == null) {
             lastWifiDistances = wifiFing.getDistancedPoints(lastWifiList, WIFI_DISTANCE_THRESHOLD);
+
+            Log.d("PFS", "Wifi distances updated:");
+            for(WifiFingerprintMap.PositionDistance<XYPosition> pd : lastWifiDistances)
+                Log.d("PFS", "Wifi distance: " + pd);
+        }
 
         // Call generic function
         return fingerprintFilterCheck(p,lastWifiDistances,WIFI_DISTANCE_THRESHOLD);
@@ -228,8 +248,13 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      */
     private boolean magneticFilterCheck(PositionParticle p) {
         // Check if distances are up-to-date
-        if(lastMagDistances == null)
+        if(lastMagDistances == null) {
             lastMagDistances = magFing.getDistancedPoints(lastMagField, MAGNETIC_DISTANCE_THRESHOLD);
+
+            Log.d("PFS", "Magnetic distances updated:");
+            for(MagneticFingerprintMap.PositionDistance<XYPosition> pd : lastMagDistances)
+                Log.d("PFS", "Magnetic distance: " + pd);
+        }
 
         // Call generic function
         return fingerprintFilterCheck(p,lastMagDistances,MAGNETIC_DISTANCE_THRESHOLD);
@@ -272,6 +297,9 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      *********************************************************************/
 
     private void regenerate(Collection<PositionParticle> particles) {
+
+        Log.d("PF", "Regeneration step");
+
         // Duplicate old particles in order to create new N = originalNumber-M particles.
         // All the particles have ALWAYS THE SAME WEIGHT.
         int survivedParticlesN = particles.size();
@@ -279,6 +307,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         float newParticlesWeight = 1.f/particlesNumber;
         PositionParticle[] particlesArray = particles.toArray(new PositionParticle[survivedParticlesN]);
         for(int i = 0; i < newParticlesN; i++) {
+            Log.d("PF", "Duplicating " + particlesArray[i%survivedParticlesN]);
             // Iterate on first survived particles and add new ones
             PositionParticle newParticle = particlesArray[i%survivedParticlesN].clone(newParticlesWeight);
             particles.add(newParticle);
@@ -318,6 +347,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
             avgX += weight * p.getX();
             avgY += weight * p.getY();
         }
+        Log.d("IPF", "Position: " + new XYPosition(avgX,avgY));
         return new XYPosition(avgX,avgY);
     }
 }

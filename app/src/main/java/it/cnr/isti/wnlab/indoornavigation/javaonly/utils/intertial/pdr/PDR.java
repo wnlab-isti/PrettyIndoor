@@ -16,6 +16,11 @@ public abstract class PDR extends AbstractEmitter<PDR.Result> {
             this.heading = heading;
             this.timestamp = timestamp;
         }
+
+        @Override
+        public String toString() {
+            return "dN: " + dN + ", dE: " + dE + ", heading: " + heading;
+        }
     }
 
 
