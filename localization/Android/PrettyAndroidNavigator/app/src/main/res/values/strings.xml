@@ -2,6 +2,8 @@
     <!-- App -->
     <string name="app_name">PrettyIndoorNavigator</string>
 
+    <!-- Main Activity's GUI -->
+
     <string name="toggle_accelerometer">acc</string>
     <string name="toggle_gyroscope">gyro</string>
     <string name="toggle_magnetic">mag</string>
@@ -10,8 +12,20 @@
     <string name="radio_particlefilter">Particle Filter</string>
     <string name="et_startPosition">0,0</string>
 
-    <!-- Compass -->
+    <!-- Info messages -->
+    <string name="compass_calibration_start">Please don\'t move, compass\'s north positioning just started.</string>
     <string name="compass_calibration_end">Compass calibration ended successfully.</string>
+
+    <!-- Error messages -->
+    <string name="acc_not_available">Accelerometer is impossible to listen.</string>
+    <string name="gyro_not_available">Gyroscope is impossible to listen.</string>
+    <string name="magnetic_not_available">Magnetic Field is impossible to listen.</string>
+    <string name="wifi_not_available">Wifi is impossible to listen.</string>
+
+    <string name="wifi_fp_db_not_found">Impossible loading Wifi Fingerprint DB at</string>
+    <string name="mag_fp_db_not_found">Impossible loading Magnetic Fingerprint DB at</string>
+
+    <string name="invalid_position">Position is invalid.</string>
 
     <!-- Test activities -->
     <string name="title_compass_test">CompassTestActivity</string>

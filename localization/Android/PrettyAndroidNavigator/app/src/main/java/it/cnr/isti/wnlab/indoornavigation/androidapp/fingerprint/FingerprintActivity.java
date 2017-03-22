@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
-import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.log.DataLogger;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
@@ -206,7 +206,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
 
                     // MF initialization
                     mEmitters.put(
-                            new MagneticFieldHandler((SensorManager) getSystemService(SENSOR_SERVICE), SensorManager.SENSOR_DELAY_FASTEST),
+                            new MagnetometerHandler((SensorManager) getSystemService(SENSOR_SERVICE), SensorManager.SENSOR_DELAY_FASTEST),
                             new File(MAGNETIC_DATA_FOLDER + "/" + MAGNETIC_DATA_FILE_PREFIX + timestamp + " .csv"));
 
                     // Register logger observer (I would like to use BiConsumer, but I can't)
@@ -286,7 +286,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
                     Toast.makeText(getApplicationContext(),"Found " + magDataFiles.length + " files with Wifi data", Toast.LENGTH_SHORT).show();
 
                     // The resulting file the fingerprint has to be saved in
-                    File result = new File(FINGERPRINT_FOLDER + "/magnetic_fingerprint.csv");
+                    File result = new File(FINGERPRINT_FOLDER + "/magnetic_fingerprints.csv");
 
                     // Make fingerprint
                     try {
@@ -317,7 +317,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
                     Toast.makeText(getApplicationContext(),"Found " + wifiDataFiles.length + " files with Wifi data", Toast.LENGTH_SHORT).show();
 
                     // The resulting file the fingerprint has to be saved in
-                    File result = new File(FINGERPRINT_FOLDER + "/wifi_fingerprint.csv");
+                    File result = new File(FINGERPRINT_FOLDER + "/wifi_fingerprints.csv");
 
                     // Make fingerprint
                     try {

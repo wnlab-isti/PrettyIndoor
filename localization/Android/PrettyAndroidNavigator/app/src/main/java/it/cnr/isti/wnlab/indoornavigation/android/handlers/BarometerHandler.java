@@ -10,9 +10,9 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.Pressure;
 /**
  * Handler for Android's pressure events.
  */
-public class PressureHandler extends SensorDataEmitter<Pressure> {
+public class BarometerHandler extends SensorDataEmitter<Pressure> {
 
-    public PressureHandler(SensorManager manager, DataObserver<Pressure> observer, int delay) {
+    public BarometerHandler(SensorManager manager, DataObserver<Pressure> observer, int delay) {
         super(manager, Sensor.TYPE_PRESSURE, delay);
     }
 

@@ -1,14 +1,14 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.map;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class FloorMap implements XYMap {
 
     private Collection<RoomMap> rooms;
 
-    public FloorMap() {
-        rooms = new ArrayList<>();
+    public FloorMap(RoomMap... rooms) {
+        this.rooms = Arrays.asList(rooms);
     }
 
     @Override

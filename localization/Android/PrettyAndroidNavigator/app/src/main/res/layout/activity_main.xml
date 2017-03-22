@@ -94,8 +94,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/radio_kalmanfilter"
                     android:id="@+id/radio_kalmanfilter"
-                    android:layout_marginRight="20dp"
-                    android:checked="true"/>
+                    android:layout_marginRight="20dp" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
@@ -120,7 +119,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/et_startPosition"
                 android:textAlignment="center"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:id="@+id/et_initial_position" />
 
         </LinearLayout>
 
@@ -146,8 +146,7 @@
         android:elevation="@dimen/fab_margin"
         android:id="@+id/fab_stop"
         android:src="@android:drawable/ic_media_pause"
-        android:backgroundTint="@android:color/holo_red_dark"
-        android:visibility="gone" />
+        android:backgroundTint="@android:color/holo_red_dark" />
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -166,7 +165,6 @@
         android:layout_alignParentRight="true"
         android:elevation="@dimen/fab_margin"
         android:id="@+id/fab_logstep"
-        android:visibility="gone"
         android:src="@android:drawable/ic_menu_myplaces"
         android:backgroundTint="@android:color/background_light"/>
 

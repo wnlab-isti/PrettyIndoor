@@ -6,9 +6,10 @@ import android.os.Handler;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import it.cnr.isti.wnlab.indoornavigation.javaonly.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
@@ -19,7 +20,15 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.MatrixUtils;
  * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/
  */
 
-public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
+public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implements StartableStoppable {
+
+    // Accelerometer
+    private DataEmitter<Acceleration> accelerometer;
+    private DataEmitter<AngularSpeed> gyroscope;
+    private DataEmitter<MagneticField> magnetometer;
+
+    // Start flag
+    private boolean started = false;
 
     // Initial delay
     public final static int INITIAL_DELAY = 0;
@@ -60,14 +69,20 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
     // PositionFilter2D's timer
     private Timer mTimer;
 
-    public LawitzkiCompass(Emitter<Acceleration> accelerometer,
-                           Emitter<AngularSpeed> gyroscope,
-                           Emitter<MagneticField> magnetometer,
+    public LawitzkiCompass(DataEmitter<Acceleration> accelerometer,
+                           DataEmitter<AngularSpeed> gyroscope,
+                           DataEmitter<MagneticField> magnetometer,
                            int rate
     ) {
         // Rate for updating
         mRate = rate;
 
+        this.accelerometer = accelerometer;
+        this.gyroscope = gyroscope;
+        this.magnetometer = magnetometer;
+    }
+
+    public void start() {
         gyroOrientation[0] = 0.0f;
         gyroOrientation[1] = 0.0f;
         gyroOrientation[2] = 0.0f;
@@ -112,8 +127,19 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
                 });
             }
         }, INITIAL_DELAY, mRate);
+
+        started = true;
     }
 
+    public void stop() {
+        mTimer.cancel();
+        started = false;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
     /* ***************************************
      * ACCELEROMETER
      * ***************************************/
@@ -154,7 +180,7 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
         if(timestamp != 0) {
             final float dT = (data.timestamp - timestamp) * NS2S;
             gyro = data;
-            getRotationVectorFromGyro(gyro.array, deltaVector, dT / 2.0f);
+            getRotationVectorFromGyro(gyro, deltaVector, dT / 2.0f);
         }
 
         // measurement done, save current time for next interval
@@ -171,23 +197,23 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
         SensorManager.getOrientation(gyroMatrix, gyroOrientation);
     }
 
-    private static void getRotationVectorFromGyro(float[] gyroValues, float[] deltaRotationVector, float timeFactor) {
+    private static void getRotationVectorFromGyro(AngularSpeed gyroValues, float[] deltaRotationVector, float timeFactor) {
 
         float[] normValues = new float[3];
 
         // Calculate the angular speed of the sample
         float omegaMagnitude =
                 (float)Math.sqrt(
-                        gyroValues[0] * gyroValues[0] +
-                                gyroValues[1] * gyroValues[1] +
-                                gyroValues[2] * gyroValues[2]);
+                        gyroValues.x * gyroValues.x +
+                                gyroValues.y * gyroValues.y +
+                                gyroValues.z * gyroValues.z);
 
         // Normalize the rotation vector if it's big enough to get the axis
         final float EPSILON = 0.000000001f;
         if(omegaMagnitude > EPSILON) {
-            normValues[0] = gyroValues[0] / omegaMagnitude;
-            normValues[1] = gyroValues[1] / omegaMagnitude;
-            normValues[2] = gyroValues[2] / omegaMagnitude;
+            normValues[0] = gyroValues.x / omegaMagnitude;
+            normValues[1] = gyroValues.y / omegaMagnitude;
+            normValues[2] = gyroValues.z / omegaMagnitude;
         }
 
         // Integrate around this axis with the angular speed by the timestep
@@ -216,7 +242,7 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
      * ***************************************/
 
     private void calculateAccMagOrientation() {
-        if(SensorManager.getRotationMatrix(rotationMatrix, null, accel.array, magnet.array)) {
+        if(SensorManager.getRotationMatrix(rotationMatrix, null, accel.getArray(), magnet.getArray())) {
             SensorManager.getOrientation(rotationMatrix, accMagOrientation);
         }
     }

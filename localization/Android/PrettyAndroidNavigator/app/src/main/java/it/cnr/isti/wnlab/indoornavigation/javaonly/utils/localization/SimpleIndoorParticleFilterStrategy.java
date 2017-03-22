@@ -4,11 +4,13 @@ import android.util.Log;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.AbstractIndoorLocalizationStrategy;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.IndoorParticleFilter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.PositionParticle;
@@ -31,8 +33,9 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     // Motion model
     private final static double ANGLE_STANDARD_DEVIATION = Math.PI/2; // N(0,PI/2)
     private final static double SPEED_STANDARD_DEVIATION = 0.15; // N(0,(0.15)^2)
-    private NormalDistribution angleDistribution;
-    private NormalDistribution speedDistribution;
+    private final NormalDistribution angleDistribution;
+    private final NormalDistribution speedDistribution;
+    private XYPosition position;
 
     // Particle Filter
     private IndoorParticleFilter<PositionParticle> particleFilter;
@@ -45,16 +48,16 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     private PDR.Result lastPDRResult;
 
     // Wifi
-    WifiFingerprintMap wifiFing;
-    AccessPoints lastWifiList;
-    List<FingerprintMap.PositionDistance<XYPosition>> lastWifiDistances;
-    static final float WIFI_DISTANCE_THRESHOLD = 10000.f;
+    private WifiFingerprintMap wifiFing;
+    private AccessPoints lastWifiList;
+    private List<FingerprintMap.PositionDistance<XYPosition>> lastWifiDistances;
+    private float wifiThreshold;
 
     // Magnetic
-    MagneticFingerprintMap magFing;
-    MagneticField lastMagField;
-    List<FingerprintMap.PositionDistance<XYPosition>> lastMagDistances;
-    static final float MAGNETIC_DISTANCE_THRESHOLD = 10000.f;
+    private MagneticFingerprintMap magFing;
+    private MagneticField lastMagField;
+    private List<FingerprintMap.PositionDistance<XYPosition>> lastMagDistances;
+    private float magneticThreshold;
 
     // Random numbers
     Random r;
@@ -67,25 +70,33 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     public SimpleIndoorParticleFilterStrategy(
             // Initial position and particles number
             XYPosition initialPosition,
-            final int particlesNumber,
+            int particlesNumber,
             // Map
             FloorMap floorMap,
             // PDR
             PDR pdr,
             // Wifi localization
             DataEmitter<AccessPoints> wifi,
-            final WifiFingerprintMap wiFing, final int wifiK, final float wifiThreshold,
+            WifiFingerprintMap wiFing, float wifiThreshold,
             // Magnetic mismatch
             DataEmitter<MagneticField> magnetic,
-            final MagneticFingerprintMap magFing, final int magK, final float magThreshold
+            MagneticFingerprintMap magFing, float magneticThreshold
     ) {
+        /*
+         * Motion model
+         */
+
+        this.angleDistribution = new NormalDistribution(0,ANGLE_STANDARD_DEVIATION);
+        this.speedDistribution = new NormalDistribution(0,SPEED_STANDARD_DEVIATION);
+        this.position = initialPosition;
+        this.floorMap = floorMap;
+
         /*
          * Particle Filter
          */
 
-        // Save for regeneration
-        this.particlesNumber = particlesNumber;
         // Initialize PF
+        this.particlesNumber = particlesNumber;
         particleFilter = new IndoorParticleFilter<>(
                 /*
                  * Initial particles are all on the initial position.
@@ -104,7 +115,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
                 new RegenerationStrategy<PositionParticle>() {
                     @Override
                     public void regenerate(Collection<PositionParticle> particles) {
-                        regenerate(particles);
+                        regenerateParticles(particles);
                     }
                 },
                 // Pick a position from particles
@@ -115,12 +126,9 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
                     }
                 });
 
-        // Initialize motion model
-        angleDistribution = new NormalDistribution(0,ANGLE_STANDARD_DEVIATION);
-        speedDistribution = new NormalDistribution(0,SPEED_STANDARD_DEVIATION);
-
-        // Floor map
-        this.floorMap = floorMap;
+        /*
+         * PDR
+         */
 
         // Register for PDR updates. These trigger the PF.
         pdr.register(new Observer<PDR.Result>() {
@@ -129,6 +137,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
                 Log.d("PFS", "PDR arrived " + data);
                 lastPDRResult = data;
                 particleFilter.filter();
+                notifyObservers(particleFilter.getPosition(-1,System.currentTimeMillis()));
             }
         });
 
@@ -146,11 +155,12 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         wifi.register(new Observer<AccessPoints>() {
             @Override
             public void notify(AccessPoints data) {
-                Log.d("PFS", "Wifi arrived, invalidating lastWifiDistances");
                 lastWifiList = data;
                 lastWifiDistances = null;
             }
         });
+        // Wifi row-distance threshold
+        this.wifiThreshold = wifiThreshold;
 
         /*
          * Magnetic
@@ -165,11 +175,12 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         magnetic.register(new Observer<MagneticField>() {
             @Override
             public void notify(MagneticField data) {
-                Log.d("PFS", "MagneticField arrived, invalidating lastWifiDistances");
                 lastMagField = data;
                 lastMagDistances = null;
             }
         });
+        // Magnetic row-distance threshold
+        this.magneticThreshold = magneticThreshold;
 
         /*
          * Randomness
@@ -190,10 +201,13 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     private void updateAndFilter(Collection<PositionParticle> particles) {
         Log.d("PF","Update step");
 
+        // Needed for avoiding ConcurrentModificationException during iteration
+        ArrayList<PositionParticle> obsoleteParticles = new ArrayList<>();
+
+        // Check for particles to eliminate
         for(PositionParticle p : particles) {
             Log.d("PF", "Updating " + p);
 
-            boolean valid = true;
             // Update x
             float dx = (lastPDRResult.dE + (float) speedDistribution.sample()) *
                     ((float) Math.cos(lastPDRResult.heading + angleDistribution.sample()));
@@ -205,22 +219,22 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
 
             // Let's break the schema: filter here
             if(
-                    !floorMap.isValid(newx,newy) // Map checking
-                    || wifiFilterCheck(p) // Wifi fingerprint
-                    || magneticFilterCheck(p) // Magnetic fingerprint
-            ) { particles.remove(p); valid = false; }
-
-            // If the new position is valid, update particle
-            if(valid) {
+                    floorMap.isValid(newx,newy) // Map checking
+                    && wifiFilterCheck(p) // Wifi fingerprint
+                    && magneticFilterCheck(p) // Magnetic fingerprint
+            ) {
                 p.setX(newx);
                 p.setY(newy);
-            }
-
-            if(valid)
                 Log.d("PF", "Survived");
-            else
+            } else {
+                obsoleteParticles.add(p);
                 Log.d("PF", "Killed");
+            }
         }
+
+        // Remove obsolete particles
+        particles.removeAll(obsoleteParticles);
+        Log.d("PF", obsoleteParticles.size() + " particles removed");
     }
 
     /**
@@ -230,15 +244,14 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     private boolean wifiFilterCheck(PositionParticle p) {
         // Check if distances are up-to-date
         if(lastWifiDistances == null) {
-            lastWifiDistances = wifiFing.getDistancedPoints(lastWifiList, WIFI_DISTANCE_THRESHOLD);
+            lastWifiDistances = wifiFing.getDistancedPoints(lastWifiList, wifiThreshold);
 
-            Log.d("PFS", "Wifi distances updated:");
-            for(WifiFingerprintMap.PositionDistance<XYPosition> pd : lastWifiDistances)
-                Log.d("PFS", "Wifi distance: " + pd);
+            Log.d("PFS", "Wifi distances updated (" + lastWifiDistances.size() + ").");
         }
 
         // Call generic function
-        return fingerprintFilterCheck(p,lastWifiDistances,WIFI_DISTANCE_THRESHOLD);
+        Log.d("PFS", "Wifi check");
+        return fingerprintFilterCheck(p,lastWifiDistances, wifiThreshold);
     }
 
     /**
@@ -248,15 +261,14 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     private boolean magneticFilterCheck(PositionParticle p) {
         // Check if distances are up-to-date
         if(lastMagDistances == null) {
-            lastMagDistances = magFing.getDistancedPoints(lastMagField, MAGNETIC_DISTANCE_THRESHOLD);
+            lastMagDistances = magFing.getDistancedPoints(lastMagField, magneticThreshold);
 
-            Log.d("PFS", "Magnetic distances updated:");
-            for(MagneticFingerprintMap.PositionDistance<XYPosition> pd : lastMagDistances)
-                Log.d("PFS", "Magnetic distance: " + pd);
+            Log.d("PFS", "Magnetic distances updated (" + lastMagDistances.size() + ").");
         }
 
         // Call generic function
-        return fingerprintFilterCheck(p,lastMagDistances,MAGNETIC_DISTANCE_THRESHOLD);
+        Log.d("PFS", "Magnetic check");
+        return fingerprintFilterCheck(p,lastMagDistances,magneticThreshold);
     }
 
     /**
@@ -285,6 +297,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         // If random number belongs to [0; positionDistance] kill the particle, else save it.
         // Doing so, the less distanced the particles is, the less the probability of being killed.
         float random = r.nextFloat()*threshold;
+        Log.d("PFS", "Random is " + random + ", distance is " + particlePositionDistance + ", threshold is " + threshold);
         if(random < particlePositionDistance)
             return false;
         else
@@ -295,9 +308,13 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      * THIRD STEP: Regenerate lost particles
      *********************************************************************/
 
-    private void regenerate(Collection<PositionParticle> particles) {
+    private void regenerateParticles(Collection<PositionParticle> particles) {
 
         Log.d("PF", "Regeneration step");
+
+        // Assure that there's at least one particle
+        if(particles.isEmpty())
+            particles.add(new PositionParticle(position.x,position.y,1.f/particlesNumber));
 
         // Duplicate old particles in order to create new N = originalNumber-M particles.
         // All the particles have ALWAYS THE SAME WEIGHT.
@@ -346,7 +363,8 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
             avgX += weight * p.getX();
             avgY += weight * p.getY();
         }
-        Log.d("IPF", "Position: " + new XYPosition(avgX,avgY));
-        return new XYPosition(avgX,avgY);
+        position = new XYPosition(avgX,avgY);
+        Log.d("IPF", "Position: " + position);
+        return position;
     }
 }

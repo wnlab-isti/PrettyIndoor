@@ -67,7 +67,7 @@ public abstract class SensorDataEmitter<T extends RawSensorData>
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        Log.d("MAG", sensorEvent.timestamp + ""); notifyObservers(adapt(sensorEvent));
+        notifyObservers(adapt(sensorEvent));
     }
 
     @Override
