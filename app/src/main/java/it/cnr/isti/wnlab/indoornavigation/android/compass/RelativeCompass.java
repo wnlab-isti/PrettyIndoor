@@ -2,7 +2,7 @@ package it.cnr.isti.wnlab.indoornavigation.android.compass;
 
 import android.util.Log;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
@@ -24,9 +24,9 @@ public class RelativeCompass extends LawitzkiCompass {
     private float lastCalibrationHeading;
 
     public RelativeCompass(
-            Emitter<Acceleration> accelerometer,
-            Emitter<AngularSpeed> gyroscope,
-            Emitter<MagneticField> magnetometer,
+            DataEmitter<Acceleration> accelerometer,
+            DataEmitter<AngularSpeed> gyroscope,
+            DataEmitter<MagneticField> magnetometer,
             int rate
     ) {
         super(accelerometer, gyroscope, magnetometer, rate);

@@ -48,7 +48,6 @@ public class WifiFingerprintMap extends FingerprintMap<XYPosition,AccessPoints> 
 
         // Compare arrays (Computer Science first year excercise)
         while(i1 < l1 && i2 < l2) {
-            System.out.println("Comparing " + i1 + " and " + i2);
             int comparison = array1[i1].bssid.compareTo(array2[i2].bssid);
             // Same BSSID
             if(comparison == 0) {

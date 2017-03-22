@@ -48,9 +48,6 @@ public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
             }
         });
 
-        for(PositionDistance p : distancedPositions)
-                System.out.println(p);
-
         // Isolate first K elements
         List<PositionDistance<P>> firstKElements;
         if(distancedPositions.size() <= k)

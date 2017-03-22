@@ -1,0 +1,31 @@
+Base scientifica è la competizione PIN. Usiamo EvAAL score, spiegazione (anche veloce) di EvAAL score.
+
+TEST:
+- 2-3 Path (es. corridoio, angolo, ecc...)
+
+Tecnica real-time e non slum.
+
+-> Per WNLab: README & UML
+
+Documentazione
+Related works
+Soluzione proposta
+(e qualche dettaglie)
+
+1) Intro
+   - Che senso ha?
+   - Stato dell'arte
+   - Related work
+2) Cos'è il lavoro? Smartphone based, scelte fatte, tecnologie scelte, algoritmi scelti...
+   - Pensato per essere ampliabile: disaccoppiamento e modularità
+   - Architettura iniziale input-output
+   - layering
+3) Architettura più in dettaglio
+   Kalman Filter
+   Particle Filter
+   Output? X,Y,"Z" che può essere convertito in LatLon
+4) Particle Filter, Kalman Filter a "blocchi"
+5) Risultati e discussion
+   - Ho fatto queste prove per EvAAL, garanzia di ciò che succede, ecc...
+   - Foto marker
+   - Output e grafici con spiegazione metodologie (err max, err min, terzo quantile, mediana)

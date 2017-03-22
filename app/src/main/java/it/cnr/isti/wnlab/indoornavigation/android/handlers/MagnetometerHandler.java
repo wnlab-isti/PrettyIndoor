@@ -9,9 +9,9 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticF
 /**
  * Handler for Android's magnetometer events.
  */
-public class MagneticFieldHandler extends SensorDataEmitter<MagneticField> {
+public class MagnetometerHandler extends SensorDataEmitter<MagneticField> {
 
-    public MagneticFieldHandler(SensorManager manager, int delay) {
+    public MagnetometerHandler(SensorManager manager, int delay) {
         super(manager, Sensor.TYPE_MAGNETIC_FIELD, delay);
     }
 

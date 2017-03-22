@@ -17,7 +17,7 @@ import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
-import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
@@ -33,7 +33,7 @@ public class FingerprintTestActivity extends AppCompatActivity {
     private String wiFingPath = Environment.getExternalStorageDirectory() + "/fingerprints/wifi_fingerprint.csv";
 
     // Magnetic data
-    private MagneticFieldHandler mHandler;
+    private MagnetometerHandler mHandler;
     private MagneticFingerprintMap mFing;
     private String mFingPath = Environment.getExternalStorageDirectory() + "/fingerprints/magnetic_fingerprint.csv";
 
@@ -142,7 +142,7 @@ public class FingerprintTestActivity extends AppCompatActivity {
     private void initializeMagnetic() {
         // Magnetic events listener
         int speed = 1500;
-        mHandler = new MagneticFieldHandler((SensorManager) getSystemService(SENSOR_SERVICE), speed);
+        mHandler = new MagnetometerHandler((SensorManager) getSystemService(SENSOR_SERVICE), speed);
 
         // Load FingerprintMap button
         (findViewById(R.id.fp_test_btn_load)).setOnClickListener(new View.OnClickListener() {

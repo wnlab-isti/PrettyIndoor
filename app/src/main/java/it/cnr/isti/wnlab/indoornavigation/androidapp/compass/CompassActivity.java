@@ -15,9 +15,9 @@ import android.view.ViewGroup;
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.android.compass.LawitzkiCompass;
 import it.cnr.isti.wnlab.indoornavigation.android.compass.RelativeCompass;
-import it.cnr.isti.wnlab.indoornavigation.android.sensors.AccelerometerHandler;
-import it.cnr.isti.wnlab.indoornavigation.android.sensors.GyroscopeHandler;
-import it.cnr.isti.wnlab.indoornavigation.android.sensors.MagneticFieldHandler;
+import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
+import it.cnr.isti.wnlab.indoornavigation.android.handlers.GyroscopeHandler;
+import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
@@ -91,7 +91,7 @@ public class CompassActivity extends AppCompatActivity {
         int delay = SensorManager.SENSOR_DELAY_FASTEST;
         AccelerometerHandler ah = new AccelerometerHandler(manager, delay);
         GyroscopeHandler gh = new GyroscopeHandler(manager, delay);
-        MagneticFieldHandler mh = new MagneticFieldHandler(manager, delay);
+        MagnetometerHandler mh = new MagnetometerHandler(manager, delay);
 
         // Gyroscope-only compass
         /*Compass compass = new SimpleGyroCompass(
