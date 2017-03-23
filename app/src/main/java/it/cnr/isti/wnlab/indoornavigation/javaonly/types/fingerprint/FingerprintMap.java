@@ -21,23 +21,23 @@ public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
 
     /**
      * @param measurement
-     * @param threshold
+     * @param threshold threshold for valid points. If null every point will be accepted.
      * @return An unordered list of all points in database with their row-distances from measurement.
      */
-    public List<PositionDistance<P>> getDistancedPoints(T measurement, float threshold) {
+    public List<PositionDistance<P>> getDistancedPoints(T measurement, Float threshold) {
         // For each registered position calculate distance between row and measurement
         ArrayList<PositionDistance<P>> distancedPositions = new ArrayList<>();
         for(Map.Entry<P,T> entry : map.entrySet()) {
             // Add results to a list if distance is acceptable
             float distance = distanceBetween(measurement,entry.getValue());
-            if(distance <= threshold)
+            if(threshold == null || distance <= threshold)
                 distancedPositions.add(
                         new PositionDistance(entry.getKey(), distance));
         }
         return distancedPositions;
     }
 
-    public List<P> findNearestK(T measurement, int k, float threshold) {
+    public List<PositionDistance<P>> findNearestK(T measurement, int k, float threshold) {
         List<PositionDistance<P>> distancedPositions = getDistancedPoints(measurement, threshold);
 
         // Sort per distance
@@ -55,11 +55,7 @@ public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
         else
             firstKElements = distancedPositions.subList(0,k);
 
-        // Return first K positions
-        ArrayList<P> result = new ArrayList<>();
-        for(PositionDistance<P> p : firstKElements)
-            result.add(p.position);
-        return result;
+        return firstKElements;
     }
 
     /**

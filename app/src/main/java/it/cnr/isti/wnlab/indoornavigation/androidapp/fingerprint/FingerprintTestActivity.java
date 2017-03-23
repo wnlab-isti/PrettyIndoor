@@ -21,6 +21,7 @@ import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.FingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
@@ -108,9 +109,9 @@ public class FingerprintTestActivity extends AppCompatActivity {
                     @Override
                     public void notify(AccessPoints data) {
                         int k = 3;
-
+/*
                         Toast.makeText(getApplicationContext(), "Doing K-NN", Toast.LENGTH_SHORT).show();
-                        List<XYPosition> positions = wiFing.findNearestK(data,k,1000.f);
+                        List<FingerprintMap.PositionDistance> positions = wiFing.findNearestK(data,k,1000.f);
                         Toast.makeText(getApplicationContext(),positions.size() + " positions found",Toast.LENGTH_SHORT).show();
                         StringBuilder string = new StringBuilder();
 
@@ -128,7 +129,7 @@ public class FingerprintTestActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"Average position: " + new XYPosition(avgX,avgY),Toast.LENGTH_SHORT).show();
 
                         //Toast.makeText(getApplicationContext(),"Unregistering",Toast.LENGTH_SHORT).show();
-                        //wifiScanner.unregister(this);
+                        //wifiScanner.unregister(this);*/
                     }
                 };
                 wifiScanner.register(observer);
@@ -167,7 +168,7 @@ public class FingerprintTestActivity extends AppCompatActivity {
         (findViewById(R.id.fp_test_btn_localize)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Start listening to scansions",Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(getApplicationContext(),"Start listening to scansions",Toast.LENGTH_SHORT).show();
 
                 DataObserver<MagneticField> observer = new DataObserver<MagneticField>() {
                     @Override
@@ -195,7 +196,7 @@ public class FingerprintTestActivity extends AppCompatActivity {
                         mHandler.unregister(this);
                     }
                 };
-                mHandler.register(observer);
+                mHandler.register(observer);*/
             }
         });
     }

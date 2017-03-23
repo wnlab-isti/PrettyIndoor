@@ -4,7 +4,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.AbstractIndoorLocalizationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter.IndoorKalmanFilter;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.intertial.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.kalmanfilter.LocationStrategyUpdater;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.kalmanfilter.PDRPredictor;
 
@@ -120,5 +120,10 @@ public class SimpleIndoorKalmanFilterStrategy extends AbstractIndoorLocalization
 
         // Return IndoorKF object
         return new IndoorKalmanFilter(x0, mP0, mA, mB, mQ, mH, mR);
+    }
+
+    @Override
+    public IndoorPosition getCurrentPosition() {
+        return kf.getPosition(mFloor,System.currentTimeMillis());
     }
 }

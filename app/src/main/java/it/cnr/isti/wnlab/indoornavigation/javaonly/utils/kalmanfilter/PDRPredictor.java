@@ -2,7 +2,7 @@ package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.kalmanfilter;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter.KalmanFilter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter.adapters.KalmanFilterPredictor;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.intertial.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
 
 /**
  * Kalman Filter wrapper for prediction with PDR.

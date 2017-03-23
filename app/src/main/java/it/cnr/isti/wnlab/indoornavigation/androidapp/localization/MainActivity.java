@@ -1,7 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp.localization;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,14 +34,13 @@ import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.StepDetector;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorLocalizationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.log.PositionLogger;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.intertial.pdr.FixedLengthPDR;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.intertial.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedLengthPDR;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleIndoorParticleFilterStrategy;
 
 public class MainActivity extends AppCompatActivity implements
@@ -116,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private Observer<IndoorPosition> positionLogger;
     private Collection<IndoorPosition> positionsLog;
+    private StepLoggerOnDemand stepLogger;
 
     /*
      * Activity lifecycle
@@ -291,11 +291,11 @@ public class MainActivity extends AppCompatActivity implements
         strategy = new SimpleIndoorParticleFilterStrategy(
                 // Initial position and particles number
                 new XYPosition(startX,startY),
-                Constants.PF_DEFAULT_PARTICLES_NUMBER,
+                Constants.PF_PARTICLES_NUMBER,
                 floorMap,
                 pdr,
-                wifi, wiFing, Constants.PF_DEFAULT_WIFI_THRESHOLD,
-                mh, magFing, Constants.PF_DEFAULT_MAGNETIC_THRESHOLD);
+                wifi, wiFing,
+                mh, magFing);
     }
 
     private void initPDR() {
@@ -310,18 +310,29 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.fab_start:
                 try {
+                    // Get first position from EditText
                     setPositionFromEditText();
+
+                    // Change GUI
                     activeModeGUI();
+
+                    // Start handlers
                     startComponents();
+
+                    // Initialize stuff and start loggin
                     startLogging();
                 } catch(NumberFormatException e) {
+                    // EditText text is not well formatted
                     Toast.makeText(this, getString(R.string.invalid_position), Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.fab_stop:
+                // Change GUI
                 inactiveModeGUI();
+                // Stop handlers
                 stopComponents();
+                // Stop logging
                 stopLogging();
                 break;
 
@@ -330,12 +341,12 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case R.id.fab_logstep:
-                // TODO
+                stepLogger.log();
                 break;
         }
     }
 
-    private void setPositionFromEditText() throws  NumberFormatException {
+    private void setPositionFromEditText() throws NumberFormatException {
         // Parse EditText content
         String[] split = positionEditText.getText().toString().split(",");
         float newX = Float.parseFloat(split[0]);
@@ -461,17 +472,32 @@ public class MainActivity extends AppCompatActivity implements
      * Initialize objects for logging.
      */
     private void initializeLogging() {
+        // Alert logger (all positions)
         positionsLog = new ArrayList<>();
         positionLogger = new Observer<IndoorPosition>() {
             @Override
             public void notify(IndoorPosition data) {
                 positionsLog.add(data);
+                positionEditText.setText(data.x + "," + data.y);
             }
         };
     }
 
     private void startLogging() {
+        // Register logger for dialog
         strategy.register(positionLogger);
+
+        // Step logger (FAB)
+        SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
+        String logFolderPath =
+                sp.getString(Constants.SP_LOG_FOLDER_KEY, Constants.SP_LOG_DEFAULT);
+        (new File(logFolderPath)).mkdirs();
+        try {
+            stepLogger = new StepLoggerOnDemand(strategy, logFolderPath);
+        } catch(IOException e) {
+            Toast.makeText(this, "Can't write on log file: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     private void stopLogging() {
@@ -486,10 +512,17 @@ public class MainActivity extends AppCompatActivity implements
 
         // Show alert
         new AlertDialog.Builder(this)
-                .setTitle("Registered positions")
+                .setTitle("Positions at each step")
                 .setMessage(log.toString())
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .show();
+
+        // Close step logger writer
+        try {
+            stepLogger.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

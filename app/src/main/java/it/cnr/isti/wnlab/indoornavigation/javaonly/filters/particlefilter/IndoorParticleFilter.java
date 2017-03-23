@@ -6,29 +6,37 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.PositionFilter2D;
 
-public class IndoorParticleFilter<T extends PositionParticle> extends ParticleFilter<T> implements PositionFilter2D {
+public class IndoorParticleFilter extends ParticleFilter<PositionParticle> implements PositionFilter2D {
 
-    PositionPickingStrategy mPositionPicking;
+    protected PositionPickingStrategy mPositionPicking;
+    protected XYPosition position;
 
     public IndoorParticleFilter(
+            XYPosition initialPosition,
             Collection particles,
             UpdateStrategy updateStep,
             FilteringStrategy filteringStep,
             RegenerationStrategy regenerationStep,
-            PositionPickingStrategy<T,XYPosition> positionPicking
+            PositionPickingStrategy<PositionParticle,XYPosition> positionPicking
     ) {
         super(particles, updateStep, filteringStep, regenerationStep);
         this.mPositionPicking = positionPicking;
+        this.position = initialPosition;
+    }
+
+    @Override
+    public void filter() {
+        super.filter();
+        position = mPositionPicking.getPosition(particles);
     }
 
     @Override
     public IndoorPosition getPosition(int floor, long timestamp) {
-        return new IndoorPosition(get2DPosition(),floor,timestamp);
+        return new IndoorPosition(position,floor,timestamp);
     }
 
     @Override
     public XYPosition get2DPosition() {
-        super.filter();
-        return mPositionPicking.getPosition(particles);
+        return position;
     }
 }

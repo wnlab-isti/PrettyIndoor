@@ -12,7 +12,8 @@ public final class Constants {
      * App
      */
 
-    public static String APP_FOLDER_PATH_EXTERNAL_STORAGE = Environment.getExternalStorageDirectory() + "/" + R.string.app_name;
+    public static final String APP_NAME = "PrettyIndoorNavigator";
+    public static final String APP_FOLDER_PATH_EXTERNAL_STORAGE = Environment.getExternalStorageDirectory() + "/" + APP_NAME;
 
     /*
      * Shared Preferences
@@ -23,14 +24,16 @@ public final class Constants {
     public static final String SP_WIFIFP_DEFAULT = Environment.getExternalStorageDirectory() + "/fingerprints/wifi_fingerprints.csv";
     public static final String SP_MAGNETIC_KEY = "MAGNETICFINGMAP";
     public static final String SP_MAGNETIC_DEFAULT = Environment.getExternalStorageDirectory() + "/fingerprints/magnetic_fingerprints.csv";
+    public static final String SP_LOG_FOLDER_KEY = "LOG";
+    public static final String SP_LOG_DEFAULT = APP_FOLDER_PATH_EXTERNAL_STORAGE + "/log";
 
     /*
      * Localization
      */
 
-    public static final float INITIAL_X = 19.5f;
-    public static final float INITIAL_Y = 5.7f;
-    public static final int INITIAL_FLOOR = 0;
+    public static final float INITIAL_X = 16.2f;
+    public static final float INITIAL_Y = 5.4f;
+    public static final int INITIAL_FLOOR = 1;
 
     /*
      * PDR
@@ -43,7 +46,5 @@ public final class Constants {
      * Particle Filter
      */
 
-    public static final int PF_DEFAULT_PARTICLES_NUMBER = 200;
-    public static final float PF_DEFAULT_WIFI_THRESHOLD = 1000000.f;
-    public static final float PF_DEFAULT_MAGNETIC_THRESHOLD = 1000000.f;
+    public static final int PF_PARTICLES_NUMBER = 200;
 }

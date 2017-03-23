@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.intertial.pdr;
+package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
