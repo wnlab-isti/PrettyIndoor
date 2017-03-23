@@ -2,6 +2,7 @@ package it.cnr.isti.wnlab.indoornavigation.android.compass;
 
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,7 +23,10 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.MatrixUtils;
 
 public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implements StartableStoppable {
 
-    // Accelerometer
+    /*
+     * Handlers and configuration
+     */
+
     private DataEmitter<Acceleration> accelerometer;
     private DataEmitter<AngularSpeed> gyroscope;
     private DataEmitter<MagneticField> magnetometer;
@@ -30,17 +34,19 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
     // Start flag
     private boolean started = false;
 
-    // Initial delay
-    public final static int INITIAL_DELAY = 0;
-
-    // Default rate
-    public final static int DEFAULT_RATE = 60;
-
     // Compass configuration
-    private final int mRate;
+    private int mRate;
 
-    // TODO de che è?
-    private static final float FILTER_COEFFICIENT = 0.98f;
+    // For android multithreading
+    private Handler mHandler;
+
+    // Updates' timer
+    private Timer mTimer;
+
+
+    /*
+     * Gyroscope (high-pass filtered)
+     */
 
     // Angular speeds from gyro
     private AngularSpeed gyro;
@@ -50,6 +56,10 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
 
     // Orientation angles from gyro matrix
     private float[] gyroOrientation = new float[3];
+
+    /*
+     * Magnetic Field and Acceleration (low-pass filtered)
+     */
 
     // Magnetic field
     private MagneticField magnet;
@@ -63,11 +73,12 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
     // Accelerometer and magnetometer based rotation matrix
     private float[] rotationMatrix = new float[9];
 
-    // For android multithreading
-    private Handler mHandler;
+    /*
+     * Fusion
+     */
 
-    // PositionFilter2D's timer
-    private Timer mTimer;
+    // Coefficient for sensor fusion
+    private static final float FILTER_COEFFICIENT = 0.98f;
 
     public LawitzkiCompass(DataEmitter<Acceleration> accelerometer,
                            DataEmitter<AngularSpeed> gyroscope,
@@ -99,21 +110,20 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
                 onAccelerometer(data);
             }
         });
-        gyroscope.register(new DataObserver<AngularSpeed>() {
-            @Override
-            public void notify(AngularSpeed data) {
-                gyroFunction(data);
-            }
-        });
         magnetometer.register(new DataObserver<MagneticField>() {
             @Override
             public void notify(MagneticField data) {
                 onMagnetometer(data);
             }
         });
+        gyroscope.register(new DataObserver<AngularSpeed>() {
+            @Override
+            public void notify(AngularSpeed data) {
+                onGyroscope(data);
+            }
+        });
 
-        // wait for one second until gyroscope and magnetometer/accelerometer
-        // data is initialised then schedule the complementary filter task
+        // Initialize timed action
         mTimer = new Timer();
         mHandler = new Handler();
         mTimer.scheduleAtFixedRate(new TimerTask() {
@@ -126,8 +136,9 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
                     }
                 });
             }
-        }, INITIAL_DELAY, mRate);
+        }, 0, mRate);
 
+        // Now the compass has started
         started = true;
     }
 
@@ -140,16 +151,54 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
     public boolean isStarted() {
         return started;
     }
-    /* ***************************************
-     * ACCELEROMETER
-     * ***************************************/
 
+    /**
+     * Reset scheduled task at specified rate.
+     * @param rate New rate for compass's timer.
+     */
+    public void setRate(int rate) {
+        mRate = rate;
+        mTimer.cancel();
+        mTimer = new Timer();
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        calculateFusedOrientation();
+                    }
+                });
+            }
+        }, 0, mRate);
+    }
+
+    // Accelerometer
+
+    /**
+     * Saves new accelerometer data and try calculating the orientation from acceleration and mf.
+     * @param data
+     */
     private void onAccelerometer(Acceleration data) {
-        // copy new accelerometer data into accel array
-        // then calculate new orientation
-
         accel = data;
         calculateAccMagOrientation();
+    }
+
+    /**
+     * Saves MF updates.
+     * @param data
+     */
+    private void onMagnetometer(MagneticField data) {
+        magnet = data;
+    }
+
+    /**
+     * If there's acceleration and magnetic data, fuse them.
+     */
+    private void calculateAccMagOrientation() {
+        if(accel != null && magnet != null && SensorManager.getRotationMatrix(rotationMatrix, null, accel.getArray(), magnet.getArray())) {
+            SensorManager.getOrientation(rotationMatrix, accMagOrientation);
+        }
     }
 
     /* ***************************************
@@ -160,7 +209,7 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
     private long timestamp;
     private boolean initState = true;
 
-    public void gyroFunction(AngularSpeed data) {
+    public void onGyroscope(AngularSpeed data) {
         // don't start until first accelerometer/magnetometer orientation has been acquired
         if (accMagOrientation == null)
             return;
@@ -197,57 +246,13 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
         SensorManager.getOrientation(gyroMatrix, gyroOrientation);
     }
 
-    private static void getRotationVectorFromGyro(AngularSpeed gyroValues, float[] deltaRotationVector, float timeFactor) {
-
-        float[] normValues = new float[3];
-
-        // Calculate the angular speed of the sample
-        float omegaMagnitude =
-                (float)Math.sqrt(
-                        gyroValues.x * gyroValues.x +
-                                gyroValues.y * gyroValues.y +
-                                gyroValues.z * gyroValues.z);
-
-        // Normalize the rotation vector if it's big enough to get the axis
-        final float EPSILON = 0.000000001f;
-        if(omegaMagnitude > EPSILON) {
-            normValues[0] = gyroValues.x / omegaMagnitude;
-            normValues[1] = gyroValues.y / omegaMagnitude;
-            normValues[2] = gyroValues.z / omegaMagnitude;
-        }
-
-        // Integrate around this axis with the angular speed by the timestep
-        // in order to get a delta rotation from this sample over the timestep
-        // We will convert this axis-angle representation of the delta rotation
-        // into a quaternion before turning it into the rotation matrix.
-        float thetaOverTwo = omegaMagnitude * timeFactor;
-        float sinThetaOverTwo = (float)Math.sin(thetaOverTwo);
-        float cosThetaOverTwo = (float)Math.cos(thetaOverTwo);
-        deltaRotationVector[0] = sinThetaOverTwo * normValues[0];
-        deltaRotationVector[1] = sinThetaOverTwo * normValues[1];
-        deltaRotationVector[2] = sinThetaOverTwo * normValues[2];
-        deltaRotationVector[3] = cosThetaOverTwo;
-    }
-
-    /* ***************************************
-     * MAGNETOMETER
-     * ***************************************/
-
-    private void onMagnetometer(MagneticField data) {
-        magnet = data;
-    }
-
     /* ***************************************
      * FUSION
      * ***************************************/
 
-    private void calculateAccMagOrientation() {
-        if(accel != null && magnet != null && SensorManager.getRotationMatrix(rotationMatrix, null, accel.getArray(), magnet.getArray())) {
-            SensorManager.getOrientation(rotationMatrix, accMagOrientation);
-        }
-    }
-
     private void calculateFusedOrientation() {
+        Log.d("LAWCOMP", "calculateFusedOrientation()");
+
         // final orientation angles from sensor fusion
         float[] fusedOrientation = new float[3];
 
@@ -279,7 +284,44 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
      * @param timestamp Timestamp of last gyroscope measure.
      */
     protected void onHeadingChange(float heading, long timestamp) {
+        Log.d("LAWCOMP", "Heading: " + heading);
         notifyObservers(new Heading(heading, timestamp));
+    }
+
+    /* ***************************************
+     * UTILITY METHODS
+     * ***************************************/
+
+    private static void getRotationVectorFromGyro(AngularSpeed gyroValues, float[] deltaRotationVector, float timeFactor) {
+
+        float[] normValues = new float[3];
+
+        // Calculate the angular speed of the sample
+        float omegaMagnitude =
+                (float)Math.sqrt(
+                        gyroValues.x * gyroValues.x +
+                                gyroValues.y * gyroValues.y +
+                                gyroValues.z * gyroValues.z);
+
+        // Normalize the rotation vector if it's big enough to get the axis
+        final float EPSILON = 0.000000001f;
+        if(omegaMagnitude > EPSILON) {
+            normValues[0] = gyroValues.x / omegaMagnitude;
+            normValues[1] = gyroValues.y / omegaMagnitude;
+            normValues[2] = gyroValues.z / omegaMagnitude;
+        }
+
+        // Integrate around this axis with the angular speed by the timestep
+        // in order to get a delta rotation from this sample over the timestep
+        // We will convert this axis-angle representation of the delta rotation
+        // into a quaternion before turning it into the rotation matrix.
+        float thetaOverTwo = omegaMagnitude * timeFactor;
+        float sinThetaOverTwo = (float)Math.sin(thetaOverTwo);
+        float cosThetaOverTwo = (float)Math.cos(thetaOverTwo);
+        deltaRotationVector[0] = sinThetaOverTwo * normValues[0];
+        deltaRotationVector[1] = sinThetaOverTwo * normValues[1];
+        deltaRotationVector[2] = sinThetaOverTwo * normValues[2];
+        deltaRotationVector[3] = cosThetaOverTwo;
     }
 
     private static float[] getRotationMatrixFromOrientation(float[] orientation) {
