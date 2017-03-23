@@ -1,16 +1,15 @@
 --- TODO
--> Debug (2h)
+-> Bussola si deve ripulire per bene, probabilmente override
+-> Tipo Compass (push e pull) e tipo StepDetection, entrambi con listener
+-> Fare service
 
 -> Refactoring (2h)
-    - Estrarre costanti in una classe statica da mettere in APP
     - Check eccezioni (soprattutto fingerprint)
     - Fare FingerprintWriter e FingerprintReader?
     - Lavorare con XYPosition quando non conosco il piano (cioè quasi sempre)
-    - "define north" un po' più carino sulla RelativeCompass con Future<>
     - Il past participle di split è split, non splitted
 -> Distinguere tra: librerie java, librerie android, app android e validare (1h)
--> Progettazione & sviluppo front-end (2h30)
--> Fare service (2h)
+-> Progettazione & sviluppo front-end
 
 -> Debug (e refactoring?) Kalman (3h)
 

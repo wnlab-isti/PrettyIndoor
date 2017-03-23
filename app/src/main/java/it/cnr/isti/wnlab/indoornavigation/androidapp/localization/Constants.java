@@ -40,7 +40,6 @@ public final class Constants {
      */
 
     public static final float PDR_INITIAL_HEADING = 0.f;
-    public static final int PDR_COMPASS_RATE = 60;
 
     /*
      * Particle Filter

@@ -113,7 +113,7 @@ public class CompassActivity extends AppCompatActivity {
             }
         });*/
         // Lawitzki relative compass
-        YetAnotherCompass compass = new YetAnotherCompass(ah, mh);
+        RelativeCompass compass = new RelativeCompass(ah, gh, mh);
         compass.register(new Observer<Heading>() {
             @Override
             public void notify(Heading newHeading) {
@@ -123,9 +123,9 @@ public class CompassActivity extends AppCompatActivity {
 
         // Start everything
         ah.start();
-        //gh.start();
+        gh.start();
         mh.start();
-        //compass.start();
+        compass.start();
 
         Log.d("MAH","started");
     }
@@ -134,6 +134,5 @@ public class CompassActivity extends AppCompatActivity {
         float heading = newHeading.heading;
         mView.rotate = heading;
         mView.invalidate();
-        Log.d("COMPASSACT", "New heading: " + heading);
     }
 }
