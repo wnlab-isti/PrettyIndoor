@@ -28,14 +28,13 @@ public class ParticleFilter<T extends Particle> implements Filter {
         this.regenerationStrategy = regenerationStrategy;
     }
 
-    public Collection<T> filter() {
+    public void filter() {
         if(updateStrategy != null)
             updateStrategy.update(particles);
         if(filteringStrategy != null)
             filteringStrategy.filter(particles);
         if(regenerationStrategy != null)
             regenerationStrategy.regenerate(particles);
-        return particles;
     }
 
     /*

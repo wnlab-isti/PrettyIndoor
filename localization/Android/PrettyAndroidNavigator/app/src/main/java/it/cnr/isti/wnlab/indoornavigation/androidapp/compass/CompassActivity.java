@@ -18,8 +18,10 @@ import it.cnr.isti.wnlab.indoornavigation.android.compass.RelativeCompass;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
+import it.cnr.isti.wnlab.indoornavigation.androidapp.localization.Constants;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Compass;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 
 public class CompassActivity extends AppCompatActivity {
@@ -111,7 +113,7 @@ public class CompassActivity extends AppCompatActivity {
             }
         });*/
         // Lawitzki relative compass
-        AbstractEmitter<Heading> compass = new RelativeCompass(ah, gh, mh, LawitzkiCompass.DEFAULT_RATE);
+        YetAnotherCompass compass = new YetAnotherCompass(ah, mh);
         compass.register(new Observer<Heading>() {
             @Override
             public void notify(Heading newHeading) {
@@ -121,8 +123,11 @@ public class CompassActivity extends AppCompatActivity {
 
         // Start everything
         ah.start();
-        gh.start();
+        //gh.start();
         mh.start();
+        //compass.start();
+
+        Log.d("MAH","started");
     }
 
     private void updateHeading(Heading newHeading) {

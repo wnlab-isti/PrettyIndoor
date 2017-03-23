@@ -10,7 +10,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
 
 public class FasterStepDetector extends StepDetector {
 
-    private float   mLimit = 2.4f; // Sperimentally found on my slow walk. It was 10.0 before
+    private float   mLimit = 1.9f; // Sperimentally found on my slow walk. It was 10.0 before
     private float   mLastValues[] = new float[3*2];
     private float   mScale[] = new float[2];
     private float   mYOffset;

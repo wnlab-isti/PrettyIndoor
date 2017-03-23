@@ -242,7 +242,7 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
      * ***************************************/
 
     private void calculateAccMagOrientation() {
-        if(SensorManager.getRotationMatrix(rotationMatrix, null, accel.getArray(), magnet.getArray())) {
+        if(accel != null && magnet != null && SensorManager.getRotationMatrix(rotationMatrix, null, accel.getArray(), magnet.getArray())) {
             SensorManager.getOrientation(rotationMatrix, accMagOrientation);
         }
     }
