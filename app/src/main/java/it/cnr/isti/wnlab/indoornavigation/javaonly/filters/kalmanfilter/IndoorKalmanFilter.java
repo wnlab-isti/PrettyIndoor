@@ -16,7 +16,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
  * Initializes x vector = (x,y,1,1) and P matrix
  * with d(P) = (initPosVar, initPosVar, heading, stepLength).
  */
-public class IndoorKalmanFilter implements KalmanFilter, PositionFilter2D {
+public abstract class IndoorKalmanFilter implements KalmanFilter, PositionFilter2D {
 
     public static final int X_POSITION_IN_VECTOR = 0;
     public static final int Y_POSITION_IN_VECTOR = 1;
@@ -86,15 +86,6 @@ public class IndoorKalmanFilter implements KalmanFilter, PositionFilter2D {
 
         // Initialize KF
         kf = new org.apache.commons.math3.filter.KalmanFilter(process, measure);
-    }
-
-    @Override
-    public IndoorPosition getPosition(int floor, long timestamp) {
-        RealVector x = kf.getStateEstimationVector();
-        return new IndoorPosition(
-                (float) x.getEntry(X_POSITION_IN_VECTOR),
-                (float) x.getEntry(Y_POSITION_IN_VECTOR),
-                floor, timestamp);
     }
 
     @Override

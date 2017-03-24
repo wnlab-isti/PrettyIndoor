@@ -23,6 +23,4 @@ public abstract class PDR extends AbstractEmitter<PDR.Result> {
         }
     }
 
-
-
 }

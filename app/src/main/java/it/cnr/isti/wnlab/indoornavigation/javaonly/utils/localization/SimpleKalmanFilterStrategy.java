@@ -11,7 +11,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.kalmanfilter.PDRPredict
 /**
  * Implementation of strategy used by You Li.
  */
-public class SimpleIndoorKalmanFilterStrategy extends AbstractIndoorLocalizationStrategy {
+public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrategy {
 
     private final static float STEP_LENGTH = 0.5f;
 
@@ -27,7 +27,7 @@ public class SimpleIndoorKalmanFilterStrategy extends AbstractIndoorLocalization
     private int mStepCount;
     private static final int STEP_LIMIT = 3;
 
-    public SimpleIndoorKalmanFilterStrategy(
+    public SimpleKalmanFilterStrategy(
             IndoorPosition startPosition,
             PDR pdr/*,
             KnnWifiFingerprint_OLD wifiLocator,
@@ -45,7 +45,7 @@ public class SimpleIndoorKalmanFilterStrategy extends AbstractIndoorLocalization
             @Override
             public void notify(PDR.Result pdrDelta) {
                 pdr2kf.predict(pdrDelta);
-                notifyObservers(kf.getPosition(mFloor,pdrDelta.timestamp));
+//                notifyObservers(kf.getPosition(mFloor,pdrDelta.timestamp));
                 mStepCount++;
                 if(mStepCount > STEP_LIMIT) {
                     // Clear pre-prediction positions in updater (for not using old positions)
@@ -119,11 +119,11 @@ public class SimpleIndoorKalmanFilterStrategy extends AbstractIndoorLocalization
         };
 
         // Return IndoorKF object
-        return new IndoorKalmanFilter(x0, mP0, mA, mB, mQ, mH, mR);
+        return null; //new IndoorKalmanFilter(x0, mP0, mA, mB, mQ, mH, mR);
     }
 
     @Override
     public IndoorPosition getCurrentPosition() {
-        return kf.getPosition(mFloor,System.currentTimeMillis());
+        return null; //kf.getPosition(mFloor,System.currentTimeMillis());
     }
 }

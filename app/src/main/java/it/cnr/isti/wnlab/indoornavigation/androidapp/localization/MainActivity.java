@@ -39,7 +39,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedLengthPDR;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedStepPDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleIndoorParticleFilterStrategy;
 
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements
     private void initKalman() {
 // TODO
 //        initPDR();
-//        strategy = new SimpleIndoorKalmanFilterStrategy(
+//        strategy = new SimpleKalmanFilterStrategy(
 //                new IndoorPosition(startX,startY,startFloor,System.currentTimeMillis()), pdr);
     }
 
@@ -293,15 +293,16 @@ public class MainActivity extends AppCompatActivity implements
                 new XYPosition(startX,startY),
                 Constants.PF_PARTICLES_NUMBER,
                 floorMap,
+                Constants.PDR_STEP_LENGTH,
                 pdr,
                 wifi, wiFing,
                 mh, magFing);
     }
 
     private void initPDR() {
-        compass = new RelativeCompass(ah,gh,mh,Constants.PDR_COMPASS_RATE);
+        compass = new RelativeCompass(ah,gh,mh);
         sd = new FasterStepDetector(ah);
-        pdr = new FixedLengthPDR(compass,sd,Constants.PDR_INITIAL_HEADING);
+        pdr = new FixedStepPDR(compass, sd, Constants.PDR_STEP_LENGTH, Constants.PDR_INITIAL_HEADING);
     }
 
     @Override

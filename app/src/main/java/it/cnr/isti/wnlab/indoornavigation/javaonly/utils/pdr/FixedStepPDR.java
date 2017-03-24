@@ -8,16 +8,17 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
 /**
  * PDR utility methods.
  */
-public class FixedLengthPDR extends PDR {
+public class FixedStepPDR extends PDR {
 
     // Assume fixed-length steps
-    private final float STEP_LENGTH = 0.6f;
+    private float mStepLength;
 
     // Heading
     private float mHeading;
 
-    public FixedLengthPDR(Emitter<Heading> heading, Emitter<Step> stepDetector, float initialHeading) {
-        // Initialize heading
+    public FixedStepPDR(Emitter<Heading> heading, Emitter<Step> stepDetector, float stepLength, float initialHeading) {
+        // Initialize step length and heading
+        mStepLength = stepLength;
         mHeading = initialHeading;
 
         // Register for heading changes
@@ -50,11 +51,11 @@ public class FixedLengthPDR extends PDR {
      * @param step
      */
     private void onStep(Step step) {
-        notifyObservers(
-                new PDR.Result(
-                        -(STEP_LENGTH * (float) Math.sin(mHeading)),
-                        STEP_LENGTH * (float) Math.cos(mHeading),
-                        mHeading,
-                        step.timestamp));
+        PDR.Result res = new PDR.Result(
+                -(mStepLength * (float) Math.sin(mHeading)),
+                mStepLength * (float) Math.cos(mHeading),
+                mHeading,
+                step.timestamp);
+        notifyObservers(res);
     }
 }
