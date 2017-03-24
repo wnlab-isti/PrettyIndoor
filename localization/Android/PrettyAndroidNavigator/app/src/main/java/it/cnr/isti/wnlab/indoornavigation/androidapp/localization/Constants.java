@@ -40,6 +40,9 @@ public final class Constants {
      */
 
     public static final float PDR_INITIAL_HEADING = 0.f;
+    public static final float PDR_STEP_LENGTH = 0.6f;
+    private final static double PDR_ANGLE_STANDARD_DEVIATION = Math.PI/2; // N(0,PI/2)
+    private final static double PDR_SPEED_STANDARD_DEVIATION = 0.15; // N(0,(0.15)^2)
 
     /*
      * Particle Filter

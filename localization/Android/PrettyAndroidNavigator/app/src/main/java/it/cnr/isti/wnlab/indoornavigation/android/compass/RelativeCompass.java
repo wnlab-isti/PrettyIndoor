@@ -55,6 +55,10 @@ public class RelativeCompass extends LawitzkiCompass {
         } else {
             // If not calibrating, update heading with correction
             float correctHeading = newHeading-lastCalibrationHeading;
+            if(correctHeading < -Math.PI)
+                correctHeading += Math.PI;
+            else if(correctHeading > Math.PI)
+                correctHeading -= Math.PI;
             // Notify to observers correct heading
             super.onHeadingChange(correctHeading, timestamp);
             Log.d("COMPASS", "heading: " + correctHeading);

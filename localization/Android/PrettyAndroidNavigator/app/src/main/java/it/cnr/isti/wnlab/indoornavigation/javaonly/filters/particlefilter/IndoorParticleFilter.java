@@ -31,11 +31,6 @@ public class IndoorParticleFilter extends ParticleFilter<PositionParticle> imple
     }
 
     @Override
-    public IndoorPosition getPosition(int floor, long timestamp) {
-        return new IndoorPosition(position,floor,timestamp);
-    }
-
-    @Override
     public XYPosition get2DPosition() {
         return position;
     }

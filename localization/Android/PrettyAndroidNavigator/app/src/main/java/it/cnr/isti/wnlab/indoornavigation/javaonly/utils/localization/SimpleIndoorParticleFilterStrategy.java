@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import it.cnr.isti.wnlab.indoornavigation.androidapp.localization.Constants;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.AbstractIndoorLocalizationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
@@ -36,6 +35,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     private final static double SPEED_STANDARD_DEVIATION = 0.15; // N(0,(0.15)^2)
     private final NormalDistribution angleDistribution;
     private final NormalDistribution speedDistribution;
+    private float stepLength;
 
     // Particle Filter
     private IndoorParticleFilter particleFilter;
@@ -44,7 +44,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     // Map
     private FloorMap floorMap;
 
-    // PDR position
+    // PDR and inertial
     private PDR.Result lastPDRResult;
 
     // Wifi
@@ -60,7 +60,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     private float magneticDistanceMaxLimit;
 
     // Random numbers
-    Random r;
+    private Random r;
 
     /**
      * Strategy using a ParticleFilter with initial position.
@@ -73,6 +73,8 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
             int particlesNumber,
             // Map
             FloorMap floorMap,
+            // Featured step length
+            float stepLength,
             // PDR
             PDR pdr,
             // Wifi localization
@@ -89,6 +91,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         this.angleDistribution = new NormalDistribution(0,ANGLE_STANDARD_DEVIATION);
         this.speedDistribution = new NormalDistribution(0,SPEED_STANDARD_DEVIATION);
         this.floorMap = floorMap;
+        this.stepLength = stepLength;
 
         /*
          * Particle Filter
@@ -133,10 +136,9 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         pdr.register(new Observer<PDR.Result>() {
             @Override
             public void notify(PDR.Result data) {
-                Log.d("PFS", "PDR arrived " + data);
                 lastPDRResult = data;
                 particleFilter.filter();
-                notifyObservers(particleFilter.getPosition(-1,System.currentTimeMillis()));
+                notifyObservers(new IndoorPosition(particleFilter.get2DPosition(),-1,System.currentTimeMillis()));
             }
         });
 
@@ -185,7 +187,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
 
     @Override
     public IndoorPosition getCurrentPosition() {
-        return particleFilter.getPosition(Constants.INITIAL_FLOOR,System.currentTimeMillis());
+        return new IndoorPosition(particleFilter.get2DPosition(),-1,System.currentTimeMillis());
     }
 
     /**********************************************************************
@@ -209,12 +211,13 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
             Log.d("PF", "Updating " + p);
 
             // Update x
-            float dx = (lastPDRResult.dE + (float) speedDistribution.sample()) *
+            float dx = (stepLength + (float) speedDistribution.sample()) *
                     ((float) Math.cos(lastPDRResult.heading + angleDistribution.sample()));
+            Log.d("PFS", "SPGAHETTI WESTERN: dE is " + lastPDRResult.dE + ", dx is " + dx);
             float newx = p.getX() + dx;
             // Update y
-            float dy = (lastPDRResult.dN + (float) speedDistribution.sample()) *
-                    ((float) Math.cos(lastPDRResult.heading + angleDistribution.sample()));
+            float dy = -(stepLength + (float) speedDistribution.sample()) *
+                    ((float) Math.sin(lastPDRResult.heading + angleDistribution.sample()));
             float newy = p.getY() + dy;
 
             // Let's break the schema: filter here
