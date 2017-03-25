@@ -1,12 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.PositionFilter2D;
-
-public abstract class NewIndoorKalmanFilter implements KalmanFilter, PositionFilter2D {
-
-    // Model
-    private XYPosition position;
+public abstract class AbstractKalmanFilter implements KalmanFilter {
 
     // State vectors
     private float[] x;
@@ -23,10 +17,9 @@ public abstract class NewIndoorKalmanFilter implements KalmanFilter, PositionFil
     private float[][] mHt; // Transposed observation matrix (used in Innovation Covariance and Kalman Gain steps)
     private float[][] mR; // Estimated measurement error covariance
 
-    public NewIndoorKalmanFilter(XYPosition initialPosition, float[] x0, float[][] mP0) {
+    public AbstractKalmanFilter(float[] x0, float[][] mP0) {
         this.x = x0;
         this.mP = mP0;
-        this.position = initialPosition;
         this.mA = initMatrixA();
         this.mAt = newTransposedA(mA);
         this.mB = initMatrixB();
@@ -43,9 +36,6 @@ public abstract class NewIndoorKalmanFilter implements KalmanFilter, PositionFil
 
         // Predict covariance
         mP = covariancePrediction(mA,mP,mAt,mQ);
-
-        // Change current position with the predicted one
-        position = getPositionFromState(x);
     }
 
     @Override
@@ -63,14 +53,6 @@ public abstract class NewIndoorKalmanFilter implements KalmanFilter, PositionFil
         // Update state and covariance
         updateState(x, mK, y);
         updateCovariance(mP, mK, mH);
-
-        // Change current position with the updated one
-        position = getPositionFromState(x);
-    }
-
-    @Override
-    public XYPosition get2DPosition() {
-        return position;
     }
 
     protected abstract float[][] initMatrixA();
@@ -91,8 +73,6 @@ public abstract class NewIndoorKalmanFilter implements KalmanFilter, PositionFil
 
     protected abstract float[][] covariancePrediction(float[][] mA, float[][] mP, float[][] mAt, float[][] mQ);
 
-    protected abstract XYPosition getPositionFromState(float[] x);
-
     protected abstract float[] innovation(float[] z, float[][] mH, float[] x);
 
     protected abstract float[][] kalmanGain(float[][] mP, float[][] mHt, float[][] mSinv);
@@ -109,7 +89,7 @@ public abstract class NewIndoorKalmanFilter implements KalmanFilter, PositionFil
         return x;
     }
 
-    public float[][] getCovariance() {
+    public float[][] getCovarianceMatrix() {
         return mP;
     }
 }

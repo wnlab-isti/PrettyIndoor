@@ -37,8 +37,11 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedStepPDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleIndoorParticleFilterStrategy;
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
         RadioGroup.OnCheckedChangeListener,
         View.OnClickListener {
 
-    // TODO mettere in service quello che deve stare nel service.
+    // TODO dare al service quello che è del service
 
     /*
      * Localization strategy
@@ -80,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements
     private FloatingActionButton startFab;
     private FloatingActionButton stopFab;
     private FloatingActionButton logStepFab;
-    private FloatingActionButton settingsFab;
 
     /*
      * Handlers
@@ -107,7 +109,9 @@ public class MainActivity extends AppCompatActivity implements
      */
 
     private WifiFingerprintMap wiFing;
+    private DistancesMap<XYPosition, AccessPoints> wifiDist;
     private MagneticFingerprintMap magFing;
+    private DistancesMap<XYPosition, MagneticField> magDist;
 
     /*
      * Logging
@@ -182,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements
         stopFab.setOnClickListener(this);
         logStepFab = (FloatingActionButton) findViewById(R.id.fab_logstep);
         logStepFab.setOnClickListener(this);
-        settingsFab = (FloatingActionButton) findViewById(R.id.fab_settings);
-        settingsFab.setOnClickListener(this);
 
         // Set GUI as inactive
         inactiveModeGUI();
@@ -295,8 +297,8 @@ public class MainActivity extends AppCompatActivity implements
                 floorMap,
                 Constants.PDR_STEP_LENGTH,
                 pdr,
-                wifi, wiFing,
-                mh, magFing);
+                wiFing, wifiDist,
+                magFing, magDist);
     }
 
     private void initPDR() {
@@ -337,10 +339,6 @@ public class MainActivity extends AppCompatActivity implements
                 stopLogging();
                 break;
 
-            case R.id.fab_settings:
-                // TODO
-                break;
-
             case R.id.fab_logstep:
                 stepLogger.log();
                 break;
@@ -362,7 +360,6 @@ public class MainActivity extends AppCompatActivity implements
         // Set "Stop" and "Log step" visible
         startFab.setVisibility(View.GONE);
         stopFab.setVisibility(View.VISIBLE);
-        settingsFab.setVisibility(View.GONE);
         logStepFab.setVisibility(View.VISIBLE);
 
         // Set ToggleButtons as active (where possible)
@@ -388,7 +385,6 @@ public class MainActivity extends AppCompatActivity implements
         // Set "Start" and "Settings" as visible
         startFab.setVisibility(View.VISIBLE);
         stopFab.setVisibility(View.GONE);
-        settingsFab.setVisibility(View.VISIBLE);
         logStepFab.setVisibility(View.GONE);
 
         // Set ToggleButtons as inactive
@@ -455,17 +451,19 @@ public class MainActivity extends AppCompatActivity implements
         // Wifi fingerprint
         String wiFingPath = sp.getString(Constants.SP_WIFIFP_KEY,Constants.SP_WIFIFP_DEFAULT);
         File wiFile = new File(wiFingPath);
-        if(wiFile.exists())
+        if(wiFile.exists()) {
             wiFing = (new WifiFingerprintMap.Builder()).build(wiFile);
-        else
+            wifiDist = new DistancesMap<>(wiFing,wifi,Constants.WIFI_DISTANCES_K,Constants.WIFI_DISTANCES_THRESHOLD);
+        } else
             Toast.makeText(this,getString(R.string.wifi_fp_db_not_found) + " " + wiFingPath, Toast.LENGTH_LONG).show();
 
         // Magnetic fingerprint
         String magFingPath = sp.getString(Constants.SP_MAGNETIC_KEY,Constants.SP_MAGNETIC_DEFAULT);
         File magFile = new File(magFingPath);
-        if(magFile.exists())
+        if(magFile.exists()) {
             magFing = (new MagneticFingerprintMap.Builder()).build(magFile);
-        else
+            magDist = new DistancesMap<>(magFing,mh,Constants.MAGNETIC_DISTANCES_K,Constants.MAGNETIC_DISTANCES_THRESHOLD);
+        } else
             Toast.makeText(this, getString(R.string.mag_fp_db_not_found)  + " " + magFingPath, Toast.LENGTH_LONG).show();
     }
 

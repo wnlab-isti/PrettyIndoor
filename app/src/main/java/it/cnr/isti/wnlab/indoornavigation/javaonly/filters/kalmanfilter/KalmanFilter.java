@@ -21,4 +21,14 @@ public interface KalmanFilter extends Filter {
      */
     void update(float[] z);
 
+    /**
+     * @return Current state vector.
+     */
+    float[] getStateVector();
+
+    /**
+     * @return Current covariance matrix.
+     */
+    float[][] getCovarianceMatrix();
+
 }

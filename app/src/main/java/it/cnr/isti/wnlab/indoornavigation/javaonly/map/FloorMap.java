@@ -5,9 +5,11 @@ import java.util.Collection;
 
 public class FloorMap implements XYMap {
 
+    private int floor;
     private Collection<RoomMap> rooms;
 
-    public FloorMap(RoomMap... rooms) {
+    public FloorMap(int floor, RoomMap... rooms) {
+        this.floor = floor;
         this.rooms = Arrays.asList(rooms);
     }
 
@@ -18,5 +20,9 @@ public class FloorMap implements XYMap {
                 return true;
         }
         return false;
+    }
+
+    public int getFloor() {
+        return floor;
     }
 }
