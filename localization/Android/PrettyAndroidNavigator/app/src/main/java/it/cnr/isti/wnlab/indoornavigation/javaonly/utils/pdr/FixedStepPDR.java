@@ -52,7 +52,7 @@ public class FixedStepPDR extends PDR {
      */
     private void onStep(Step step) {
         PDR.Result res = new PDR.Result(
-                -(mStepLength * (float) Math.sin(mHeading)),
+                -mStepLength * (float) Math.sin(mHeading),
                 mStepLength * (float) Math.cos(mHeading),
                 mHeading,
                 step.timestamp);

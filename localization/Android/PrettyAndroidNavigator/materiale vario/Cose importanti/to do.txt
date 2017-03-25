@@ -1,25 +1,26 @@
 --- TODO
+-> Implementare PositionFilter per FingerprintMap.findNearestK e DistanceMap.findAveragePosition
+-> Proiezione punto se con KalmanFilterStrategy scazza (su FloorMap o un'altra classe di quelle)
+-> Debug e prove PF
+-> Debug e prove KF
+-> Far diventare una classe autonoma il PositionDistance
+-
 -> Bussola si deve ripulire per bene, probabilmente override
--> Tipo Compass (push e pull) e tipo StepDetection, entrambi con listener
--> Fare service
-
--> Refactoring (2h)
+-> Refactoring
     - Check eccezioni (soprattutto fingerprint)
-    - Fare FingerprintWriter e FingerprintReader?
     - Lavorare con XYPosition quando non conosco il piano (cioè quasi sempre)
     - Il past participle di split è split, non splitted
--> Distinguere tra: librerie java, librerie android, app android e validare (1h)
--> Progettazione & sviluppo front-end
-
--> Debug (e refactoring?) Kalman (3h)
-
--> Validazione (2h)
--> Documentazione
-
--> Misurazioni
 -> capire Step Detection (implementazione & teoria)
--> capire bussola (implementazione & teoria)
--> Tesi
+-> Fare service
+-> Distinguere tra: librerie java, librerie android, app android e validare (1h)
+-> Documentazione
+-> Validazione e check warnings
+-
+-> UML e readme.txt
+- 26/03
+
+-> Campagna EvAAL-like
+- 27/03
 
 --- TODO WHAT
 Requisiti app Android:

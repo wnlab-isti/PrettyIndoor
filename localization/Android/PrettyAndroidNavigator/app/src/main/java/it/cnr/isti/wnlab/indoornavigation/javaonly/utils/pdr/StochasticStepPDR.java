@@ -61,7 +61,7 @@ public class StochasticStepPDR extends PDR {
         float heading = mHeading + ((float) angleDistribution.sample());
 
         PDR.Result res = new PDR.Result(
-                stepLength * (float) Math.sin(heading),
+                -stepLength * (float) Math.sin(heading),
                 stepLength * (float) Math.cos(heading),
                 heading,
                 step.timestamp);

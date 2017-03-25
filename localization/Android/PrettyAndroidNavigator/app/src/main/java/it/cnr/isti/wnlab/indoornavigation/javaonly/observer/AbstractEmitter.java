@@ -24,6 +24,10 @@ public abstract class AbstractEmitter<T> implements Emitter<T> {
         mObservers.remove(observer);
     }
 
+    public int countObservers() {
+        return mObservers.size();
+    }
+
     protected void notifyObservers(T data) {
         for(Observer<T> observer : mObservers)
             observer.notify(data);

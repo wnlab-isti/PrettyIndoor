@@ -41,12 +41,18 @@ public final class Constants {
 
     public static final float PDR_INITIAL_HEADING = 0.f;
     public static final float PDR_STEP_LENGTH = 0.6f;
-    private final static double PDR_ANGLE_STANDARD_DEVIATION = Math.PI/2; // N(0,PI/2)
-    private final static double PDR_SPEED_STANDARD_DEVIATION = 0.15; // N(0,(0.15)^2)
 
     /*
      * Particle Filter
      */
 
     public static final int PF_PARTICLES_NUMBER = 200;
+
+    /*
+     * Wifi fingerprinting
+     */
+    public static final int WIFI_DISTANCES_K = 3;
+    public static final float WIFI_DISTANCES_THRESHOLD = Float.MAX_VALUE;
+    public static final int MAGNETIC_DISTANCES_K = 3;
+    public static final float MAGNETIC_DISTANCES_THRESHOLD = Float.MAX_VALUE;
 }
