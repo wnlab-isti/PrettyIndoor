@@ -8,6 +8,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.FingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 
 public abstract class FingerprintLocalizationStrategy<T extends RawData>
         extends AbstractEmitter<XYPosition> {
@@ -32,14 +33,14 @@ public abstract class FingerprintLocalizationStrategy<T extends RawData>
 
     private XYPosition findAveragePosition(T lastMeasurement) {
         // Get first K positions
-        Collection<FingerprintMap.PositionDistance<XYPosition>> firstKPositions;
-        firstKPositions = fpMap.findNearestK(lastMeasurement,mK,Float.MAX_VALUE);
+        Collection<PositionDistance<XYPosition>> firstKPositions;
+        firstKPositions = fpMap.findNearestK(lastMeasurement,mK,null);
 
         // Do weighted average
         float avgX = 0.f;
         float avgY = 0.f;
         float weightSum = 0.f;
-        for(FingerprintMap.PositionDistance<XYPosition> p : firstKPositions) {
+        for(PositionDistance<XYPosition> p : firstKPositions) {
             float weight = 1/p.distance;
             avgX += weight * p.position.x;
             avgY += weight * p.position.y;

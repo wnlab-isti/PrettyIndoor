@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements
         File wiFile = new File(wiFingPath);
         if(wiFile.exists()) {
             wiFing = (new WifiFingerprintMap.Builder()).build(wiFile);
-            wifiDist = new DistancesMap<>(wiFing,wifi,Constants.WIFI_DISTANCES_K,Constants.WIFI_DISTANCES_THRESHOLD);
+            wifiDist = new DistancesMap<>(wiFing,wifi,Constants.WIFI_DISTANCES_K,null);
         } else
             Toast.makeText(this,getString(R.string.wifi_fp_db_not_found) + " " + wiFingPath, Toast.LENGTH_LONG).show();
 
@@ -462,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements
         File magFile = new File(magFingPath);
         if(magFile.exists()) {
             magFing = (new MagneticFingerprintMap.Builder()).build(magFile);
-            magDist = new DistancesMap<>(magFing,mh,Constants.MAGNETIC_DISTANCES_K,Constants.MAGNETIC_DISTANCES_THRESHOLD);
+            magDist = new DistancesMap<>(magFing,mh,Constants.MAGNETIC_DISTANCES_K,null);
         } else
             Toast.makeText(this, getString(R.string.mag_fp_db_not_found)  + " " + magFingPath, Toast.LENGTH_LONG).show();
     }

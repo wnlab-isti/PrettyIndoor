@@ -64,6 +64,7 @@ public class PartialISTIFloorMap extends FloorMap {
 
     public PartialISTIFloorMap() {
         super(
+                1,
                 westernCorridor,
                 westernDoors,
                 vendingMachines,

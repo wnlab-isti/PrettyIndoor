@@ -18,11 +18,10 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.Positi
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.RegenerationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.UpdateStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.FingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
@@ -224,7 +223,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      * @return true if the particle should survive, false otherwise.
      */
     private boolean wifiFilterCheck(PositionParticle p) {
-        List<FingerprintMap.PositionDistance<XYPosition>> distances = lastWifiDistances.getDistances();
+        List<PositionDistance<XYPosition>> distances = lastWifiDistances.getDistances();
         wifiDistanceMaxLimit = getMaxLimit(distances);
 
         // Call generic function
@@ -237,7 +236,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      * @return true if the particle should survive, false otherwise.
      */
     private boolean magneticFilterCheck(PositionParticle p) {
-        List<FingerprintMap.PositionDistance<XYPosition>> distances = lastMagDistances.getDistances();
+        List<PositionDistance<XYPosition>> distances = lastMagDistances.getDistances();
         magneticDistanceMaxLimit = getMaxLimit(distances);
 
         // Call generic function
@@ -252,12 +251,12 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      * @param pds
      * @return
      */
-    public float getMaxLimit(List<FingerprintMap.PositionDistance<XYPosition>> pds) {
+    public float getMaxLimit(List<PositionDistance<XYPosition>> pds) {
         // Find average between distances and minimum distance
         /*float dSum = 0.f;*/
         /*float minDistance = Float.MAX_VALUE;*/
         float maxDistance = 0.f;
-        for(FingerprintMap.PositionDistance<XYPosition> pd : pds) {
+        for(PositionDistance<XYPosition> pd : pds) {
             /*dSum += pd.distance;*/
             /*if(pd.distance < minDistance)
                 minDistance = pd.distance;*/
@@ -276,7 +275,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
      */
     private boolean fingerprintFilterCheck(
             PositionParticle p,
-            List<FingerprintMap.PositionDistance<XYPosition>> distances,
+            List<PositionDistance<XYPosition>> distances,
             float maxLimit
     ) {
         // Interpolate distance of particle's position.
@@ -285,7 +284,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
         float py = p.getY();
         float particlePositionDistance = 0.f;
         float rSum = 0.f;
-        for(FingerprintMap.PositionDistance<XYPosition> posDis : distances) {
+        for(PositionDistance<XYPosition> posDis : distances) {
             float dx = posDis.position.x - px;
             float dy = posDis.position.y - py;
             float r = (float) Math.sqrt(dx*dx+dy*dy);

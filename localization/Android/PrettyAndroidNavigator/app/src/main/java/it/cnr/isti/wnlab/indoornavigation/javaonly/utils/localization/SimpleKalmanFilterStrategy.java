@@ -1,5 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
@@ -9,10 +10,13 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter.KalmanFi
 import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.FingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.GeometryUtils;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
 
 public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrategy {
@@ -35,6 +39,9 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
     private MagneticFingerprintMap magFingMap;
     private DistancesMap<XYPosition, MagneticField> magDist;
 
+    // Radius
+    private float radius;
+
     // Randomness
     private Random r;
 
@@ -48,7 +55,9 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
             final DistancesMap<XYPosition, AccessPoints> wiDist,
             // Magnetic
             MagneticFingerprintMap magFingMap,
-            DistancesMap<XYPosition, MagneticField> magDist
+            DistancesMap<XYPosition, MagneticField> magDist,
+            // Wifi filter for MM positions radius
+            float radius
     ) {
         this.position = startPosition;
         this.floor = floor;
@@ -57,6 +66,7 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
         this.wiDist = wiDist;
         this.magFingMap = magFingMap;
         this.magDist = magDist;
+        this.radius = radius;
         this.r = new Random();
 
         pdr.register(new Observer<PDR.Result>() {
@@ -103,12 +113,20 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
         return new XYPosition(newX,newY);
     }
 
-    // TODO wifi_K > magnetic_K
     private XYPosition getFingerprintPosition() {
         // If wifi position is available
         XYPosition wifiPosition = wiDist.findAveragePosition();
         if(wifiPosition != null) {
-            // TODO
+
+            // Narrow MM positions in Wifi position-centered area
+            ArrayList<PositionDistance<XYPosition>> positions = new ArrayList<>();
+            for(PositionDistance<XYPosition> p : magDist.getDistances())
+                if(GeometryUtils.isPointInCircle(p.position, wifiPosition, radius))
+                    positions.add(p);
+            return DistancesMap.findAveragePosition(positions);
+
         }
+
+        return null;
     }
 }

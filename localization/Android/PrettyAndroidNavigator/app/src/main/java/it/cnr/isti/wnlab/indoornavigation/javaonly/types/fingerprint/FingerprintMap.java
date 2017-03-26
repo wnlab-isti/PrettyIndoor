@@ -21,24 +21,24 @@ public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
 
     /**
      * @param measurement
-     * @param threshold threshold for valid points. If null every point will be accepted.
+     * @param policy the acceptance policy for positions. If null every point will be accepted.
      * @return An unordered list of all points in database with their row-distances from measurement.
      */
-    public List<PositionDistance<P>> getDistancedPoints(T measurement, Float threshold) {
+    public List<PositionDistance<P>> getDistancedPoints(T measurement, PositionDistance.Filter policy) {
         // For each registered position calculate distance between row and measurement
         ArrayList<PositionDistance<P>> distancedPositions = new ArrayList<>();
         for(Map.Entry<P,T> entry : map.entrySet()) {
             // Add results to a list if distance is acceptable
             float distance = distanceBetween(measurement,entry.getValue());
-            if(threshold == null || distance <= threshold)
+            if(policy == null || policy.isValid(entry.getKey(),distance))
                 distancedPositions.add(
                         new PositionDistance(entry.getKey(), distance));
         }
         return distancedPositions;
     }
 
-    public List<PositionDistance<P>> findNearestK(T measurement, int k, float threshold) {
-        List<PositionDistance<P>> distancedPositions = getDistancedPoints(measurement, threshold);
+    public List<PositionDistance<P>> findNearestK(T measurement, int k, PositionDistance.Filter policy) {
+        List<PositionDistance<P>> distancedPositions = getDistancedPoints(measurement, policy);
 
         // Sort per distance
         Collections.sort(distancedPositions, new Comparator<PositionDistance>() {
@@ -65,35 +65,4 @@ public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
      * @return The always positive distance between the two measurements.
      */
     protected abstract float distanceBetween(T data1, T data2);
-
-    /*
-     * UTILITY CLASSES
-     */
-
-    /**
-     * Private wrapper class for (position,distance) pairs.
-     */
-    public static class PositionDistance<P extends XYPosition> {
-        public final P position;
-        public final float distance;
-
-        private PositionDistance(P position, float distance) {
-            this.position = position;
-            this.distance = distance;
-        }
-
-        /**
-         * @param p
-         * @return a negative integer if this pair is nearer (less distanced) than the argument's.
-         */
-        public int compareTo(PositionDistance p) {
-            return (int) (distance - p.distance);
-        }
-
-        @Override
-        public String toString() {
-            return position + "," + distance;
-        }
-    }
-
 }
