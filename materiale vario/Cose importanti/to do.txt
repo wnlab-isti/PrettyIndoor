@@ -1,8 +1,11 @@
 --- TODO
--> Debug e prove PF
 -> Debug e prove KF
+    - BUG: il Kalman Gain a un certo punto diventa matrice nulla e non capisco perchè
+    - AGGIUNGERE FEATURE: se la posizione finale non è valida per la mappa, porta su quella del fingerprint
+-> Debug PF
+
 -> Dare al service quello che è del service e all'activity quello che è dell'activity
--
+
 -> Bussola si deve ripulire per bene, probabilmente override
 -> Refactoring
     - Check eccezioni (soprattutto fingerprint)
@@ -12,12 +15,12 @@
 -> Distinguere tra: librerie java, librerie android, app android e validare (1h)
 -> Documentazione
 -> Validazione e check warnings
--
+
 -> UML e readme.txt
-- 26/03
 
 -> Campagna EvAAL-like
-- 27/03
+
+-> Tesi
 
 --- TODO WHAT
 Requisiti app Android:

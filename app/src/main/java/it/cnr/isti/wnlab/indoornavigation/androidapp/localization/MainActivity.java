@@ -42,6 +42,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFin
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleKalmanFilterStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedStepPDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleIndoorParticleFilterStrategy;
@@ -132,10 +133,10 @@ public class MainActivity extends AppCompatActivity implements
 
         initializeFilesAndDirectories();
         initializePosition();
-        initializeGUI();
         initializeHandlers();
         loadFingerprints();
         initializeLogging();
+        initializeGUI();
     }
 
     /**
@@ -273,22 +274,31 @@ public class MainActivity extends AppCompatActivity implements
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
         switch(i) {
             case R.id.radio_kalmanfilter:
-                initKalman();
+                initKFStrategy();
                 break;
             case R.id.radio_particlefilter:
-                initParticle();
+                initPFStrategy();
                 break;
         }
     }
 
-    private void initKalman() {
-// TODO
-//        initPDR();
-//        strategy = new SimpleKalmanFilterStrategy(
-//                new IndoorPosition(startX,startY,startFloor,System.currentTimeMillis()), pdr);
+    private void initKFStrategy() {
+        initPDR();
+        strategy = new SimpleKalmanFilterStrategy(
+                new XYPosition(startX,startY),
+                floorMap,
+                // Inertial
+                pdr,
+                // Wifi
+                wiFing, wifiDist,
+                // Magnetic
+                magFing, magDist,
+                // Wifi filter for MM positions radius
+                Constants.KF_WIFI_POSITION_RADIUS
+        );
     }
 
-    private void initParticle() {
+    private void initPFStrategy() {
         initPDR();
         strategy = new SimpleIndoorParticleFilterStrategy(
                 // Initial position and particles number

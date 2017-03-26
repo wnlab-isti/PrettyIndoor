@@ -3,9 +3,9 @@ package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter.AbstractKalmanFilter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.VectorUtils;
 
-class StupidKalmanFilter extends AbstractKalmanFilter {
+class BazookaKalmanFilter extends AbstractKalmanFilter {
 
-    public StupidKalmanFilter() {
+    public BazookaKalmanFilter() {
         super(initX(), initMatrixP());
     }
 
@@ -63,8 +63,8 @@ class StupidKalmanFilter extends AbstractKalmanFilter {
     @Override
     protected float[][] initMatrixR() {
         float[][] mR = new float[][] {
-                {1, 0},
-                {0, 1}
+                {0, 0},
+                {0, 0}
         };
         return mR;
     }

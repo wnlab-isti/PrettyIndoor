@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,7 +12,6 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter.KalmanFi
 import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.FingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
@@ -46,8 +47,8 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
     private Random r;
 
     public SimpleKalmanFilterStrategy(
-            IndoorPosition startPosition,
-            FloorMap floor,
+            XYPosition startPosition,
+            FloorMap chosenFloor,
             // Inertial
             PDR pdr,
             // Wifi
@@ -60,8 +61,8 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
             float radius
     ) {
         this.position = startPosition;
-        this.floor = floor;
-        this.kf = new StupidKalmanFilter();
+        this.floor = chosenFloor;
+        this.kf = new BazookaKalmanFilter();
         this.wiFingMap = wiFingMap;
         this.wiDist = wiDist;
         this.magFingMap = magFingMap;
@@ -72,7 +73,9 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
         pdr.register(new Observer<PDR.Result>() {
             @Override
             public void notify(PDR.Result data) {
-                position = getUpdatedPosition(data);
+                XYPosition newPosition = getUpdatedPosition(data);
+                notifyObservers(new IndoorPosition(newPosition,floor.getFloor(),System.currentTimeMillis()));
+                position = newPosition;
             }
         });
     }
@@ -87,8 +90,13 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
         float newX = position.x + pdrData.dE;
         float newY = position.y + pdrData.dN;
 
+        Log.d("KFS", "PDR position is: " + newX + "," + newY);
+
         // Correct PDR error with Wifi positioning, if possible
         XYPosition fingerprintPosition = getFingerprintPosition();
+
+        Log.d("KFS", "Fingerprint position is: " + fingerprintPosition);
+
         if(fingerprintPosition != null) {
             // Prediction step (useless for now)
             float[] predictionInput = new float[2];
@@ -96,19 +104,28 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
             predictionInput[1] = 0;
             kf.predict(predictionInput);
 
+            Log.d("KFS", "Prediction: " + kf.getStateVector()[0] + "," + kf.getStateVector()[1]);
+
             // Update step
             float[] updateInput = new float[2];
             updateInput[0] = newX - fingerprintPosition.x;
             updateInput[1] = newY - fingerprintPosition.y;
             kf.update(updateInput);
 
+            Log.d("KFS", "Update: " + kf.getStateVector()[0] + "," + kf.getStateVector()[1]);
+
             // Pick a random variation in the filtered error
             float[] kfState = kf.getStateVector();
             float errorX = r.nextFloat() * kfState[0];
             float errorY = r.nextFloat() * kfState[1];
+
+            Log.d("KFS", "Errors: " + errorX + "," + errorY);
+
             newX += errorX;
             newY += errorY;
         }
+
+        Log.d("PFS", "New position: " + position);
 
         return new XYPosition(newX,newY);
     }
@@ -116,13 +133,20 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
     private XYPosition getFingerprintPosition() {
         // If wifi position is available
         XYPosition wifiPosition = wiDist.findAveragePosition();
+
+        Log.d("FPDEBUG", "null wifiPosition? " + (wifiPosition == null));
+
         if(wifiPosition != null) {
+
+            Log.d("KFS", "WifiPosition is: " + wifiPosition);
 
             // Narrow MM positions in Wifi position-centered area
             ArrayList<PositionDistance<XYPosition>> positions = new ArrayList<>();
-            for(PositionDistance<XYPosition> p : magDist.getDistances())
-                if(GeometryUtils.isPointInCircle(p.position, wifiPosition, radius))
+            for(PositionDistance<XYPosition> p : magDist.getDistances()) {
+                Log.d("KFS", "MM position is: " + p + ". Valid? " + GeometryUtils.isPointInCircle(p.position, wifiPosition, radius));
+                if (GeometryUtils.isPointInCircle(p.position, wifiPosition, radius))
                     positions.add(p);
+            }
             return DistancesMap.findAveragePosition(positions);
 
         }
