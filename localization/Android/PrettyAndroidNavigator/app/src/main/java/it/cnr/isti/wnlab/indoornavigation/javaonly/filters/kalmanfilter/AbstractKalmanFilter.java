@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter;
 
+import android.util.Log;
+
 public abstract class AbstractKalmanFilter implements KalmanFilter {
 
     // State vectors
@@ -51,8 +53,12 @@ public abstract class AbstractKalmanFilter implements KalmanFilter {
         float mK[][] = kalmanGain(mP, mHt, mSInv);
 
         // Update state and covariance
-        updateState(x, mK, y);
-        updateCovariance(mP, mK, mH);
+        Log.d("KFS", "x is " + x[0] + "," + x[1]);
+        Log.d("KFS", "y is " + y[0] + "," + y[1]);
+        Log.d("KFS", "K is " + mK[0][0] + "," + mK[0][1]);
+        Log.d("KFS", "K is " + mK[1][0] + "," + mK[1][1]);
+        x = updateState(x, mK, y);
+        mP = updateCovariance(mP, mK, mH);
     }
 
     protected abstract float[][] initMatrixA();

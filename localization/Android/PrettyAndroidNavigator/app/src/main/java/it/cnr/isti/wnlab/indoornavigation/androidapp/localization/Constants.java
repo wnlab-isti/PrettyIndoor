@@ -43,6 +43,12 @@ public final class Constants {
     public static final float PDR_STEP_LENGTH = 0.6f;
 
     /*
+     * Kalman Filter
+     */
+
+    public static final float KF_WIFI_POSITION_RADIUS = 5.f;
+
+    /*
      * Particle Filter
      */
 
@@ -52,7 +58,5 @@ public final class Constants {
      * Wifi fingerprinting
      */
     public static final int WIFI_DISTANCES_K = 3;
-    public static final float WIFI_DISTANCES_THRESHOLD = Float.MAX_VALUE;
-    public static final int MAGNETIC_DISTANCES_K = 3;
-    public static final float MAGNETIC_DISTANCES_THRESHOLD = Float.MAX_VALUE;
+    public static final int MAGNETIC_DISTANCES_K = 5;
 }

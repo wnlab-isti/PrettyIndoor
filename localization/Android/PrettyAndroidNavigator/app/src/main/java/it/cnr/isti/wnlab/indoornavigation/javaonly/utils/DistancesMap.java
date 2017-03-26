@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.utils;
 
+import android.util.Log;
+
 import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
@@ -37,6 +39,9 @@ public class DistancesMap<P extends XYPosition, T extends RawData> {
     }
 
     public List<PositionDistance<P>> getDistances() {
+
+        Log.d("FPDEBUG", "getDistances()");
+
         // No available measurements yet
         if(lastMeasurement == null)
             return null;
@@ -49,24 +54,14 @@ public class DistancesMap<P extends XYPosition, T extends RawData> {
     }
 
     public XYPosition findAveragePosition() {
-        return findAveragePosition(distanceMap);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder csv = new StringBuilder();
-        csv
-                .append("Measurement:").append(lastMeasurement.toString()).append("\n")
-                .append("Distances:");
-        for(PositionDistance<P> pd : getDistances())
-            csv.append("\n").append(pd.position).append(",").append(pd.distance);
-
-        return csv.toString();
+        return findAveragePosition(getDistances());
     }
 
     public static <A extends XYPosition>
     XYPosition findAveragePosition(List<PositionDistance<A>> distances) {
+
         if(distances != null && !distances.isEmpty()) {
+
             // Do weighted average
             float avgX = 0.f;
             float avgY = 0.f;
@@ -85,6 +80,18 @@ public class DistancesMap<P extends XYPosition, T extends RawData> {
 
         } else
             return null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder csv = new StringBuilder();
+        csv
+                .append("Measurement:").append(lastMeasurement.toString()).append("\n")
+                .append("Distances:");
+        for(PositionDistance<P> pd : getDistances())
+            csv.append("\n").append(pd.position).append(",").append(pd.distance);
+
+        return csv.toString();
     }
 
 }

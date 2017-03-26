@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,26 +21,10 @@ public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
         map = new HashMap<>();
     }
 
-    /**
-     * @param measurement
-     * @param policy the acceptance policy for positions. If null every point will be accepted.
-     * @return An unordered list of all points in database with their row-distances from measurement.
-     */
-    public List<PositionDistance<P>> getDistancedPoints(T measurement, PositionDistance.Filter policy) {
-        // For each registered position calculate distance between row and measurement
-        ArrayList<PositionDistance<P>> distancedPositions = new ArrayList<>();
-        for(Map.Entry<P,T> entry : map.entrySet()) {
-            // Add results to a list if distance is acceptable
-            float distance = distanceBetween(measurement,entry.getValue());
-            if(policy == null || policy.isValid(entry.getKey(),distance))
-                distancedPositions.add(
-                        new PositionDistance(entry.getKey(), distance));
-        }
-        return distancedPositions;
-    }
-
     public List<PositionDistance<P>> findNearestK(T measurement, int k, PositionDistance.Filter policy) {
         List<PositionDistance<P>> distancedPositions = getDistancedPoints(measurement, policy);
+
+        Log.d("FP", "distancedPositions size: " + distancedPositions.size() + ", k is " + k);
 
         // Sort per distance
         Collections.sort(distancedPositions, new Comparator<PositionDistance>() {
@@ -56,6 +42,25 @@ public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
             firstKElements = distancedPositions.subList(0,k);
 
         return firstKElements;
+    }
+
+    /**
+     * @param measurement
+     * @param policy the acceptance policy for positions. If null every point will be accepted.
+     * @return An unordered list of all points in database with their row-distances from measurement.
+     */
+    public List<PositionDistance<P>> getDistancedPoints(T measurement, PositionDistance.Filter policy) {
+        // For each registered position calculate distance between row and measurement
+        ArrayList<PositionDistance<P>> distancedPositions = new ArrayList<>();
+        for(Map.Entry<P,T> entry : map.entrySet()) {
+            // Add results to a list if distance is acceptable
+            float distance = distanceBetween(measurement,entry.getValue());
+            if(policy == null || policy.isValid(entry.getKey(),distance))
+                distancedPositions.add(
+                        new PositionDistance(entry.getKey(), distance));
+        }
+
+        return distancedPositions;
     }
 
     /**
