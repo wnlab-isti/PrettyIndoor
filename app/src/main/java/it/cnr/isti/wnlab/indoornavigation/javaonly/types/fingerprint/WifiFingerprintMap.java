@@ -17,13 +17,13 @@ public class WifiFingerprintMap extends FingerprintMap<XYPosition,AccessPoints> 
 
     // Sort the measurement before calculating nearest K rows.
     @Override
-    public List<PositionDistance<XYPosition>> findNearestK(AccessPoints measurement, int k, float threshold) {
+    public List<PositionDistance<XYPosition>> findNearestK(AccessPoints measurement, int k, PositionDistance.Filter policy) {
         // Sort needed by distance calculation
         // NO THREAD SAFETY!!!!
         measurement.sort(AP_ORDER_IN_ROW);
 
         // Now we can the distance
-        return super.findNearestK(measurement,k,threshold);
+        return super.findNearestK(measurement,k,policy);
     }
 
     /**
