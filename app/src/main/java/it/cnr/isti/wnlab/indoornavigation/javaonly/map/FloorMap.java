@@ -3,7 +3,9 @@ package it.cnr.isti.wnlab.indoornavigation.javaonly.map;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class FloorMap implements XYMap {
+import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
+
+public abstract class FloorMap implements XYMap {
 
     private int floor;
     private Collection<RoomMap> rooms;
@@ -11,6 +13,10 @@ public class FloorMap implements XYMap {
     public FloorMap(int floor, RoomMap... rooms) {
         this.floor = floor;
         this.rooms = Arrays.asList(rooms);
+    }
+
+    public int getFloor() {
+        return floor;
     }
 
     @Override
@@ -22,7 +28,5 @@ public class FloorMap implements XYMap {
         return false;
     }
 
-    public int getFloor() {
-        return floor;
-    }
+    public abstract XYPosition nearestValid(float x, float y);
 }

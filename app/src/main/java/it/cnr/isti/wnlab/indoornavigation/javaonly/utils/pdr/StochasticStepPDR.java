@@ -4,6 +4,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
 

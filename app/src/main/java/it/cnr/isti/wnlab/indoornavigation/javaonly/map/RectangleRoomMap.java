@@ -1,6 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.map;
 
-public class RectangleRoomMap extends RoomMap {
+public abstract class RectangleRoomMap extends RoomMap {
 
     private final float x;
     private final float y;

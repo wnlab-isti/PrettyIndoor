@@ -2,6 +2,7 @@ package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
 

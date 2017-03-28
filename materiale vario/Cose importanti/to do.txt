@@ -1,17 +1,15 @@
 --- TODO
 -> Debug e prove KF
-    - BUG: il Kalman Gain a un certo punto diventa matrice nulla e non capisco perchè
-    - AGGIUNGERE FEATURE: se la posizione finale non è valida per la mappa, porta su quella del fingerprint
 -> Debug PF
 
 -> Dare al service quello che è del service e all'activity quello che è dell'activity
+-> IndoorSharedPreferences?
 
+-> Start/stop al register/unregister?
 -> Bussola si deve ripulire per bene, probabilmente override
 -> Refactoring
     - Check eccezioni (soprattutto fingerprint)
-    - Lavorare con XYPosition quando non conosco il piano (cioè quasi sempre)
     - Il past participle di split è split, non splitted
--> capire Step Detection (implementazione & teoria)
 -> Distinguere tra: librerie java, librerie android, app android e validare (1h)
 -> Documentazione
 -> Validazione e check warnings
@@ -21,6 +19,7 @@
 -> Campagna EvAAL-like
 
 -> Tesi
+-> Rivedere Step Detection (implementazione & teoria)
 
 --- TODO WHAT
 Requisiti app Android:

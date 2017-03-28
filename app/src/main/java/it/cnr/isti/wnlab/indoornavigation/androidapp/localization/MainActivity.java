@@ -44,7 +44,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleKalmanFilterStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedStepPDR;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleIndoorParticleFilterStrategy;
 
 public class MainActivity extends AppCompatActivity implements
@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements
 
     // Wifi
     private WifiScanner wifi;
-    private final int WIFI_RATE = 1400;
 
     /*
      * PDR
@@ -261,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements
         // Initialize WiFi
         WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if(wifiManager != null)
-            wifi = new WifiScanner(wifiManager, WIFI_RATE);
+            wifi = new WifiScanner(wifiManager, Constants.WIFI_RATE);
         else {
             Toast.makeText(this,getString(R.string.wifi_not_available),Toast.LENGTH_SHORT).show();
             wifi = null;
@@ -290,9 +289,9 @@ public class MainActivity extends AppCompatActivity implements
                 // Inertial
                 pdr,
                 // Wifi
-                wiFing, wifiDist,
+                wifiDist,
                 // Magnetic
-                magFing, magDist,
+                magDist,
                 // Wifi filter for MM positions radius
                 Constants.KF_WIFI_POSITION_RADIUS
         );
@@ -463,7 +462,8 @@ public class MainActivity extends AppCompatActivity implements
         File wiFile = new File(wiFingPath);
         if(wiFile.exists()) {
             wiFing = (new WifiFingerprintMap.Builder()).build(wiFile);
-            wifiDist = new DistancesMap<>(wiFing,wifi,Constants.WIFI_DISTANCES_K,null);
+            int k = (strategy == null || strategy.getClass() == SimpleKalmanFilterStrategy.class ? Constants.KF_WIFI_DISTANCES_K : Constants.PF_WIFI_DISTANCES_K);
+            wifiDist = new DistancesMap<>(wiFing,wifi,k,null);
         } else
             Toast.makeText(this,getString(R.string.wifi_fp_db_not_found) + " " + wiFingPath, Toast.LENGTH_LONG).show();
 
@@ -472,7 +472,8 @@ public class MainActivity extends AppCompatActivity implements
         File magFile = new File(magFingPath);
         if(magFile.exists()) {
             magFing = (new MagneticFingerprintMap.Builder()).build(magFile);
-            magDist = new DistancesMap<>(magFing,mh,Constants.MAGNETIC_DISTANCES_K,null);
+            int k = (strategy == null || strategy.getClass() == SimpleKalmanFilterStrategy.class ? Constants.KF_MAGNETIC_DISTANCES_K : Constants.PF_MAGNETIC_DISTANCES_K);
+            magDist = new DistancesMap<>(magFing,mh,k,null);
         } else
             Toast.makeText(this, getString(R.string.mag_fp_db_not_found)  + " " + magFingPath, Toast.LENGTH_LONG).show();
     }

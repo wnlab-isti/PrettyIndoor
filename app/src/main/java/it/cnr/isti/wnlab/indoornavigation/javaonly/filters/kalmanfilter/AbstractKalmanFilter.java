@@ -50,7 +50,15 @@ public abstract class AbstractKalmanFilter implements KalmanFilter {
         invertInnovationCovariance(mSInv);
 
         // Calculate Kalman gain
+        /*Log.d("KFS", "matrix p:");
+        printMatrix(mP);
+        Log.d("KFS", "matrix H':");
+        printMatrix(mHt);
+        Log.d("KFS", "matrix mS^-1:");
+        printMatrix(mSInv);*/
         float mK[][] = kalmanGain(mP, mHt, mSInv);
+        /*Log.d("KFS", "matrix K:");
+        printMatrix(mK);*/
 
         // Update state and covariance
         Log.d("KFS", "x is " + x[0] + "," + x[1]);
@@ -60,6 +68,12 @@ public abstract class AbstractKalmanFilter implements KalmanFilter {
         x = updateState(x, mK, y);
         mP = updateCovariance(mP, mK, mH);
     }
+
+    /*private void printMatrix(float[][] m) {
+        for(int i = 0; i < m.length; i++)
+            for(int j = 0; j < m[0].length; j++)
+                Log.d("KFS", i + "," + j + " " + m[i][j]);
+    }*/
 
     protected abstract float[][] initMatrixA();
 
