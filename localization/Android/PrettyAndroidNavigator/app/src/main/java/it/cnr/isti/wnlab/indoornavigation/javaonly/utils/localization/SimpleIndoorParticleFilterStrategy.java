@@ -25,7 +25,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDis
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
 
 public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizationStrategy {

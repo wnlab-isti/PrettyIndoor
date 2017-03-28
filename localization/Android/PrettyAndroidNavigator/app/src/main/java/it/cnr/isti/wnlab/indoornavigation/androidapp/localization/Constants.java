@@ -28,6 +28,12 @@ public final class Constants {
     public static final String SP_LOG_DEFAULT = APP_FOLDER_PATH_EXTERNAL_STORAGE + "/log";
 
     /*
+     * Wifi
+     */
+
+    public static final long WIFI_RATE = 1400;
+
+    /*
      * Localization
      */
 
@@ -47,16 +53,15 @@ public final class Constants {
      */
 
     public static final float KF_WIFI_POSITION_RADIUS = 5.f;
+    public static final int KF_WIFI_DISTANCES_K = 3;
+    public static final int KF_MAGNETIC_DISTANCES_K = 9;
 
     /*
      * Particle Filter
      */
 
     public static final int PF_PARTICLES_NUMBER = 200;
+    public static final int PF_WIFI_DISTANCES_K = 3;
+    public static final int PF_MAGNETIC_DISTANCES_K = 3;
 
-    /*
-     * Wifi fingerprinting
-     */
-    public static final int WIFI_DISTANCES_K = 3;
-    public static final int MAGNETIC_DISTANCES_K = 5;
 }

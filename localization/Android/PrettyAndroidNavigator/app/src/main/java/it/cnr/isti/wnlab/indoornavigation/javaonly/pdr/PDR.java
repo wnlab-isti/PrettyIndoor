@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr;
+package it.cnr.isti.wnlab.indoornavigation.javaonly.pdr;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
 
