@@ -1,6 +1,5 @@
 --- TODO
--> Debug e prove KF
--> Debug PF
+-> Debug PF e KF
 
 -> Dare al service quello che è del service e all'activity quello che è dell'activity
 -> IndoorSharedPreferences?
@@ -10,9 +9,9 @@
 -> Refactoring
     - Check eccezioni (soprattutto fingerprint)
     - Il past participle di split è split, non splitted
+    - Warnings vari
+
 -> Distinguere tra: librerie java, librerie android, app android e validare (1h)
--> Documentazione
--> Validazione e check warnings
 
 -> UML e readme.txt
 
@@ -43,7 +42,7 @@ Lib java:
         -> Simple data types (wifi, sensor data types, ecc...)
         -> Fingerprint
 
-Lib java commons:
+Lib java utils:
     - Localization implementations
         -> You Li - like Kalman Localization Strategy
         -> Particle Filter simple strategy

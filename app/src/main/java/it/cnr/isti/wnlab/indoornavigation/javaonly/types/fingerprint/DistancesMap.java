@@ -1,6 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.javaonly.utils;
-
-import android.util.Log;
+package it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint;
 
 import java.util.List;
 
@@ -8,8 +6,6 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.FingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 
 public class DistancesMap<P extends XYPosition, T extends RawData> {
 
@@ -40,8 +36,6 @@ public class DistancesMap<P extends XYPosition, T extends RawData> {
 
     public List<PositionDistance<P>> getDistances() {
 
-        Log.d("FPDEBUG", "getDistances()");
-
         // No available measurements yet
         if(lastMeasurement == null)
             return null;
@@ -53,12 +47,12 @@ public class DistancesMap<P extends XYPosition, T extends RawData> {
         return distanceMap;
     }
 
-    public XYPosition findAveragePosition() {
-        return findAveragePosition(getDistances());
+    public XYPosition findWeightedAveragePosition() {
+        return findWeightedAveragePosition(getDistances());
     }
 
     public static <A extends XYPosition>
-    XYPosition findAveragePosition(List<PositionDistance<A>> distances) {
+    XYPosition findWeightedAveragePosition(List<PositionDistance<A>> distances) {
 
         if(distances != null && !distances.isEmpty()) {
 

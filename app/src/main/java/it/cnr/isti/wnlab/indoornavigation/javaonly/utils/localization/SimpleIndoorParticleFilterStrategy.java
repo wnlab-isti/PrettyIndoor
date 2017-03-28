@@ -24,7 +24,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFin
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
 
