@@ -2,8 +2,6 @@ package it.cnr.isti.wnlab.indoornavigation.androidapp.localization;
 
 import android.os.Environment;
 
-import it.cnr.isti.wnlab.indoornavigation.R;
-
 public final class Constants {
 
     private Constants() {}

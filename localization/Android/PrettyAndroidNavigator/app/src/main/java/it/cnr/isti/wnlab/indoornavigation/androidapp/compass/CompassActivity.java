@@ -76,6 +76,10 @@ public class CompassActivity extends AppCompatActivity {
     }
 
     private TestView mView;
+    private AccelerometerHandler ah;
+    private GyroscopeHandler gh;
+    private MagnetometerHandler mh;
+    private RelativeCompass compass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +95,9 @@ public class CompassActivity extends AppCompatActivity {
         // Sensors
         SensorManager manager = (SensorManager) getSystemService(SENSOR_SERVICE);
         int delay = SensorManager.SENSOR_DELAY_FASTEST;
-        AccelerometerHandler ah = new AccelerometerHandler(manager, delay);
-        GyroscopeHandler gh = new GyroscopeHandler(manager, delay);
-        MagnetometerHandler mh = new MagnetometerHandler(manager, delay);
+        ah = new AccelerometerHandler(manager, delay);
+        gh = new GyroscopeHandler(manager, delay);
+        mh = new MagnetometerHandler(manager, delay);
 
         // Gyroscope-only compass
         /*Compass compass = new SimpleGyroCompass(
@@ -113,7 +117,7 @@ public class CompassActivity extends AppCompatActivity {
             }
         });*/
         // Lawitzki relative compass
-        RelativeCompass compass = new RelativeCompass(ah, gh, mh);
+        compass = new RelativeCompass(ah, gh, mh);
         compass.register(new Observer<Heading>() {
             @Override
             public void notify(Heading newHeading) {
@@ -128,6 +132,15 @@ public class CompassActivity extends AppCompatActivity {
         compass.start();
 
         Log.d("MAH","started");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ah.stop();
+        gh.stop();
+        mh.stop();
+        compass.stop();
     }
 
     private void updateHeading(Heading newHeading) {

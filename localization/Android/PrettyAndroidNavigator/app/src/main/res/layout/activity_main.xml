@@ -122,6 +122,27 @@
                 android:layout_gravity="center"
                 android:id="@+id/et_initial_position" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pdr_position"
+                android:textColor="@android:color/darker_gray"
+                android:text="PDR: 0,0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/wifi_position"
+                android:textColor="@android:color/holo_red_dark"
+                android:text="Wifi FP: 0,0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/mag_position"
+                android:textColor="@android:color/holo_blue_dark"
+                android:text="Magnetic FP: 0,0" />
+
         </LinearLayout>
 
     </ScrollView>
