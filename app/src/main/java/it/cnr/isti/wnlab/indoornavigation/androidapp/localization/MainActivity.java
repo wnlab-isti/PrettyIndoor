@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -49,7 +50,6 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleIndo
 
 public class MainActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
-        RadioGroup.OnCheckedChangeListener,
         View.OnClickListener {
 
     // TODO dare al service quello che è del service
@@ -79,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements
 
     // EditText
     private EditText positionEditText;
+
+    // TextViews
+    private TextView wifiPositionTextView;
+    private TextView magneticPositionTextView;
 
     // Floating Action Buttons
     private FloatingActionButton startFab;
@@ -138,6 +142,12 @@ public class MainActivity extends AppCompatActivity implements
         initializeGUI();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        stop();
+    }
+
     /**
      * Initializes app-related files and directories.
      */
@@ -172,12 +182,15 @@ public class MainActivity extends AppCompatActivity implements
 
         // Radio buttons
         radioFusionFilters = (RadioGroup) findViewById(R.id.radiogroup_fusionfilters);
-        radioFusionFilters.setOnCheckedChangeListener(this);
         radioFusionFilters.check(R.id.radio_kalmanfilter);
 
         // EditText
         positionEditText = (EditText) findViewById(R.id.et_initial_position);
         positionEditText.setText(startX + "," + startY);
+
+        // TextView
+        wifiPositionTextView = (TextView) findViewById(R.id.wifi_position);
+        magneticPositionTextView = (TextView) findViewById(R.id.mag_position);
 
         // Floating Action Buttons
         startFab = (FloatingActionButton) findViewById(R.id.fab_start);
@@ -268,16 +281,52 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    // Radio Buttons listeners
     @Override
-    public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        switch(i) {
+    public void onClick(View view) {
+        switch(view.getId()) {
+
+            case R.id.fab_start:
+                try {
+                    // Get first position from EditText
+                    setPositionFromEditText();
+
+                    // Init selected fusion filter
+                    initStrategy();
+
+                    // Change GUI
+                    activeModeGUI();
+
+                    // Start handlers
+                    startComponents();
+
+                    // Initialize stuff and start loggin
+                    startLogging();
+                } catch(NumberFormatException e) {
+                    // EditText text is not well formatted
+                    Toast.makeText(this, getString(R.string.invalid_position), Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.fab_stop:
+                stop();
+                break;
+
+            case R.id.fab_logstep:
+                stepLogger.log();
+                break;
+        }
+    }
+
+    private void initStrategy() {
+        switch(radioFusionFilters.getCheckedRadioButtonId()) {
             case R.id.radio_kalmanfilter:
                 initKFStrategy();
                 break;
             case R.id.radio_particlefilter:
                 initPFStrategy();
                 break;
+            default:
+                Toast.makeText(this, "Which strategy do you want to use?", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -314,44 +363,6 @@ public class MainActivity extends AppCompatActivity implements
         compass = new RelativeCompass(ah,gh,mh);
         sd = new FasterStepDetector(ah);
         pdr = new FixedStepPDR(compass, sd, Constants.PDR_STEP_LENGTH, Constants.PDR_INITIAL_HEADING);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch(view.getId()) {
-
-            case R.id.fab_start:
-                try {
-                    // Get first position from EditText
-                    setPositionFromEditText();
-
-                    // Change GUI
-                    activeModeGUI();
-
-                    // Start handlers
-                    startComponents();
-
-                    // Initialize stuff and start loggin
-                    startLogging();
-                } catch(NumberFormatException e) {
-                    // EditText text is not well formatted
-                    Toast.makeText(this, getString(R.string.invalid_position), Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.fab_stop:
-                // Change GUI
-                inactiveModeGUI();
-                // Stop handlers
-                stopComponents();
-                // Stop logging
-                stopLogging();
-                break;
-
-            case R.id.fab_logstep:
-                stepLogger.log();
-                break;
-        }
     }
 
     private void setPositionFromEditText() throws NumberFormatException {
@@ -435,6 +446,15 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
         }
+    }
+
+    private void stop() {
+        // Change GUI
+        inactiveModeGUI();
+        // Stop handlers
+        stopComponents();
+        // Stop logging
+        stopLogging();
     }
 
     private void stopComponents() {

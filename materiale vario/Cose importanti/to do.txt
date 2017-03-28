@@ -1,17 +1,16 @@
 --- TODO
--> Debug PF e KF
-
+-> Fare pdr-only e fingerprint localization strategies
 -> Dare al service quello che è del service e all'activity quello che è dell'activity
--> IndoorSharedPreferences?
 
 -> Start/stop al register/unregister?
+-> IndoorSharedPreferences?
+
 -> Bussola si deve ripulire per bene, probabilmente override
 -> Refactoring
     - Check eccezioni (soprattutto fingerprint)
-    - Il past participle di split è split, non splitted
     - Warnings vari
 
--> Distinguere tra: librerie java, librerie android, app android e validare (1h)
+-> Distinguere tra: librerie java, librerie android, app android e validare
 
 -> UML e readme.txt
 
