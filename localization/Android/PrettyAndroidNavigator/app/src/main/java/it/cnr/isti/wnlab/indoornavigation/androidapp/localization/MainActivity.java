@@ -41,7 +41,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticF
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleKalmanFilterStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedStepPDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;

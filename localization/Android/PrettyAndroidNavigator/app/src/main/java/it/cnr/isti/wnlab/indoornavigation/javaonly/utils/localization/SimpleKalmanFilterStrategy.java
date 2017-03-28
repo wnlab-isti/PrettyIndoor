@@ -14,7 +14,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.GeometryUtils;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
@@ -124,7 +124,7 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
 
     private XYPosition getFingerprintPosition() {
         // If wifi position is available
-        XYPosition wifiPosition = wiDist.findAveragePosition();
+        XYPosition wifiPosition = wiDist.findWeightedAveragePosition();
 
 //        Log.d("FPDEBUG", "null wifiPosition? " + (wifiPosition == null));
 
@@ -139,7 +139,7 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
                 if (GeometryUtils.isPointInCircle(p.position, wifiPosition, radius))
                     positions.add(p);
             }
-            return DistancesMap.findAveragePosition(positions);
+            return DistancesMap.findWeightedAveragePosition(positions);
 
         }
 
