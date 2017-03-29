@@ -5,7 +5,7 @@ import android.os.Handler;
 import java.util.TimerTask;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.TimedEmitter;
+import it.cnr.isti.wnlab.indoornavigation.utils.TimedEmitter;
 
 public class AndroidTimedEmitter<T> extends TimedEmitter<T> {
 
