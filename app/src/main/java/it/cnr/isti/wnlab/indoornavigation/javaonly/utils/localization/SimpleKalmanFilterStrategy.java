@@ -18,7 +18,9 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMa
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.GeometryUtils;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
-public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrategy {
+public class SimpleKalmanFilterStrategy
+        extends AbstractIndoorLocalizationStrategy
+        implements Observer<PDR.Result> {
 
     // Model
     private XYPosition position;
@@ -26,6 +28,9 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
 
     // Kalman Filter
     private KalmanFilter kf;
+
+    // PDR
+    private PDR pdr;
 
     // Wifi
     private DistancesMap<XYPosition, AccessPoints> wiDist;
@@ -53,20 +58,12 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
     ) {
         this.position = startPosition;
         this.floor = chosenFloor;
+        this.pdr = pdr;
         this.kf = new BazookaKalmanFilter();
         this.wiDist = wiDist;
         this.magDist = magDist;
         this.radius = radius;
         this.r = new Random();
-
-        pdr.register(new Observer<PDR.Result>() {
-            @Override
-            public void notify(PDR.Result data) {
-                XYPosition newPosition = getUpdatedPosition(data);
-                position = newPosition;
-                notifyObservers(new IndoorPosition(newPosition,floor.getFloor(),System.currentTimeMillis()));
-            }
-        });
     }
 
     @Override
@@ -144,5 +141,22 @@ public class SimpleKalmanFilterStrategy extends AbstractIndoorLocalizationStrate
         }
 
         return null;
+    }
+
+    @Override
+    protected void start() {
+        pdr.register(this);
+    }
+
+    @Override
+    protected void stop() {
+        pdr.unregister(this);
+    }
+
+    @Override
+    public void notify(PDR.Result data) {
+        XYPosition newPosition = getUpdatedPosition(data);
+        position = newPosition;
+        notifyObservers(new IndoorPosition(newPosition,floor.getFloor(),System.currentTimeMillis()));
     }
 }

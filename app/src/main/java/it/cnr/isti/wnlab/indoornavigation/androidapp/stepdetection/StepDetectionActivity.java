@@ -15,10 +15,12 @@ import android.widget.TextView;
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.FasterStepDetector;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
 
-public class StepDetectionActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+public class StepDetectionActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, Observer<Step> {
 
     private int sensitivity;
     private float MAX_SENSITIVITY = 5.5f;
@@ -39,6 +41,11 @@ public class StepDetectionActivity extends AppCompatActivity implements SeekBar.
         float newsens = ((MAX_SENSITIVITY-MIN_SENSITIVITY)*((sensitivity)/100.f))+MIN_SENSITIVITY;
         sd.setSensitivity(newsens);
         tv.setText(newsens+"");
+    }
+
+    @Override
+    public void notify(Step data) {
+        mView.updateColor();
     }
 
     /**
@@ -96,19 +103,19 @@ public class StepDetectionActivity extends AppCompatActivity implements SeekBar.
         // Initialize step detector
         AccelerometerHandler ah = new AccelerometerHandler((SensorManager) getSystemService(SENSOR_SERVICE), SensorManager.SENSOR_DELAY_FASTEST);
         sd = new FasterStepDetector(ah);
-        sd.register(new Observer<Step>() {
-            @Override
-            public void notify(Step data) {
-                mView.updateColor();
-            }
-        });
-        ah.start();
+        sd.register(this);
 
         // Initialize Seekbar
         ((SeekBar) findViewById(R.id.seekBar)).setOnSeekBarChangeListener(this);
 
         // Initialize textview
         tv = (TextView) findViewById(R.id.textView);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sd.unregister(this);
     }
 
 }

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.android.compass.LawitzkiCompass;
@@ -31,18 +32,22 @@ import it.cnr.isti.wnlab.indoornavigation.android.handlers.InvalidSensorExceptio
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.FasterStepDetector;
-import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.StepDetector;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorLocalizationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.StepDetector;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleFingerprintLocalization;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleKalmanFilterStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedStepPDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
@@ -61,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements
     private IndoorLocalizationStrategy strategy;
     private float startX;
     private float startY;
-    private float startFloor;
     private FloorMap floorMap;
 
     /*
@@ -95,17 +99,21 @@ public class MainActivity extends AppCompatActivity implements
 
     // Sensor handlers
     private AccelerometerHandler ah;
+    private List<Observer<Acceleration>> accObservers;
     private GyroscopeHandler gh;
+    private List<Observer<AngularSpeed>> gyroObservers;
     private MagnetometerHandler mh;
+    private List<Observer<MagneticField>> magObservers;
 
     // Wifi
     private WifiScanner wifi;
+    private List<Observer<AccessPoints>> wifiObservers;
 
     /*
      * PDR
      */
     private LawitzkiCompass compass;
-    private StepDetector sd;
+    private StepDetector stepDetector;
     private PDR pdr;
 
     /*
@@ -114,14 +122,23 @@ public class MainActivity extends AppCompatActivity implements
 
     private WifiFingerprintMap wiFing;
     private DistancesMap<XYPosition, AccessPoints> wifiDist;
+
     private MagneticFingerprintMap magFing;
     private DistancesMap<XYPosition, MagneticField> magDist;
+
+    // Wifi fingerprint localization. NOT USED EITHER IN PF OR KF
+    private SimpleFingerprintLocalization<AccessPoints> wifiLocalization;
+    // Magnetic fingerprint localization. NOT USED EITHER IN PF OR KF
+    private SimpleFingerprintLocalization<MagneticField> magneticLocalization;
 
     /*
      * Logging
      */
 
     private Observer<IndoorPosition> positionLogger;
+    private Observer<IndoorPosition> wifiPositionLogger;
+    private Observer<IndoorPosition> magneticPositionLogger;
+
     private Collection<IndoorPosition> positionsLog;
     private StepLoggerOnDemand stepLogger;
 
@@ -162,7 +179,6 @@ public class MainActivity extends AppCompatActivity implements
     private void initializePosition() {
         startX = Constants.INITIAL_X;
         startY = Constants.INITIAL_Y;
-        startFloor = Constants.INITIAL_FLOOR;
         floorMap = new PartialISTIFloorMap();
     }
 
@@ -210,31 +226,35 @@ public class MainActivity extends AppCompatActivity implements
         switch(compoundButton.getId()) {
             // Accelerometer Toggle
             case R.id.toggle_acc:
-                if(b)
-                    ah.start();
-                else
-                    ah.stop();
+                if(ah != null)
+                    if(b)
+                        ah.register(accObservers);
+                    else
+                        accObservers = ah.unregisterAll();
                 break;
             // Gyroscope Toggle
             case R.id.toggle_gyro:
-                if(b)
-                    gh.start();
-                else
-                    gh.stop();
+                if(gh != null)
+                    if(b)
+                        gh.register(gyroObservers);
+                    else
+                        gyroObservers = gh.unregisterAll();
                 break;
             // Magnetometer Toggle
             case R.id.toggle_mag:
-                if(b)
-                    mh.start();
-                else
-                    mh.stop();
+                if(mh != null)
+                    if(b)
+                        mh.register(magObservers);
+                    else
+                        magObservers = mh.unregisterAll();
                 break;
             // WifiScanner Toggle
             case R.id.toggle_wifi:
-                if(b)
-                    wifi.start();
-                else
-                    wifi.stop();
+                if(wifi != null)
+                    if(b)
+                        wifi.register(wifiObservers);
+                    else
+                        wifiObservers = wifi.unregisterAll();
                 break;
         }
     }
@@ -287,20 +307,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.fab_start:
                 try {
-                    // Get first position from EditText
-                    setPositionFromEditText();
-
-                    // Init selected fusion filter
-                    initStrategy();
-
-                    // Change GUI
-                    activeModeGUI();
-
-                    // Start handlers
-                    startComponents();
-
-                    // Initialize stuff and start loggin
-                    startLogging();
+                    setMagneticNorthToEastThenStart();
                 } catch(NumberFormatException e) {
                     // EditText text is not well formatted
                     Toast.makeText(this, getString(R.string.invalid_position), Toast.LENGTH_SHORT).show();
@@ -317,6 +324,75 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void setMagneticNorthToEastThenStart() {
+        Toast.makeText(
+                getApplicationContext(),
+                getString(R.string.compass_calibration_start),
+                Toast.LENGTH_SHORT)
+                .show();
+        initCompass();
+        compass.register(new Observer<Heading>() {
+            @Override
+            public void notify(Heading data) {
+                compass.unregister(this);
+                Toast.makeText(
+                        getApplicationContext(),
+                        getString(R.string.compass_calibration_end),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                start();
+            }
+        });
+    }
+
+    private void initCompass() {
+        compass = new RelativeCompass(ah,gh,mh);
+    }
+
+    private void start() throws NumberFormatException {
+        // Get first position from EditText (throws NumberFormatException if text isn't valid)
+        setPositionFromEditText();
+
+        // Init localization strategy
+        initStepDetection();
+        initPDR();
+        initWifiFingerprint();
+        initMagneticFingerprint();
+        initStrategy();
+
+        // Change GUI
+        activeModeGUI();
+
+        // Initialize stuff and start loggin
+        startLogging();
+    }
+
+    private void initStepDetection() {
+        stepDetector = new FasterStepDetector(ah);
+    }
+
+    private void initPDR() {
+        pdr = new FixedStepPDR(compass, stepDetector, Constants.PDR_STEP_LENGTH, Constants.PDR_INITIAL_HEADING);
+    }
+
+    private void initWifiFingerprint() {
+        int wifiK = 5;
+        PositionDistance.Filter filter = null;
+        wifiLocalization = new SimpleFingerprintLocalization<>(
+                floorMap,
+                wiFing,
+                wifi, wifiK, filter);
+    }
+
+    private void initMagneticFingerprint() {
+        int magK = 5;
+        PositionDistance.Filter filter = null;
+        magneticLocalization = new SimpleFingerprintLocalization<>(
+                floorMap,
+                magFing,
+                mh, magK, filter);
+    }
+
     private void initStrategy() {
         switch(radioFusionFilters.getCheckedRadioButtonId()) {
             case R.id.radio_kalmanfilter:
@@ -331,7 +407,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initKFStrategy() {
-        initPDR();
         strategy = new SimpleKalmanFilterStrategy(
                 new XYPosition(startX,startY),
                 floorMap,
@@ -347,7 +422,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initPFStrategy() {
-        initPDR();
         strategy = new SimpleIndoorParticleFilterStrategy(
                 // Initial position and particles number
                 new XYPosition(startX,startY),
@@ -357,12 +431,6 @@ public class MainActivity extends AppCompatActivity implements
                 pdr,
                 wiFing, wifiDist,
                 magFing, magDist);
-    }
-
-    private void initPDR() {
-        compass = new RelativeCompass(ah,gh,mh);
-        sd = new FasterStepDetector(ah);
-        pdr = new FixedStepPDR(compass, sd, Constants.PDR_STEP_LENGTH, Constants.PDR_INITIAL_HEADING);
     }
 
     private void setPositionFromEditText() throws NumberFormatException {
@@ -377,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void activeModeGUI() {
-        // Set "Stop" and "Log step" visible
+        // Set "Stop" and "Log stepDetector" visible
         startFab.setVisibility(View.GONE);
         stopFab.setVisibility(View.VISIBLE);
         logStepFab.setVisibility(View.VISIBLE);
@@ -418,56 +486,11 @@ public class MainActivity extends AppCompatActivity implements
         wifiToggle.setChecked(false);
     }
 
-    private void startComponents() {
-        if(ah != null)
-            ah.start();
-        if(gh != null)
-            gh.start();
-        if(mh != null)
-            mh.start();
-        if(wifi != null)
-            wifi.start();
-        if(compass != null) {
-            compass.start();
-            Toast.makeText(
-                    getApplicationContext(),
-                    getString(R.string.compass_calibration_start),
-                    Toast.LENGTH_SHORT)
-                    .show();
-            compass.register(new Observer<Heading>() {
-                @Override
-                public void notify(Heading data) {
-                    compass.unregister(this);
-                    Toast.makeText(
-                            getApplicationContext(),
-                            getString(R.string.compass_calibration_end),
-                            Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });
-        }
-    }
-
     private void stop() {
         // Change GUI
         inactiveModeGUI();
-        // Stop handlers
-        stopComponents();
         // Stop logging
         stopLogging();
-    }
-
-    private void stopComponents() {
-        if(ah != null)
-            ah.stop();
-        if(gh != null)
-            gh.stop();
-        if(mh != null)
-            mh.stop();
-        if(wifi != null)
-            wifi.stop();
-        if(compass != null)
-            compass.stop();
     }
 
     /**
@@ -511,11 +534,35 @@ public class MainActivity extends AppCompatActivity implements
                 positionEditText.setText(data.x + "," + data.y);
             }
         };
+
+        // Wifi-only position observer
+        wifiPositionLogger = new Observer<IndoorPosition>(){
+
+            @Override
+            public void notify(IndoorPosition data) {
+                wifiPositionTextView.setText(data.toString());
+            }
+
+        };
+
+        // MM-only position observer
+        magneticPositionLogger = new Observer<IndoorPosition>() {
+
+            @Override
+            public void notify(IndoorPosition data) {
+                magneticPositionTextView.setText(data.toString());
+            }
+
+        };
     }
 
     private void startLogging() {
         // Register logger for dialog
         strategy.register(positionLogger);
+
+        // Register loggers for TextViews update
+        wifiLocalization.register(wifiPositionLogger);
+        magneticLocalization.register(magneticPositionLogger);
 
         // Step logger (FAB)
         SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
@@ -534,6 +581,10 @@ public class MainActivity extends AppCompatActivity implements
         // Unregister logger
         strategy.unregister(positionLogger);
 
+        // Unregister fingerprint TextView-updating loggers
+        wifiLocalization.unregister(wifiPositionLogger);
+        magneticLocalization.unregister(magneticPositionLogger);
+
         // Build dialog content
         DecimalFormat df = new DecimalFormat("#.#");
         StringBuilder log = new StringBuilder();
@@ -542,12 +593,12 @@ public class MainActivity extends AppCompatActivity implements
 
         // Show alert
         new AlertDialog.Builder(this)
-                .setTitle("Positions at each step")
+                .setTitle("Positions at each stepDetector")
                 .setMessage(log.toString())
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .show();
 
-        // Close step logger writer
+        // Close stepDetector logger writer
         try {
             stepLogger.close();
         } catch (IOException e) {

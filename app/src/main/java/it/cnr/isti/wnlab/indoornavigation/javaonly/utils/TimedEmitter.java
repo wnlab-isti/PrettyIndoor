@@ -3,17 +3,15 @@ package it.cnr.isti.wnlab.indoornavigation.javaonly.utils;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 
-public abstract class TimedEmitter<T> extends AbstractEmitter<T> implements Observer<T>, StartableStoppable {
+public abstract class TimedEmitter<T> extends AbstractEmitter<T> implements Observer<T> {
 
     private T mData;
     private Timer mTimer;
     private long mRate;
-    private boolean started = false;
 
     public TimedEmitter(Emitter<T> emitter, long milliseconds) {
         // Register to emitter
@@ -29,25 +27,14 @@ public abstract class TimedEmitter<T> extends AbstractEmitter<T> implements Obse
 
 
     @Override
-    public void start() {
-        if(!started) {
-            mTimer = new Timer();
-            mTimer.scheduleAtFixedRate(getTask(), 0, getRate());
-            started = true;
-        }
+    protected void start() {
+        mTimer = new Timer();
+        mTimer.scheduleAtFixedRate(getTask(), 0, getRate());
     }
 
     @Override
-    public void stop() {
-        if(started) {
-            mTimer.cancel();
-            started = false;
-        }
-    }
-
-    @Override
-    public boolean isStarted() {
-        return started;
+    protected void stop() {
+        mTimer.cancel();
     }
 
     /**

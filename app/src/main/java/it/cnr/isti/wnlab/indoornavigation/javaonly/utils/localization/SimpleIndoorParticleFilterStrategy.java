@@ -28,7 +28,9 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMa
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
 
-public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizationStrategy {
+public class SimpleIndoorParticleFilterStrategy
+        extends AbstractIndoorLocalizationStrategy
+        implements Observer<PDR.Result> {
 
     // Motion model
     private final static double ANGLE_STANDARD_DEVIATION = Math.PI/2; // N(0,PI/2)
@@ -45,6 +47,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
     private FloorMap floorMap;
 
     // PDR and inertial
+    private PDR pdr;
     private PDR.Result lastPDRResult;
 
     // Wifi
@@ -131,14 +134,7 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
          */
 
         // Register for PDR updates. These trigger the PF.
-        pdr.register(new Observer<PDR.Result>() {
-            @Override
-            public void notify(PDR.Result data) {
-                lastPDRResult = data;
-                particleFilter.filter();
-                notifyObservers(new IndoorPosition(particleFilter.get2DPosition(),floorMap.getFloor(),System.currentTimeMillis()));
-            }
-        });
+        this.pdr = pdr;
 
         /*
          * Wifi
@@ -190,12 +186,12 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
             // Update x
             float dx = (stepLength + (float) speedDistribution.sample()) *
                     ((float) Math.cos(lastPDRResult.heading + angleDistribution.sample()));
-            Log.d("PFS", "SPGAHETTI WESTERN: dE is " + lastPDRResult.dE + ", dx is " + dx);
+            Log.d("PFS", "dE is " + lastPDRResult.dE + ", dx is " + dx);
             float newx = p.getX() + dx;
             // Update y
             float dy = -(stepLength + (float) speedDistribution.sample()) *
                     ((float) Math.sin(lastPDRResult.heading + angleDistribution.sample()));
-            Log.d("PFS", "SPGAHETTI TERRONI: dN is " + lastPDRResult.dN + ", dy is " + dy);
+            Log.d("PFS", "dN is " + lastPDRResult.dN + ", dy is " + dy);
             float newy = p.getY() + dy;
 
             // Let's break the schema: filter here
@@ -367,5 +363,22 @@ public class SimpleIndoorParticleFilterStrategy extends AbstractIndoorLocalizati
             avgY += weight * p.getY();
         }
         return new XYPosition(avgX,avgY);
+    }
+
+    @Override
+    protected void start() {
+        pdr.register(this);
+    }
+
+    @Override
+    protected void stop() {
+        pdr.unregister(this);
+    }
+
+    @Override
+    public void notify(PDR.Result data) {
+        lastPDRResult = data;
+        particleFilter.filter();
+        notifyObservers(new IndoorPosition(particleFilter.get2DPosition(),floorMap.getFloor(),System.currentTimeMillis()));
     }
 }

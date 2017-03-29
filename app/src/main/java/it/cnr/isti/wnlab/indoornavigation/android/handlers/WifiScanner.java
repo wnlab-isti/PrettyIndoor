@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.SingleAccessPoint;
@@ -17,7 +16,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.SingleAccessPoint;
 /**
  * Every mDelay milliseconds scans available access points informations and notifies subscribers.
  */
-public class WifiScanner extends DataEmitter<AccessPoints> implements StartableStoppable {
+public class WifiScanner extends DataEmitter<AccessPoints> {
 
     public static final int DEFAULT_SCANNING_RATE = 1400;
 
@@ -26,8 +25,6 @@ public class WifiScanner extends DataEmitter<AccessPoints> implements StartableS
     private long mRate;
     private long mLastTimestamp;
     private Handler mHandler;
-
-    private boolean started = false;
 
     /**
      * Initialize a WifiScanner with default scanning rate.
@@ -58,37 +55,33 @@ public class WifiScanner extends DataEmitter<AccessPoints> implements StartableS
      * Start scanning
      */
     @Override
-    public void start() {
-        if(!started) {
-            // Start timed scan
-            mTimer = new Timer();
-            mTimer.scheduleAtFixedRate(new TimerTask() {
-                public void run() {
-                    // Adapt previous results and send data to related source
-                    List<ScanResult> results = mManager.getScanResults();
-                    List<SingleAccessPoint> aps = new ArrayList<>();
-                    for (ScanResult res : results)
-                        aps.add(new SingleAccessPoint(res.BSSID, res.level));
+    protected void start() {
+        // Start timed scan
+        mTimer = new Timer();
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                // Adapt previous results and send data to related source
+                List<ScanResult> results = mManager.getScanResults();
+                List<SingleAccessPoint> aps = new ArrayList<>();
+                for (ScanResult res : results)
+                    aps.add(new SingleAccessPoint(res.BSSID, res.level));
 
-                    // Create the AccessPoints instance to return
-                    final AccessPoints data = new AccessPoints(aps, mLastTimestamp);
+                // Create the AccessPoints instance to return
+                final AccessPoints data = new AccessPoints(aps, mLastTimestamp);
 
-                    // Notify observers on main thread
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyNewFingerprint(data);
-                        }
-                    });
+                // Notify observers on main thread
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyNewFingerprint(data);
+                    }
+                });
 
-                    // Start scanning again
-                    mLastTimestamp = System.currentTimeMillis();
-                    mManager.startScan();
-                }
-            }, 0, mRate);
-
-            started = true;
-        }
+                // Start scanning again
+                mLastTimestamp = System.currentTimeMillis();
+                mManager.startScan();
+            }
+        }, 0, mRate);
     }
 
     private void notifyNewFingerprint(AccessPoints f) {
@@ -99,16 +92,8 @@ public class WifiScanner extends DataEmitter<AccessPoints> implements StartableS
      * Stop gracefully
      */
     @Override
-    public void stop() {
-        if(started) {
-            mTimer.cancel();
-            started = false;
-        }
-    }
-
-    @Override
-    public boolean isStarted() {
-        return started;
+    protected void stop() {
+        mTimer.cancel();
     }
 
     /**

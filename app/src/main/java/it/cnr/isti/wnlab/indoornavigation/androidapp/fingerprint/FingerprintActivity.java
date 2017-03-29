@@ -1,6 +1,5 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint;
 
-import android.content.Intent;
 import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,12 +32,15 @@ import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.WifiScanner;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.log.DataLogger;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
 
 public class FingerprintActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Observers map
-    private Map<DataEmitter, File> mEmitters;
+    private Map<DataEmitter, File> mEmittersMap;
+    private List<DataEmitter> mEmitters;
+    private List<DataObserver> mObservers;
 
     // Writers
     private Collection<BufferedWriter> mWriters;
@@ -73,7 +76,9 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_fingerprint);
 
         // Initialization
-        mEmitters = new HashMap<>();
+        mEmittersMap = new HashMap<>();
+        mEmitters = new ArrayList<>();
+        mObservers = new ArrayList<>();
         mWriters = new ArrayList<>();
         populateMap();
 
@@ -91,25 +96,11 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
         (findViewById(R.id.btn_make_magnetic)).setOnClickListener(this);
         (findViewById(R.id.btn_make_wifi)).setOnClickListener(this);
 
-        // Test buttons
-        (findViewById(R.id.btn_test_wifi)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startTestActivity(FingerprintTestActivity.TEST_WIFI);
-            }
-        });
-        (findViewById(R.id.btn_test_magnetic)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startTestActivity(FingerprintTestActivity.TEST_MAGNETIC);
-            }
-        });
-
         // TextViews
         mViewX = (TextView) findViewById(R.id.tv_x);
         mViewY = (TextView) findViewById(R.id.tv_y);
-        mViewX.setText("x: " + x/DIVISOR);
-        mViewY.setText("y: " + y/DIVISOR);
+        mViewX.setText("x: " + (x/DIVISOR));
+        mViewY.setText("y: " + (y/DIVISOR));
 
         // Threads and callbacks
 
@@ -143,16 +134,17 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
         wifiDataFolder.mkdir();
         File magneticDataFolder = new File(MAGNETIC_DATA_FOLDER);
         magneticDataFolder.mkdir();
-    }
 
-    /**
-     * Start test activity.
-     * @param testType FingerprintMap type for test activity.
-     */
-    private void startTestActivity(String testType) {
-        Intent intent = new Intent(this, FingerprintTestActivity.class);
-        intent.putExtra(FingerprintTestActivity.FINGERPRINT_TYPE, testType);
-        startActivity(intent);
+        // Wifi initialization
+        long timestamp = System.currentTimeMillis();
+        mEmittersMap.put(
+                new WifiScanner((WifiManager) getSystemService(WIFI_SERVICE), WifiScanner.DEFAULT_SCANNING_RATE),
+                new File(WIFI_DATA_FOLDER + "/" + WIFI_DATA_FILE_PREFIX + timestamp + ".csv"));
+
+        // MF initialization
+        mEmittersMap.put(
+                new MagnetometerHandler((SensorManager) getSystemService(SENSOR_SERVICE), SensorManager.SENSOR_DELAY_FASTEST),
+                new File(MAGNETIC_DATA_FOLDER + "/" + MAGNETIC_DATA_FILE_PREFIX + timestamp + " .csv"));
     }
 
     /**
@@ -196,37 +188,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
             case R.id.btn_start_fingerprint:
                 // Initialize writers before first write
                 if(first) {
-                    // Current timestamp (for unique files)
-                    Long timestamp = System.currentTimeMillis();
-
-                    // Wifi initialization
-                    mEmitters.put(
-                            new WifiScanner((WifiManager) getSystemService(WIFI_SERVICE), WifiScanner.DEFAULT_SCANNING_RATE),
-                            new File(WIFI_DATA_FOLDER + "/" + WIFI_DATA_FILE_PREFIX + timestamp + ".csv"));
-
-                    // MF initialization
-                    mEmitters.put(
-                            new MagnetometerHandler((SensorManager) getSystemService(SENSOR_SERVICE), SensorManager.SENSOR_DELAY_FASTEST),
-                            new File(MAGNETIC_DATA_FOLDER + "/" + MAGNETIC_DATA_FILE_PREFIX + timestamp + " .csv"));
-
-                    // Register logger observer (I would like to use BiConsumer, but I can't)
-                    Iterator it = mEmitters.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry<Emitter,File> acquisition = (Map.Entry)it.next();
-                        try {
-                            // Create a writer for fingerprint acquisition
-                            BufferedWriter writer = new BufferedWriter(new FileWriter(acquisition.getValue()));
-
-                            // Register logger and add writer to collection
-                            acquisition.getKey().register(new DataLogger(writer));
-                            mWriters.add(writer);
-                        } catch (IOException e) {
-                            Toast.makeText(getApplicationContext(),
-                                    "Error while opening " + acquisition.getValue().toString(),
-                                    Toast.LENGTH_SHORT);
-                        }
-                    }
-
+                    initializeLogs();
                     first = false;
                 }
 
@@ -333,6 +295,26 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    private void initializeLogs() {
+        // Register logger observer (I would like to use BiConsumer, but I can't)
+        Iterator it = mEmittersMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Emitter,File> acquisition = (Map.Entry)it.next();
+            try {
+                // Create a writer for fingerprint acquisition
+                BufferedWriter writer = new BufferedWriter(new FileWriter(acquisition.getValue()));
+
+                // Register logger and add writer to collection
+                acquisition.getKey().register(new DataLogger(writer));
+                mWriters.add(writer);
+            } catch (IOException e) {
+                Toast.makeText(getApplicationContext(),
+                        "Error while opening " + acquisition.getValue().toString(),
+                        Toast.LENGTH_SHORT);
+            }
+        }
+    }
+
     /**
      * Flush all writers.
      */
@@ -351,16 +333,24 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
      * Starts acquisition for current point.
      */
     private void startAcquisition() {
-        for(DataEmitter e : mEmitters.keySet())
-            e.start();
+        // Iterate on both collections of Emitters and Observers in order to register the latters to
+        // the formers.
+        Iterator<DataEmitter> itEmitter = mEmitters.iterator();
+        Iterator<DataObserver> itObserver = mObservers.iterator();
+        while(itEmitter.hasNext() && itObserver.hasNext())
+            itEmitter.next().register(itObserver.next());
     }
 
     /**
      * Stops acquisition for current point.
      */
     private void stopAcquisition() {
-        for(DataEmitter e : mEmitters.keySet())
-            e.stop();
+        // Iterate on both collections of Emitters and Observers in order to unregister the latters
+        // to the formers.
+        Iterator<DataEmitter> itEmitter = mEmitters.iterator();
+        Iterator<DataObserver> itObserver = mObservers.iterator();
+        while(itEmitter.hasNext() && itObserver.hasNext())
+            itEmitter.next().unregister(itObserver.next());
     }
 
     /**

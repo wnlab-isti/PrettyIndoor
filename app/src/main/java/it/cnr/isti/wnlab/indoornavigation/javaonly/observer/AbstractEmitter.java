@@ -1,6 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.observer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,21 +17,38 @@ public abstract class AbstractEmitter<T> implements Emitter<T> {
 
     @Override
     public void register(Observer<T> observer) {
-        mObservers.add(observer);
+        boolean wasEmpty = mObservers.isEmpty();
+        if(wasEmpty && mObservers.add(observer))
+            start();
     }
 
     @Override
     public void unregister(Observer<T> observer) {
-        mObservers.remove(observer);
+        if(mObservers.remove(observer) && mObservers.isEmpty())
+            stop();
     }
 
-    public int countObservers() {
-        return mObservers.size();
+    @Override
+    public void register(Collection<Observer<T>> observers) {
+        boolean wasEmpty = mObservers.isEmpty();
+        if(wasEmpty && mObservers.addAll(observers))
+            start();
+    }
+
+    @Override
+    public List<Observer<T>> unregisterAll() {
+        List<Observer<T>> observers = mObservers;
+        mObservers = new ArrayList<>();
+        return observers;
     }
 
     protected void notifyObservers(T data) {
         for(Observer<T> observer : mObservers)
             observer.notify(data);
     }
+
+    protected abstract void start();
+
+    protected abstract void stop();
 
 }

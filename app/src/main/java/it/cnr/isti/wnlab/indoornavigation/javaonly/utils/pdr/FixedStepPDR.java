@@ -17,26 +17,34 @@ public class FixedStepPDR extends PDR {
     // Heading
     private float mHeading;
 
+    // Emitters and observers
+    private Emitter<Heading> mHeadingEmitter;
+    private Observer<Heading> mHeadingObserver;
+    private Emitter<Step> mStepDetector;
+    private Observer<Step> mStepObserver;
+
     public FixedStepPDR(Emitter<Heading> heading, Emitter<Step> stepDetector, float stepLength, float initialHeading) {
         // Initialize step length and heading
         mStepLength = stepLength;
         mHeading = initialHeading;
 
-        // Register for heading changes
-        heading.register(new Observer<Heading>() {
+        // Heading changes
+        mHeadingEmitter = heading;
+        mHeadingObserver = new Observer<Heading>() {
             @Override
             public void notify(Heading data) {
                 onHeadingChange(data.heading);
             }
-        });
+        };
 
-        // Register for step detection
-        stepDetector.register(new Observer<Step>() {
+        // Step detection
+        mStepDetector = stepDetector;
+        mStepObserver = new Observer<Step>() {
             @Override
             public void notify(Step step) {
                 onStep(step);
             }
-        });
+        };
     }
 
     /**
@@ -58,5 +66,17 @@ public class FixedStepPDR extends PDR {
                 mHeading,
                 step.timestamp);
         notifyObservers(res);
+    }
+
+    @Override
+    protected void start() {
+        mHeadingEmitter.register(mHeadingObserver);
+        mStepDetector.register(mStepObserver);
+    }
+
+    @Override
+    protected void stop() {
+        mHeadingEmitter.unregister(mHeadingObserver);
+        mStepDetector.unregister(mStepObserver);
     }
 }
