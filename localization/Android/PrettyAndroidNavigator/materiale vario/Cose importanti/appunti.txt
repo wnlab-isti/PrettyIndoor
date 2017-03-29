@@ -1,3 +1,9 @@
+PERCORSI:
+- Un corridoio, macchinette (30-40s fermo) e altro corridoio.
+- Metà corridoio, macchinette e torna (indietro) al punto di partenza
+
+---
+
 Base scientifica è la competizione PIN. Usiamo EvAAL score, spiegazione (anche veloce) di EvAAL score.
 
 TEST:

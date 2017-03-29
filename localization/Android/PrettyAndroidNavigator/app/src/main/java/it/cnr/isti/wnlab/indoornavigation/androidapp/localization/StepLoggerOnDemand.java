@@ -1,17 +1,13 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp.localization;
 
 
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorLocalizationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;

@@ -13,15 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
-import it.cnr.isti.wnlab.indoornavigation.android.compass.LawitzkiCompass;
 import it.cnr.isti.wnlab.indoornavigation.android.compass.RelativeCompass;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.GyroscopeHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
-import it.cnr.isti.wnlab.indoornavigation.androidapp.localization.Constants;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Compass;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 
 public class CompassActivity extends AppCompatActivity {
@@ -124,23 +120,6 @@ public class CompassActivity extends AppCompatActivity {
                 updateHeading(newHeading);
             }
         });
-
-        // Start everything
-        ah.start();
-        gh.start();
-        mh.start();
-        compass.start();
-
-        Log.d("MAH","started");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ah.stop();
-        gh.stop();
-        mh.stop();
-        compass.stop();
     }
 
     private void updateHeading(Heading newHeading) {

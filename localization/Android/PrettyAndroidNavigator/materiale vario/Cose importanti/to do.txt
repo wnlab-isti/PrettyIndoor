@@ -1,5 +1,4 @@
 --- TODO
--> Fare pdr-only e fingerprint localization strategies
 -> Dare al service quello che è del service e all'activity quello che è dell'activity
 
 -> Start/stop al register/unregister?

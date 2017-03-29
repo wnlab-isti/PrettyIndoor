@@ -2,13 +2,14 @@ package it.cnr.isti.wnlab.indoornavigation.android.stepdetection;
 
 import android.hardware.SensorManager;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.StepDetector;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
 
 
-public class FasterStepDetector extends StepDetector {
+public class FasterStepDetector extends StepDetector implements Observer<Acceleration> {
 
     private float   mLimit = 1.9f; // Sperimentally found on my slow walk. It was 10.0 before
     private float   mLastValues[] = new float[3*2];
@@ -20,32 +21,41 @@ public class FasterStepDetector extends StepDetector {
     private float   mLastDiff[] = new float[3*2];
     private int     mLastMatch = -1;
 
+    private Emitter<Acceleration> mAccelerometer;
+
     public FasterStepDetector(Emitter<Acceleration> accelerometer) {
-        int h = 480; // TODO: remove this constant
+        int h = 480;
         mYOffset = h * 0.5f;
         mScale[0] = - (h * 0.5f * (1.0f / (SensorManager.STANDARD_GRAVITY * 2)));
         mScale[1] = - (h * 0.5f * (1.0f / (SensorManager.MAGNETIC_FIELD_EARTH_MAX)));
-
-        accelerometer.register(
-                new DataObserver<Acceleration>() {
-                    @Override
-                    public void notify(Acceleration data) {
-                        onAccelerometer(data);
-                    }
-                }
-        );
+        mAccelerometer = accelerometer;
     }
 
     public void setSensitivity(float sensitivity) {
         mLimit = sensitivity; // 1.97  2.96  4.44  6.66  10.00  15.00  22.50  33.75  50.62
     }
 
-    private void onAccelerometer(Acceleration data) {
+    /**
+     * Notify observers on step.
+     * @param timestamp
+     */
+    private void onStep(long timestamp) {
+        notifyObservers(new Step(timestamp));
+    }
+
+    @Override
+    protected void start() {
+        mAccelerometer.register(this);
+    }
+
+    @Override
+    protected void stop() {
+        mAccelerometer.unregister(this);
+    }
+
+    @Override
+    public void notify(Acceleration data) {
         float vSum = 0;
-        float[] values = new float[3];
-        values[0] = data.x;
-        values[1] = data.y;
-        values[2] = data.z;
 
         vSum += mYOffset + data.x * mScale[1];
         vSum += mYOffset + data.y * mScale[1];
@@ -79,13 +89,5 @@ public class FasterStepDetector extends StepDetector {
         }
         mLastDirections[k] = direction;
         mLastValues[k] = v;
-    }
-
-    /**
-     * Notify observers on step.
-     * @param timestamp
-     */
-    private void onStep(long timestamp) {
-        notifyObservers(new Step(timestamp));
     }
 }

@@ -37,7 +37,6 @@ public final class Constants {
 
     public static final float INITIAL_X = 16.2f;
     public static final float INITIAL_Y = 5.4f;
-    public static final int INITIAL_FLOOR = 1;
 
     /*
      * PDR

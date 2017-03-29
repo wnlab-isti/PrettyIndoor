@@ -7,7 +7,6 @@ import android.util.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.StartableStoppable;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
@@ -20,7 +19,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticF
  * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/
  */
 
-public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implements StartableStoppable {
+public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
 
     private static float[] multiplication3x3(float[] A, float[] B) {
         float[] result = new float[9];
@@ -59,9 +58,6 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
     private DataEmitter<Acceleration> accelerometer;
     private DataEmitter<AngularSpeed> gyroscope;
     private DataEmitter<MagneticField> magnetometer;
-
-    // Start flag
-    private boolean started = false;
 
     // Compass configuration
     private int mRate;
@@ -122,7 +118,8 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
         this.magnetometer = magnetometer;
     }
 
-    public void start() {
+    @Override
+    protected void start() {
         gyroOrientation[0] = 0.0f;
         gyroOrientation[1] = 0.0f;
         gyroOrientation[2] = 0.0f;
@@ -166,19 +163,11 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> implement
                 });
             }
         }, 0, mRate);
-
-        // Now the compass has started
-        started = true;
-    }
-
-    public void stop() {
-        mTimer.cancel();
-        started = false;
     }
 
     @Override
-    public boolean isStarted() {
-        return started;
+    protected void stop() {
+        mTimer.cancel();
     }
 
     /**
