@@ -9,7 +9,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
 
 /**
- * FOR THE NORTH! (Elaborates an initial direction to refer to as the North.)
+ * FOR THE NORTH!
  * Given heading is: - <- 0 -> +
  */
 public class RelativeCompass extends LawitzkiCompass {
@@ -37,7 +37,7 @@ public class RelativeCompass extends LawitzkiCompass {
     @Override
     protected void onHeadingChange(float newHeading, long timestamp) {
         if(calibration) {
-            Log.d("COMPASSCAL", "heading: " + counter);
+            // Log.d("COMPASS", "Finding heading zero: " + counter);
             // Check if newHeading is legal for counting (belongs to [H-1; H+1])
             if(lastCalibrationHeading < (newHeading - TOLERANCE) || lastCalibrationHeading > (newHeading + TOLERANCE)) {
                 // Reset counter
@@ -59,9 +59,10 @@ public class RelativeCompass extends LawitzkiCompass {
                 correctHeading += 2.f*Math.PI;
             else if(correctHeading > Math.PI)
                 correctHeading -= 2.f*Math.PI;
+            correctHeading *= -1;
             // Notify to observers correct heading
             super.onHeadingChange(correctHeading, timestamp);
-            //Log.d("COMPASS", "heading: " + correctHeading);
+            Log.d("COMPASS", "heading: " + correctHeading);
         }
     }
 }

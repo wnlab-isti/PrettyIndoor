@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import it.cnr.isti.wnlab.indoornavigation.javaonly.Compass;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
@@ -19,7 +20,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticF
  * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/
  */
 
-public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
+public abstract class LawitzkiCompass extends Compass {
 
     private static float[] multiplication3x3(float[] A, float[] B) {
         float[] result = new float[9];

@@ -95,23 +95,6 @@ public class CompassActivity extends AppCompatActivity {
         gh = new GyroscopeHandler(manager, delay);
         mh = new MagnetometerHandler(manager, delay);
 
-        // Gyroscope-only compass
-        /*Compass compass = new SimpleGyroCompass(
-                new HeadingChangeCallback() {
-                    @Override
-                    public void onHeadingChange(float newHeading, long timestamp) {
-                        updateHeading(newHeading);
-                    }
-                }, gh);*/
-
-        // Lawitzki-only compass
-        /*Compass compass = new LawitzkiCompass(ah, gh, mh, LawitzkiCompass.RATE);
-        compass.register(new Observer<Heading>() {
-            @Override
-            public void notify(Heading newHeading) {
-                updateHeading(newHeading.heading);
-            }
-        });*/
         // Lawitzki relative compass
         compass = new RelativeCompass(ah, gh, mh);
         compass.register(new Observer<Heading>() {
