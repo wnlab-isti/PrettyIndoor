@@ -47,6 +47,18 @@ public class FixedStepPDR extends PDR {
         };
     }
 
+    @Override
+    protected void start() {
+        mHeadingEmitter.register(mHeadingObserver);
+        mStepDetector.register(mStepObserver);
+    }
+
+    @Override
+    protected void stop() {
+        mHeadingEmitter.unregister(mHeadingObserver);
+        mStepDetector.unregister(mStepObserver);
+    }
+
     /**
      * Update heading when possible.
      * @param newHeading in RADIANTS.
@@ -66,17 +78,5 @@ public class FixedStepPDR extends PDR {
                 mHeading,
                 step.timestamp);
         notifyObservers(res);
-    }
-
-    @Override
-    protected void start() {
-        mHeadingEmitter.register(mHeadingObserver);
-        mStepDetector.register(mStepObserver);
-    }
-
-    @Override
-    protected void stop() {
-        mHeadingEmitter.unregister(mHeadingObserver);
-        mStepDetector.unregister(mStepObserver);
     }
 }

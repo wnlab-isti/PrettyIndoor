@@ -269,7 +269,6 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
      * ***************************************/
 
     private void calculateFusedOrientation() {
-        Log.d("LAWCOMP", "calculateFusedOrientation()");
 
         // final orientation angles from sensor fusion
         float[] fusedOrientation = new float[3];
@@ -302,7 +301,6 @@ public abstract class LawitzkiCompass extends AbstractEmitter<Heading> {
      * @param timestamp Timestamp of last gyroscope measure.
      */
     protected void onHeadingChange(float heading, long timestamp) {
-        Log.d("LAWCOMP", "Heading: " + heading);
         notifyObservers(new Heading(heading, timestamp));
     }
 

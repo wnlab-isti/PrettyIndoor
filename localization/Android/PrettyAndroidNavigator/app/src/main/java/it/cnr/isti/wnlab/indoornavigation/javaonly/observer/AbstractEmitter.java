@@ -17,29 +17,71 @@ public abstract class AbstractEmitter<T> implements Emitter<T> {
 
     @Override
     public void register(Observer<T> observer) {
-        boolean wasEmpty = mObservers.isEmpty();
-        if(wasEmpty && mObservers.add(observer))
-            start();
-    }
+        if(observer != null) {
+            // Save if it is empty now or not
+            boolean wasEmpty = mObservers.isEmpty();
 
-    @Override
-    public void unregister(Observer<T> observer) {
-        if(mObservers.remove(observer) && mObservers.isEmpty())
-            stop();
+            // Add observer
+            mObservers.add(observer);
+
+            // Start if needed
+            checkStart(wasEmpty);
+        }
     }
 
     @Override
     public void register(Collection<Observer<T>> observers) {
-        boolean wasEmpty = mObservers.isEmpty();
-        if(wasEmpty && mObservers.addAll(observers))
+        if(observers != null) {
+            // Save if it is empty now or not
+            boolean wasEmpty = mObservers.isEmpty();
+
+            // Add observers
+            mObservers.addAll(observers);
+
+            // Start if needed
+            checkStart(wasEmpty);
+        }
+    }
+
+    private void checkStart(boolean wasEmpty) {
+        if(wasEmpty && !mObservers.isEmpty()) {
+            System.out.println(this.getClass().getCanonicalName().toString() + " is starting");
             start();
+        }
+    }
+
+    @Override
+    public void unregister(Observer<T> observer) {
+        if(observer != null) {
+            // Save if it is empty now or not
+            boolean wasEmpty = mObservers.isEmpty();
+
+            // Remove observer
+            mObservers.remove(observer);
+
+            // Stop if needed
+            checkStop(wasEmpty);
+        }
     }
 
     @Override
     public List<Observer<T>> unregisterAll() {
+        // Save if it is empty now or not
+        checkStop(!mObservers.isEmpty());
+
+        // Save current observers list to return and reinitialize this' observers list
         List<Observer<T>> observers = mObservers;
         mObservers = new ArrayList<>();
+
         return observers;
+
+    }
+
+    private void checkStop(boolean wasEmpty) {
+        if(!wasEmpty && mObservers.isEmpty()) {
+            System.out.println(this.getClass().getCanonicalName().toString() + " is stopping");
+            stop();
+        }
     }
 
     protected void notifyObservers(T data) {
