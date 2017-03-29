@@ -47,11 +47,11 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleFingerprintLocalization;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleKalmanFilterStrategy;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.pdr.FixedStepPDR;
+import it.cnr.isti.wnlab.indoornavigation.utils.localization.SimpleFingerprintLocalization;
+import it.cnr.isti.wnlab.indoornavigation.utils.localization.SimpleKalmanFilterStrategy;
+import it.cnr.isti.wnlab.indoornavigation.utils.pdr.FixedStepPDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.utils.localization.SimpleIndoorParticleFilterStrategy;
+import it.cnr.isti.wnlab.indoornavigation.utils.localization.SimpleIndoorParticleFilterStrategy;
 
 public class MainActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
