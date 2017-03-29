@@ -24,8 +24,6 @@ public abstract class FingerprintMap<P extends XYPosition, T extends RawData> {
     public List<PositionDistance<P>> findNearestK(T measurement, int k, PositionDistance.Filter policy) {
         List<PositionDistance<P>> distancedPositions = getDistancedPoints(measurement, policy);
 
-        Log.d("FP", "distancedPositions size: " + distancedPositions.size() + ", k is " + k);
-
         // Sort per distance
         Collections.sort(distancedPositions, new Comparator<PositionDistance>() {
             @Override

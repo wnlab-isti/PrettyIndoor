@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
         View.OnClickListener {
 
-    // TODO dare al service quello che è del service
-
     /*
      * Localization strategy
      */
