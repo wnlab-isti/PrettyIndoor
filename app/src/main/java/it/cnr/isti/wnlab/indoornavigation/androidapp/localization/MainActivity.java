@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
     private float startX;
     private float startY;
     private FloorMap floorMap;
+    private boolean localizing;
 
     /*
      * GUI members
@@ -151,10 +152,10 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        localizing = false;
         initializeFilesAndDirectories();
         initializePosition();
         initializeHandlers();
-        loadFingerprints();
         initializeLogging();
         initializeGUI();
     }
@@ -162,7 +163,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onStop() {
         super.onStop();
-        stop();
+        if(!localizing)
+            // If finding heading zero, stop (do nothing if compass hasn't been started yet)
+            compass.unregisterAll();
+        else
+            // If localizing, stop
+            stopLocalization();
     }
 
     /**
@@ -186,19 +192,15 @@ public class MainActivity extends AppCompatActivity implements
      * Initializes views and listeners.
      */
     private void initializeGUI() {
-        // ToggleButtons
-        accToggle = (ToggleButton) findViewById(R.id.toggle_acc);
-        accToggle.setOnCheckedChangeListener(this);
-        gyroToggle = (ToggleButton) findViewById(R.id.toggle_gyro);
-        gyroToggle.setOnCheckedChangeListener(this);
-        magToggle = (ToggleButton) findViewById(R.id.toggle_mag);
-        magToggle.setOnCheckedChangeListener(this);
-        wifiToggle = (ToggleButton) findViewById(R.id.toggle_wifi);
-        wifiToggle.setOnCheckedChangeListener(this);
-
         // Radio buttons
         radioFusionFilters = (RadioGroup) findViewById(R.id.radiogroup_fusionfilters);
         radioFusionFilters.check(R.id.radio_kalmanfilter);
+
+        // ToggleButtons
+        accToggle = (ToggleButton) findViewById(R.id.toggle_acc);
+        gyroToggle = (ToggleButton) findViewById(R.id.toggle_gyro);
+        magToggle = (ToggleButton) findViewById(R.id.toggle_mag);
+        wifiToggle = (ToggleButton) findViewById(R.id.toggle_wifi);
 
         // EditText
         positionEditText = (EditText) findViewById(R.id.et_initial_position);
@@ -210,53 +212,66 @@ public class MainActivity extends AppCompatActivity implements
 
         // Floating Action Buttons
         startFab = (FloatingActionButton) findViewById(R.id.fab_start);
-        startFab.setOnClickListener(this);
         stopFab = (FloatingActionButton) findViewById(R.id.fab_stop);
-        stopFab.setOnClickListener(this);
         logStepFab = (FloatingActionButton) findViewById(R.id.fab_logstep);
-        logStepFab.setOnClickListener(this);
 
         // Set GUI as inactive
         inactiveModeGUI();
+
+        // Eventually set listeners
+
+        accToggle.setOnCheckedChangeListener(this);
+        gyroToggle.setOnCheckedChangeListener(this);
+        magToggle.setOnCheckedChangeListener(this);
+        wifiToggle.setOnCheckedChangeListener(this);
+
+        startFab.setOnClickListener(this);
+        stopFab.setOnClickListener(this);
+        logStepFab.setOnClickListener(this);
     }
 
     // ToggleButtons listeners
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        switch(compoundButton.getId()) {
-            // Accelerometer Toggle
-            case R.id.toggle_acc:
-                if(ah != null)
-                    if(b)
-                        ah.register(accObservers);
-                    else
-                        accObservers = ah.unregisterAll();
-                break;
-            // Gyroscope Toggle
-            case R.id.toggle_gyro:
-                if(gh != null)
-                    if(b)
-                        gh.register(gyroObservers);
-                    else
-                        gyroObservers = gh.unregisterAll();
-                break;
-            // Magnetometer Toggle
-            case R.id.toggle_mag:
-                if(mh != null)
-                    if(b)
-                        mh.register(magObservers);
-                    else
-                        magObservers = mh.unregisterAll();
-                break;
-            // WifiScanner Toggle
-            case R.id.toggle_wifi:
-                if(wifi != null)
-                    if(b)
-                        wifi.register(wifiObservers);
-                    else
-                        wifiObservers = wifi.unregisterAll();
-                break;
-        }
+        if(localizing)
+            switch(compoundButton.getId()) {
+                // Accelerometer Toggle
+                case R.id.toggle_acc:
+                    if(ah != null)
+                        if(b) {
+                            ah.register(accObservers);
+                            accObservers = null;
+                        } else
+                            accObservers = ah.unregisterAll();
+                    break;
+                // Gyroscope Toggle
+                case R.id.toggle_gyro:
+                    if(gh != null)
+                        if(b) {
+                            gh.register(gyroObservers);
+                            gyroObservers = null;
+                        } else
+                            gyroObservers = gh.unregisterAll();
+                    break;
+                // Magnetometer Toggle
+                case R.id.toggle_mag:
+                    if(mh != null)
+                        if(b) {
+                            mh.register(magObservers);
+                            magObservers = null;
+                        } else
+                            magObservers = mh.unregisterAll();
+                    break;
+                // WifiScanner Toggle
+                case R.id.toggle_wifi:
+                    if(wifi != null)
+                        if(b) {
+                            wifi.register(wifiObservers);
+                            wifiObservers = null;
+                        } else
+                            wifiObservers = wifi.unregisterAll();
+                    break;
+            }
     }
 
     /**
@@ -307,6 +322,10 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.fab_start:
                 try {
+                    // Change GUI
+                    activeModeGUI();
+
+                    // Find heading-zero and start localizing
                     setMagneticNorthToEastThenStart();
                 } catch(NumberFormatException e) {
                     // EditText text is not well formatted
@@ -315,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case R.id.fab_stop:
-                stop();
+                stopLocalization();
                 break;
 
             case R.id.fab_logstep:
@@ -353,18 +372,21 @@ public class MainActivity extends AppCompatActivity implements
         // Get first position from EditText (throws NumberFormatException if text isn't valid)
         setPositionFromEditText();
 
-        // Init localization strategy
+        // Init PDR
         initStepDetection();
         initPDR();
+        // Init fingerprints
+        loadFingerprints();
         initWifiFingerprint();
         initMagneticFingerprint();
+        // Init localization strategy
         initStrategy();
-
-        // Change GUI
-        activeModeGUI();
 
         // Initialize stuff and start loggin
         startLogging();
+
+        // Set flag
+        localizing = true;
     }
 
     private void initStepDetection() {
@@ -486,7 +508,9 @@ public class MainActivity extends AppCompatActivity implements
         wifiToggle.setChecked(false);
     }
 
-    private void stop() {
+    private void stopLocalization() {
+        // Set flag
+        localizing = false;
         // Change GUI
         inactiveModeGUI();
         // Stop logging
@@ -540,7 +564,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void notify(IndoorPosition data) {
-                wifiPositionTextView.setText(data.toString());
+                wifiPositionTextView.setText(data.x + "," + data.y);
             }
 
         };
@@ -550,7 +574,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void notify(IndoorPosition data) {
-                magneticPositionTextView.setText(data.toString());
+                magneticPositionTextView.setText(data.x + "," + data.y);
             }
 
         };

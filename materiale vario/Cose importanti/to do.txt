@@ -1,7 +1,6 @@
 --- TODO
 -> Dare al service quello che è del service e all'activity quello che è dell'activity
 
--> Start/stop al register/unregister?
 -> IndoorSharedPreferences?
 
 -> Bussola si deve ripulire per bene, probabilmente override

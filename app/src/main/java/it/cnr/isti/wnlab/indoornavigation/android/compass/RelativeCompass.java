@@ -61,7 +61,7 @@ public class RelativeCompass extends LawitzkiCompass {
                 correctHeading -= 2.f*Math.PI;
             // Notify to observers correct heading
             super.onHeadingChange(correctHeading, timestamp);
-            Log.d("COMPASS", "heading: " + correctHeading);
+            //Log.d("COMPASS", "heading: " + correctHeading);
         }
     }
 }
