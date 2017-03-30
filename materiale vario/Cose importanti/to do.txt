@@ -1,26 +1,18 @@
 --- TODO
--> Dare al service quello che è del service e all'activity quello che è dell'activity
-
--> IndoorSharedPreferences?
-
--> Bussola si deve ripulire per bene, probabilmente override
--> Refactoring
-    - Check eccezioni (soprattutto fingerprint)
-    - Warnings vari
-
--> Distinguere tra: librerie java, librerie android, app android e validare
-
+M
+-> Distinguere tra: librerie java, librerie android, app android  => validare
 -> UML e readme.txt
-
--> Campagna EvAAL-like
-
 -> Tesi
+-> Campagna EvAAL-like
 -> Rivedere Step Detection (implementazione & teoria)
+C
+-> Separare service e activity
+-> Concorrenza? Implementazione observer con stream per attesa passiva
+
 
 --- TODO WHAT
 Requisiti app Android:
     - IndoorLocalization con IndoorService (che usa la liba e libj)
-    - Mappa grafica (semplice, ma tanto la devo fare per il PF)
 
 Lib android:
     - Handlers

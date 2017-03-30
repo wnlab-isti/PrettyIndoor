@@ -4,7 +4,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawSensorData;
@@ -41,12 +40,12 @@ public abstract class SensorDataEmitter<T extends RawSensorData>
     // DataEmitter overrides
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         mManager.registerListener(this, mSensor, mDelay);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         mManager.unregisterListener(this, mSensor);
     }
 

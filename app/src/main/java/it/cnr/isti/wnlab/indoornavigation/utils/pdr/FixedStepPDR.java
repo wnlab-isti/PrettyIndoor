@@ -48,13 +48,13 @@ public class FixedStepPDR extends PDR {
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         mHeadingEmitter.register(mHeadingObserver);
         mStepDetector.register(mStepObserver);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         mHeadingEmitter.unregister(mHeadingObserver);
         mStepDetector.unregister(mStepObserver);
     }

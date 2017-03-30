@@ -110,7 +110,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
             public boolean handleMessage(Message message) {
                 // Stop acquisition
                 stopAcquisition();
-                // Reactivate start button
+                // Reactivate startEmission button
                 mStartButton.setVisibility(View.VISIBLE);
                 // Signal acquisition finish to the user
                 Toast.makeText(getApplicationContext(), "Point registered (5seconds)", Toast.LENGTH_SHORT).show();
@@ -183,7 +183,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
 
         switch(id) {
             /**
-             * Button for start the data acquisition.
+             * Button for startEmission the data acquisition.
              */
             case R.id.btn_start_fingerprint:
                 // Initialize writers before first write
@@ -195,12 +195,12 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
                 // Change button's visibility
                 mStartButton.setVisibility(View.INVISIBLE);
 
-                // Do everything you have to do right before writing data and start the task
+                // Do everything you have to do right before writing data and startEmission the task
                 prepareNewPoint();
                 startAcquisition();
                 mExecutorService.submit(new AcquisitionTask(mCallback));
 
-                // Signal start
+                // Signal startEmission
                 Toast.makeText(getApplicationContext(), "Acquisition started", Toast.LENGTH_SHORT).show();
                 break;
 

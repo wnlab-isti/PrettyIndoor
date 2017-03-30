@@ -5,7 +5,6 @@ import android.util.Log;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
 
 /**

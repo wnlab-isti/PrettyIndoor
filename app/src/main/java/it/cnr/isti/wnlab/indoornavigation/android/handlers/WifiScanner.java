@@ -55,7 +55,7 @@ public class WifiScanner extends DataEmitter<AccessPoints> {
      * Start scanning
      */
     @Override
-    protected void start() {
+    protected void startEmission() {
         // Start timed scan
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new TimerTask() {
@@ -92,7 +92,7 @@ public class WifiScanner extends DataEmitter<AccessPoints> {
      * Stop gracefully
      */
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         mTimer.cancel();
     }
 
