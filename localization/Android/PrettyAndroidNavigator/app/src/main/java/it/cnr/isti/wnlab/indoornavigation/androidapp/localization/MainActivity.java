@@ -47,11 +47,11 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
-import it.cnr.isti.wnlab.indoornavigation.utils.localization.SimpleFingerprintLocalization;
-import it.cnr.isti.wnlab.indoornavigation.utils.localization.SimpleKalmanFilterStrategy;
+import it.cnr.isti.wnlab.indoornavigation.utils.localization.fingerprint.FingerprintStrategy;
+import it.cnr.isti.wnlab.indoornavigation.utils.localization.kalmanfilter.KalmanFilterStrategy;
 import it.cnr.isti.wnlab.indoornavigation.utils.pdr.FixedStepPDR;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
-import it.cnr.isti.wnlab.indoornavigation.utils.localization.SimpleIndoorParticleFilterStrategy;
+import it.cnr.isti.wnlab.indoornavigation.utils.localization.particlefilter.IndoorParticleFilterStrategy;
 
 public class MainActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
@@ -126,9 +126,9 @@ public class MainActivity extends AppCompatActivity implements
     private DistancesMap<XYPosition, MagneticField> magDist;
 
     // Wifi fingerprint localization. NOT USED EITHER IN PF OR KF
-    private SimpleFingerprintLocalization<AccessPoints> wifiLocalization;
+    private FingerprintStrategy<AccessPoints> wifiLocalization;
     // Magnetic fingerprint localization. NOT USED EITHER IN PF OR KF
-    private SimpleFingerprintLocalization<MagneticField> magneticLocalization;
+    private FingerprintStrategy<MagneticField> magneticLocalization;
 
     /*
      * Logging
@@ -162,10 +162,10 @@ public class MainActivity extends AppCompatActivity implements
     public void onStop() {
         super.onStop();
         if(!localizing)
-            // If finding heading zero, stop (do nothing if compass hasn't been started yet)
+            // If finding heading zero, stopEmission (do nothing if compass hasn't been started yet)
             compass.unregisterAll();
         else
-            // If localizing, stop
+            // If localizing, stopEmission
             stopLocalization();
     }
 
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Initializes start position.
+     * Initializes startEmission position.
      */
     private void initializePosition() {
         startX = Constants.INITIAL_X;
@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements
                     // Change GUI
                     activeModeGUI();
 
-                    // Find heading-zero and start localizing
+                    // Find heading-zero and startEmission localizing
                     setMagneticNorthToEastThenStart();
                 } catch(NumberFormatException e) {
                     // EditText text is not well formatted
@@ -380,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements
         // Init localization strategy
         initStrategy();
 
-        // Initialize stuff and start loggin
+        // Initialize stuff and startEmission loggin
         startLogging();
 
         // Set flag
@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements
     private void initWifiFingerprint() {
         int wifiK = 5;
         PositionDistance.Filter filter = null;
-        wifiLocalization = new SimpleFingerprintLocalization<>(
+        wifiLocalization = new FingerprintStrategy<>(
                 floorMap,
                 wiFing,
                 wifi, wifiK, filter);
@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements
     private void initMagneticFingerprint() {
         int magK = 5;
         PositionDistance.Filter filter = null;
-        magneticLocalization = new SimpleFingerprintLocalization<>(
+        magneticLocalization = new FingerprintStrategy<>(
                 floorMap,
                 magFing,
                 mh, magK, filter);
@@ -427,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initKFStrategy() {
-        strategy = new SimpleKalmanFilterStrategy(
+        strategy = new KalmanFilterStrategy(
                 new XYPosition(startX,startY),
                 floorMap,
                 // Inertial
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initPFStrategy() {
-        strategy = new SimpleIndoorParticleFilterStrategy(
+        strategy = new IndoorParticleFilterStrategy(
                 // Initial position and particles number
                 new XYPosition(startX,startY),
                 Constants.PF_PARTICLES_NUMBER,
@@ -527,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements
         File wiFile = new File(wiFingPath);
         if(wiFile.exists()) {
             wiFing = (new WifiFingerprintMap.Builder()).build(wiFile);
-            int k = (strategy == null || strategy.getClass() == SimpleKalmanFilterStrategy.class ? Constants.KF_WIFI_DISTANCES_K : Constants.PF_WIFI_DISTANCES_K);
+            int k = (strategy == null || strategy.getClass() == KalmanFilterStrategy.class ? Constants.KF_WIFI_DISTANCES_K : Constants.PF_WIFI_DISTANCES_K);
             wifiDist = new DistancesMap<>(wiFing,wifi,k,null);
         } else
             Toast.makeText(this,getString(R.string.wifi_fp_db_not_found) + " " + wiFingPath, Toast.LENGTH_LONG).show();
@@ -537,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements
         File magFile = new File(magFingPath);
         if(magFile.exists()) {
             magFing = (new MagneticFingerprintMap.Builder()).build(magFile);
-            int k = (strategy == null || strategy.getClass() == SimpleKalmanFilterStrategy.class ? Constants.KF_MAGNETIC_DISTANCES_K : Constants.PF_MAGNETIC_DISTANCES_K);
+            int k = (strategy == null || strategy.getClass() == KalmanFilterStrategy.class ? Constants.KF_MAGNETIC_DISTANCES_K : Constants.PF_MAGNETIC_DISTANCES_K);
             magDist = new DistancesMap<>(magFing,mh,k,null);
         } else
             Toast.makeText(this, getString(R.string.mag_fp_db_not_found)  + " " + magFingPath, Toast.LENGTH_LONG).show();

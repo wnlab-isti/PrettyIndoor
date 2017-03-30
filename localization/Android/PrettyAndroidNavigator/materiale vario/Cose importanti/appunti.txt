@@ -1,6 +1,17 @@
 PERCORSI:
-- Un corridoio, macchinette (30-40s fermo) e altro corridoio.
+- Un corridoio, macchinette (30-40s fermo) e altro corridoio
 - Metà corridoio, macchinette e torna (indietro) al punto di partenza
+
+Circa un punto ogni 5m
+
+---
+
+    Michele:
+    - service (2h)
+    - far capire bene il problema della localizzazione indoor
+    - presentare la separazione di Dati -> Elaborazione -> Fusione
+    - misure e test plottate, grafici con errore
+    - confronti con google maps (senza GPS)
 
 ---
 

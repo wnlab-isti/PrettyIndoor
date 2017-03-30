@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.utils.localization;
+package it.cnr.isti.wnlab.indoornavigation.utils.localization.fingerprint;
 
 import org.apache.commons.math3.exception.NullArgumentException;
 
@@ -15,7 +15,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMa
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.FingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
 
-public class SimpleFingerprintLocalization<T extends RawData>
+public class FingerprintStrategy<T extends RawData>
         extends AbstractIndoorLocalizationStrategy
         implements DataObserver<T> {
 
@@ -26,7 +26,7 @@ public class SimpleFingerprintLocalization<T extends RawData>
     private PositionDistance.Filter filter;
     private Emitter<T> emitter;
 
-    public SimpleFingerprintLocalization(
+    public FingerprintStrategy(
             FloorMap floor,
             FingerprintMap<XYPosition,T> fpMap,
             Emitter<T> emitter,
@@ -46,12 +46,12 @@ public class SimpleFingerprintLocalization<T extends RawData>
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         emitter.register(this);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         emitter.unregister(this);
     }
 

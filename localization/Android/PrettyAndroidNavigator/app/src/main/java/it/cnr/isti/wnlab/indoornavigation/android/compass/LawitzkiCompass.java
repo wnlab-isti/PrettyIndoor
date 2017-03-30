@@ -2,13 +2,11 @@ package it.cnr.isti.wnlab.indoornavigation.android.compass;
 
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.Compass;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.AbstractEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
@@ -120,7 +118,7 @@ public abstract class LawitzkiCompass extends Compass {
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         gyroOrientation[0] = 0.0f;
         gyroOrientation[1] = 0.0f;
         gyroOrientation[2] = 0.0f;
@@ -167,7 +165,7 @@ public abstract class LawitzkiCompass extends Compass {
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         mTimer.cancel();
     }
 
@@ -229,7 +227,7 @@ public abstract class LawitzkiCompass extends Compass {
     private boolean initState = true;
 
     public void onGyroscope(AngularSpeed data) {
-        // don't start until first accelerometer/magnetometer orientation has been acquired
+        // don't startEmission until first accelerometer/magnetometer orientation has been acquired
         if (accMagOrientation == null)
             return;
 

@@ -5,7 +5,6 @@ import android.graphics.Paint;
 
 import java.util.Collection;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.PositionParticle;
 
 public class ParticlesDrawable implements IndoorDrawable {

@@ -15,10 +15,8 @@ import android.widget.TextView;
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
 import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.FasterStepDetector;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
 
 public class StepDetectionActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, Observer<Step> {
 

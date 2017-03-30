@@ -46,7 +46,7 @@ public abstract class AbstractEmitter<T> implements Emitter<T> {
     private void checkStart(boolean wasEmpty) {
         if(wasEmpty && !mObservers.isEmpty()) {
             System.out.println(this.getClass().getCanonicalName().toString() + " is starting");
-            start();
+            startEmission();
         }
     }
 
@@ -80,7 +80,7 @@ public abstract class AbstractEmitter<T> implements Emitter<T> {
     private void checkStop(boolean wasEmpty) {
         if(!wasEmpty && mObservers.isEmpty()) {
             System.out.println(this.getClass().getCanonicalName().toString() + " is stopping");
-            stop();
+            stopEmission();
         }
     }
 
@@ -89,8 +89,8 @@ public abstract class AbstractEmitter<T> implements Emitter<T> {
             observer.notify(data);
     }
 
-    protected abstract void start();
+    protected abstract void startEmission();
 
-    protected abstract void stop();
+    protected abstract void stopEmission();
 
 }

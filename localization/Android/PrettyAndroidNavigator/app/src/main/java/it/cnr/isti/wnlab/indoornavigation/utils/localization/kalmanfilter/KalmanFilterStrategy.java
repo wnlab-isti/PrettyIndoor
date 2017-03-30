@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.utils.localization;
+package it.cnr.isti.wnlab.indoornavigation.utils.localization.kalmanfilter;
 
 import android.util.Log;
 
@@ -18,7 +18,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMa
 import it.cnr.isti.wnlab.indoornavigation.utils.GeometryUtils;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
-public class SimpleKalmanFilterStrategy
+public class KalmanFilterStrategy
         extends AbstractIndoorLocalizationStrategy
         implements Observer<PDR.Result> {
 
@@ -44,7 +44,7 @@ public class SimpleKalmanFilterStrategy
     // Randomness
     private Random r;
 
-    public SimpleKalmanFilterStrategy(
+    public KalmanFilterStrategy(
             XYPosition startPosition,
             FloorMap chosenFloor,
             // Inertial
@@ -144,12 +144,12 @@ public class SimpleKalmanFilterStrategy
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         pdr.register(this);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         pdr.unregister(this);
     }
 

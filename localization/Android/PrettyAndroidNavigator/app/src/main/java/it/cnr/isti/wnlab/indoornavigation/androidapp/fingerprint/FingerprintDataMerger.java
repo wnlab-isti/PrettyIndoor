@@ -59,7 +59,7 @@ public abstract class FingerprintDataMerger {
     }
 
     /**
-     * @return The label the lines with measures start with. If it doesn't start with this, it
+     * @return The label the lines with measures startEmission with. If it doesn't startEmission with this, it
      * indicates a coordinate.
      */
     protected abstract String getLabel();

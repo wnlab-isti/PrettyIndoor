@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.utils.localization;
+package it.cnr.isti.wnlab.indoornavigation.utils.localization.pdr;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.AbstractIndoorLocalizationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
@@ -7,13 +7,13 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
-public class SimplePDRLocalization extends AbstractIndoorLocalizationStrategy implements Observer<PDR.Result> {
+public class PDRLocalization extends AbstractIndoorLocalizationStrategy implements Observer<PDR.Result> {
 
     private XYPosition position;
     private PDR pdr;
     private FloorMap floor;
 
-    public SimplePDRLocalization(XYPosition initialPosition, PDR pdr, FloorMap floor) {
+    public PDRLocalization(XYPosition initialPosition, PDR pdr, FloorMap floor) {
         this.position = initialPosition;
         this.pdr = pdr;
         this.floor = floor;
@@ -25,12 +25,12 @@ public class SimplePDRLocalization extends AbstractIndoorLocalizationStrategy im
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         pdr.register(this);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         pdr.unregister(this);
     }
 

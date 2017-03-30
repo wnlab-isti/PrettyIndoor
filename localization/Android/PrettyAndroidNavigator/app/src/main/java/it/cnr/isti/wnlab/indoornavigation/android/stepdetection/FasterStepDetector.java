@@ -44,12 +44,12 @@ public class FasterStepDetector extends StepDetector implements Observer<Acceler
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         mAccelerometer.register(this);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         mAccelerometer.unregister(this);
     }
 

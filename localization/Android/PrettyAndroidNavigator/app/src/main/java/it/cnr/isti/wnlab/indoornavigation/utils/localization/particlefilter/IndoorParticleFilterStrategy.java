@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.utils.localization;
+package it.cnr.isti.wnlab.indoornavigation.utils.localization.particlefilter;
 
 import android.util.Log;
 
@@ -28,7 +28,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMa
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
 
-public class SimpleIndoorParticleFilterStrategy
+public class IndoorParticleFilterStrategy
         extends AbstractIndoorLocalizationStrategy
         implements Observer<PDR.Result> {
 
@@ -68,7 +68,7 @@ public class SimpleIndoorParticleFilterStrategy
      * @param initialPosition
      * @param particlesNumber
      */
-    public SimpleIndoorParticleFilterStrategy(
+    public IndoorParticleFilterStrategy(
             // Initial position and particles number
             XYPosition initialPosition,
             int particlesNumber,
@@ -366,12 +366,12 @@ public class SimpleIndoorParticleFilterStrategy
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         pdr.register(this);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         pdr.unregister(this);
     }
 

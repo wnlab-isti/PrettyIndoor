@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.utils.localization;
+package it.cnr.isti.wnlab.indoornavigation.utils.localization.kalmanfilter;
 
 import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter.AbstractKalmanFilter;
 import it.cnr.isti.wnlab.indoornavigation.utils.VectorUtils;

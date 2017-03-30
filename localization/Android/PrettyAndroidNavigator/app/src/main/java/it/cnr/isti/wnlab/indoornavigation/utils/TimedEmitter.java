@@ -27,13 +27,13 @@ public abstract class TimedEmitter<T> extends AbstractEmitter<T> implements Obse
 
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(getTask(), 0, getRate());
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         mTimer.cancel();
     }
 
