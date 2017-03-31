@@ -28,7 +28,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMa
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
 
-public class IndoorParticleFilterStrategy
+public class ParticleFilterStrategy
         extends AbstractIndoorLocalizationStrategy
         implements Observer<PDR.Result> {
 
@@ -68,7 +68,7 @@ public class IndoorParticleFilterStrategy
      * @param initialPosition
      * @param particlesNumber
      */
-    public IndoorParticleFilterStrategy(
+    public ParticleFilterStrategy(
             // Initial position and particles number
             XYPosition initialPosition,
             int particlesNumber,
@@ -328,22 +328,6 @@ public class IndoorParticleFilterStrategy
             particles.add(newParticle);
         }
 
-        /*
-        // Set weight of M survived particles as 1/(M+1)
-        int survivedParticlesN = particles.size();
-        float survivedParticlesWeight = 1.f/(survivedParticlesN+1);
-        for(PositionParticle p : particles)
-            p.setWeight(survivedParticlesWeight);
-
-        // Duplicate old particles in order to create new N = originalNumber-M particles.
-        // New particles' weights are 1/(M+1) * 1/N
-        int newParticlesN = particlesNumber - survivedParticlesN;
-        float newParticlesWeight = 1.f/( (survivedParticlesN+1)*newParticlesN );
-        PositionParticle[] particlesArray = particles.toArray(new PositionParticle[survivedParticlesN]);
-        for(int i = 0; i < newParticlesN; i++) {
-            PositionParticle newParticle = particlesArray[i%survivedParticlesN].clone(newParticlesWeight);
-            particles.add(newParticle);
-        }*/
     }
 
     /**********************************************************************

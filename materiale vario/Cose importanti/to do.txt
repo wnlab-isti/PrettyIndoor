@@ -1,13 +1,22 @@
 --- TODO
 M
--> Distinguere tra: librerie java, librerie android, app android  => validare
--> UML e readme.txt
--> Tesi
+-> Finire refactoring con service
+    - Finire refactoring KF
+    - Test e debug KF Navigator
+    - Finire service
+    - Estendere a PF, PDR e FingerprintMap
+    - Estendere service
+-> Rendere singleton gli handlers per android
+-> Sistemare componenti che implementano observer (come StepDetector e DistancesMap)
+
+-> Scrivere documentazione
+    - Ultracommentare
+    - UML
+    - Readme.txt
+
 -> Campagna EvAAL-like
 -> Rivedere Step Detection (implementazione & teoria)
-C
--> Separare service e activity
--> Concorrenza? Implementazione observer con stream per attesa passiva
+-> Tesi
 
 
 --- TODO WHAT
