@@ -7,13 +7,13 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
 
-public class PDRLocalization extends AbstractIndoorLocalizationStrategy implements Observer<PDR.Result> {
+public class PDRStrategy extends AbstractIndoorLocalizationStrategy implements Observer<PDR.Result> {
 
     private XYPosition position;
     private PDR pdr;
     private FloorMap floor;
 
-    public PDRLocalization(XYPosition initialPosition, PDR pdr, FloorMap floor) {
+    public PDRStrategy(XYPosition initialPosition, PDR pdr, FloorMap floor) {
         this.position = initialPosition;
         this.pdr = pdr;
         this.floor = floor;

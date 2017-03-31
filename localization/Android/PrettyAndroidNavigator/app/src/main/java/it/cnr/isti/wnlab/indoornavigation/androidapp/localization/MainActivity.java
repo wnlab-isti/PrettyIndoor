@@ -1,9 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.androidapp.localization;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.hardware.SensorManager;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -21,37 +18,10 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
-import it.cnr.isti.wnlab.indoornavigation.android.compass.LawitzkiCompass;
-import it.cnr.isti.wnlab.indoornavigation.android.compass.RelativeCompass;
-import it.cnr.isti.wnlab.indoornavigation.android.handlers.AccelerometerHandler;
-import it.cnr.isti.wnlab.indoornavigation.android.handlers.GyroscopeHandler;
-import it.cnr.isti.wnlab.indoornavigation.android.handlers.InvalidSensorException;
-import it.cnr.isti.wnlab.indoornavigation.android.handlers.MagnetometerHandler;
-import it.cnr.isti.wnlab.indoornavigation.android.handlers.WifiScanner;
-import it.cnr.isti.wnlab.indoornavigation.android.stepdetection.FasterStepDetector;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorLocalizationStrategy;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.StepDetector;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
-import it.cnr.isti.wnlab.indoornavigation.utils.localization.fingerprint.FingerprintStrategy;
-import it.cnr.isti.wnlab.indoornavigation.utils.localization.kalmanfilter.KalmanFilterStrategy;
-import it.cnr.isti.wnlab.indoornavigation.utils.pdr.FixedStepPDR;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
-import it.cnr.isti.wnlab.indoornavigation.utils.localization.particlefilter.IndoorParticleFilterStrategy;
 
 public class MainActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
@@ -81,6 +51,17 @@ public class MainActivity extends AppCompatActivity implements
     private FloatingActionButton startFab;
     private FloatingActionButton stopFab;
     private FloatingActionButton logStepFab;
+
+    /*
+     * Logging
+     */
+
+    private Observer<IndoorPosition> positionLogger;
+    private Observer<IndoorPosition> wifiPositionLogger;
+    private Observer<IndoorPosition> magneticPositionLogger;
+
+    private Collection<IndoorPosition> positionsLog;
+    private StepLoggerOnDemand stepLogger;
 
     /*
      * Activity lifecycle
@@ -134,50 +115,6 @@ public class MainActivity extends AppCompatActivity implements
         startFab.setOnClickListener(this);
         stopFab.setOnClickListener(this);
         logStepFab.setOnClickListener(this);
-    }
-
-    // ToggleButtons listeners
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        if(localizing)
-            switch(compoundButton.getId()) {
-                // Accelerometer Toggle
-                case R.id.toggle_acc:
-                    if(ah != null)
-                        if(b) {
-                            ah.register(accObservers);
-                            accObservers = null;
-                        } else
-                            accObservers = ah.unregisterAll();
-                    break;
-                // Gyroscope Toggle
-                case R.id.toggle_gyro:
-                    if(gh != null)
-                        if(b) {
-                            gh.register(gyroObservers);
-                            gyroObservers = null;
-                        } else
-                            gyroObservers = gh.unregisterAll();
-                    break;
-                // Magnetometer Toggle
-                case R.id.toggle_mag:
-                    if(mh != null)
-                        if(b) {
-                            mh.register(magObservers);
-                            magObservers = null;
-                        } else
-                            magObservers = mh.unregisterAll();
-                    break;
-                // WifiScanner Toggle
-                case R.id.toggle_wifi:
-                    if(wifi != null)
-                        if(b) {
-                            wifi.register(wifiObservers);
-                            wifiObservers = null;
-                        } else
-                            wifiObservers = wifi.unregisterAll();
-                    break;
-            }
     }
 
     @Override
@@ -239,6 +176,91 @@ public class MainActivity extends AppCompatActivity implements
         magToggle.setChecked(false);
         wifiToggle.setActivated(false);
         wifiToggle.setChecked(false);
+    }
+
+    /**
+     * Initialize objects for logging.
+     */
+    private void initializeLogging() {
+        // Alert logger (all positions)
+        positionsLog = new ArrayList<>();
+        positionLogger = new Observer<IndoorPosition>() {
+            @Override
+            public void notify(IndoorPosition data) {
+                positionsLog.add(data);
+                positionEditText.setText(data.x + "," + data.y);
+            }
+        };
+
+        // Wifi-only position observer
+        wifiPositionLogger = new Observer<IndoorPosition>(){
+
+            @Override
+            public void notify(IndoorPosition data) {
+                wifiPositionTextView.setText(data.x + "," + data.y);
+            }
+
+        };
+
+        // MM-only position observer
+        magneticPositionLogger = new Observer<IndoorPosition>() {
+
+            @Override
+            public void notify(IndoorPosition data) {
+                magneticPositionTextView.setText(data.x + "," + data.y);
+            }
+
+        };
+    }
+
+    private void startLogging() {
+        // Register logger for dialog
+        strategy.register(positionLogger);
+
+        // Register loggers for TextViews update
+        wifiLocalization.register(wifiPositionLogger);
+        magneticLocalization.register(magneticPositionLogger);
+
+        // Step logger (FAB)
+        SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
+        String logFolderPath =
+                sp.getString(Constants.SP_LOG_FOLDER_KEY, Constants.SP_LOG_DEFAULT);
+        (new File(logFolderPath)).mkdirs();
+        try {
+            stepLogger = new StepLoggerOnDemand(strategy, logFolderPath);
+        } catch(IOException e) {
+            Toast.makeText(this, "Can't write on log file: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void stopLogging() {
+        // Unregister logger
+        strategy.unregister(positionLogger);
+
+        // Unregister fingerprint TextView-updating loggers
+        wifiLocalization.unregister(wifiPositionLogger);
+        magneticLocalization.unregister(magneticPositionLogger);
+
+        // Build dialog content
+        DecimalFormat df = new DecimalFormat("#.#");
+        StringBuilder log = new StringBuilder();
+        for(IndoorPosition p : positionsLog)
+            log.append(df.format(p.x)).append(",").append(df.format(p.y)).append("\n");
+
+        // Show alert
+        new AlertDialog.Builder(this)
+                .setTitle("Positions at each stepDetector")
+                .setMessage(log.toString())
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .show();
+
+        // Close stepDetector logger writer
+        try {
+            stepLogger.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
