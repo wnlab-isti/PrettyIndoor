@@ -93,6 +93,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/radio_kalmanfilter"
+                    android:id="@+id/radio_pdr"
+                    android:layout_marginRight="20dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radio_kalmanfilter"
+                    android:id="@+id/radio_wififp"
+                    android:layout_marginRight="20dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radio_kalmanfilter"
+                    android:id="@+id/radio_magfp"
+                    android:layout_marginRight="20dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radio_kalmanfilter"
                     android:id="@+id/radio_kalmanfilter"
                     android:layout_marginRight="20dp" />
 
