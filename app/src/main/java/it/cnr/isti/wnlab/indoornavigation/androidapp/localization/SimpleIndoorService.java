@@ -48,9 +48,10 @@ public class SimpleIndoorService extends Service implements Observer<IndoorPosit
 
     public static boolean active = false;
 
+    private boolean localizing;
+
     public static final String INTENT_STRATEGY_CHOICE = "strategy";
     public static final String INTENT_START_POSITION = "position";
-    public static final String INTENT_LOGGING = "log";
 
     private IndoorPosition lastPosition;
 
@@ -73,19 +74,18 @@ public class SimpleIndoorService extends Service implements Observer<IndoorPosit
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Set initial paramaters
-        chosenStrategy = (Strategies) intent.getExtras().get(INTENT_STRATEGY_CHOICE);
-        position = (XYPosition) intent.getExtras().get(INTENT_START_POSITION);
-        floorMap = new PartialISTIFloorMap();
-        lastPosition = new IndoorPosition(position, floorMap.getFloor(), System.currentTimeMillis());
-        // Initialize and start localization
-        initialize();
-        run();
-        // Observe position updates (and actually make the whole thing start running)
-        strategy.register(this);
-
-        // Set service as active (for clients)
-        active = true;
+        if(!active) {
+            chosenStrategy = (Strategies) intent.getExtras().get(INTENT_STRATEGY_CHOICE);
+            position = (XYPosition) intent.getExtras().get(INTENT_START_POSITION);
+            floorMap = new PartialISTIFloorMap();
+            lastPosition = new IndoorPosition(position, floorMap.getFloor(), System.currentTimeMillis());
+            // Initialize and start localization
+            initialize();
+            run();
+            // Set initial paramaters
+            active = true;
+            localizing = false;
+        }
 
         return START_STICKY;
     }
@@ -97,16 +97,16 @@ public class SimpleIndoorService extends Service implements Observer<IndoorPosit
 
     @Override
     public void onDestroy() {
-        // Stop localization (if any)
-        if(localizationIsActive) {
-            strategy.unregister(this);
-            stop();
+        if(active) {
+            // Stop localization (if any)
+            if (localizing)
+                stop();
+
+            // Set service as inactive (for clients)
+            active = false;
         }
 
-        // Set service as inactive (for clients)
-        active = false;
-
-        // Tell the user we stopped.
+        // Tell the user we stopped
         Toast.makeText(this, R.string.service_stopped, Toast.LENGTH_SHORT).show();
     }
 
@@ -127,7 +127,6 @@ public class SimpleIndoorService extends Service implements Observer<IndoorPosit
     private IndoorLocalizationStrategy strategy;
     private XYPosition position;
     private FloorMap floorMap;
-    private boolean localizationIsActive;
 
     /*
      * Handlers
@@ -221,7 +220,7 @@ public class SimpleIndoorService extends Service implements Observer<IndoorPosit
                 this.pfMagneticDistancesK = Constants.PF_MAGNETIC_DISTANCES_K;
         }
         // Set localization flag as inactive
-        this.localizationIsActive = false;
+        active = false;
     }
 
     private void initializeFilesAndDirectories() {
@@ -323,8 +322,11 @@ public class SimpleIndoorService extends Service implements Observer<IndoorPosit
                 break;
         }
 
-        // Set flag
-        localizationIsActive = true;
+        // Observe position updates (and actually make the whole thing start running)
+        strategy.register(this);
+
+        // Set localizing flag
+        localizing = true;
     }
 
     private void initPDRStrategy() {
@@ -448,17 +450,20 @@ public class SimpleIndoorService extends Service implements Observer<IndoorPosit
      **********************************************/
 
     public void stop() {
-        if(!localizationIsActive)
+        if(!localizing
+                && chosenStrategy != Strategies.WIFIFP_STRATEGY
+                && chosenStrategy != Strategies.MAGFP_STRATEGY)
             // If finding heading zero, stopEmission (do nothing if compass hasn't been started yet)
             compass.unregisterAll();
         else
-            // If localizationIsActive, stopEmission
+            // If active, stop localizing
             stopLocalization();
     }
 
     private void stopLocalization() {
+        strategy.unregister(this);
         // Set flag
-        localizationIsActive = false;
+        localizing = false;
     }
 
 }
