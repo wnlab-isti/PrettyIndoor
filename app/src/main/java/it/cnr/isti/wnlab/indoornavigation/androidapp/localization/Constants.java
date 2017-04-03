@@ -12,18 +12,10 @@ public final class Constants {
 
     public static final String APP_NAME = "PrettyIndoorNavigator";
     public static final String APP_FOLDER_PATH_EXTERNAL_STORAGE = Environment.getExternalStorageDirectory() + "/" + APP_NAME;
-
-    /*
-     * Shared Preferences
-     */
-
-    public static final String SP_NAME = "PRETTYSP";
-    public static final String SP_WIFIFP_KEY = "WIFIFINGMAP";
-    public static final String SP_WIFIFP_DEFAULT = Environment.getExternalStorageDirectory() + "/fingerprints/wifi_fingerprints.csv";
-    public static final String SP_MAGNETIC_KEY = "MAGNETICFINGMAP";
-    public static final String SP_MAGNETIC_DEFAULT = Environment.getExternalStorageDirectory() + "/fingerprints/magnetic_fingerprints.csv";
-    public static final String SP_LOG_FOLDER_KEY = "LOG";
-    public static final String SP_LOG_DEFAULT = APP_FOLDER_PATH_EXTERNAL_STORAGE + "/log";
+    public static final String FP_FOLDER_PATH = APP_FOLDER_PATH_EXTERNAL_STORAGE + "/fingerprints";
+    public static final String WIFIFP_DEFAULT = FP_FOLDER_PATH + "/wifi_fingerprints.csv";
+    public static final String MAGFP_DEFAULT = FP_FOLDER_PATH + "/magnetic_fingerprints.csv";
+    public static final String LOG_FOLDER_PATH = APP_FOLDER_PATH_EXTERNAL_STORAGE + "/log";
 
     /*
      * Wifi

@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint;
+package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerfood;
 
 import android.os.Handler;
 import android.os.Message;

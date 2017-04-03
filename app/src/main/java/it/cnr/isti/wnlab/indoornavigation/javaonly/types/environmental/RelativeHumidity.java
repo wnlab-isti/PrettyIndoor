@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental;
 
+import java.io.Serializable;
+
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawSensorData;
 
@@ -7,7 +9,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawSensorData;
  * %
  */
 
-public class RelativeHumidity extends RawSensorData {
+public class RelativeHumidity extends RawSensorData implements Serializable {
 
     private final float humidity;
 

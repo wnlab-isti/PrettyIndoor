@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerprint;
+package it.cnr.isti.wnlab.indoornavigation.androidapp.fingerfood;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,9 +1,11 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly;
 
+import java.io.Serializable;
+
 /**
  * Immutable object for an indoor position.
  */
-public class IndoorPosition extends XYPosition {
+public class IndoorPosition extends XYPosition implements Serializable {
     public final int floor;
     public final long timestamp;
 

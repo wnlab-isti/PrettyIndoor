@@ -15,6 +15,7 @@
     <!-- Info messages -->
     <string name="compass_calibration_start">Please don\'t move, compass\'s north positioning just started.</string>
     <string name="compass_calibration_end">Compass calibration ended successfully.</string>
+    <string name="service_stopped">Indoor navigation service has stopped.</string>
 
     <!-- Error messages -->
     <string name="acc_not_available">Accelerometer is impossible to listen.</string>
@@ -26,6 +27,8 @@
     <string name="mag_fp_db_not_found">Impossible loading Magnetic Fingerprint DB at</string>
 
     <string name="invalid_position">Position is invalid.</string>
+
+    <string name="log_error">Position is impossible to log.</string>
 
     <!-- Test activities -->
     <string name="title_compass_test">CompassTestActivity</string>
