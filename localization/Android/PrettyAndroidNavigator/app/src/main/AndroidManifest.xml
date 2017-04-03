@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".androidapp.compass.CompassActivity"
+            android:name=".androidapp.compasstester.CompassActivity"
             android:icon="@android:drawable/ic_menu_compass"
             android:label="Compass"
             android:theme="@style/AppTheme">
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".androidapp.stepdetection.StepDetectionActivity"
+            android:name=".androidapp.stepdetectiontester.StepDetectionActivity"
             android:icon="@android:drawable/ic_input_get"
             android:label="Step Detection"
             android:theme="@style/AppTheme">
@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".androidapp.fingerprint.FingerprintActivity"
+            android:name=".androidapp.fingerfood.FingerprintActivity"
             android:icon="@android:drawable/btn_radio"
             android:label="FingerFood">
             <intent-filter>
@@ -55,9 +55,9 @@
         </activity>
 
         <service
-            android:name=".android.service.IndoorLocalizationService"
+            android:name=".androidapp.localization.SimpleIndoorService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
     </application>
 
 </manifest>

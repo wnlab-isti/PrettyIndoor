@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.androidapp.compass;
+package it.cnr.isti.wnlab.indoornavigation.androidapp.compasstester;
 
 import android.content.Context;
 import android.graphics.Canvas;

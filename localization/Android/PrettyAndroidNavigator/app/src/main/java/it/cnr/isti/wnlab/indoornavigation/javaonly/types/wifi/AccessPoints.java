@@ -1,5 +1,6 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -10,7 +11,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
 /**
  * Immutable AccessPoints.
  */
-public class AccessPoints implements RawData, Iterable<SingleAccessPoint> {
+public class AccessPoints implements RawData, Iterable<SingleAccessPoint>, Serializable {
 
     // Constants for sorting
     public static final int ORDER_BY_BSSID_ASC = 0;

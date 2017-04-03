@@ -1,6 +1,8 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.types;
 
-public class Step {
+import java.io.Serializable;
+
+public class Step implements Serializable {
 
     public final long timestamp;
 

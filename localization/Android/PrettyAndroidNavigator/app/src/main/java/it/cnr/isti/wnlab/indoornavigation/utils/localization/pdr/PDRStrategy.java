@@ -13,7 +13,7 @@ public class PDRStrategy extends AbstractIndoorLocalizationStrategy implements O
     private PDR pdr;
     private FloorMap floor;
 
-    public PDRStrategy(XYPosition initialPosition, PDR pdr, FloorMap floor) {
+    public PDRStrategy(PDR pdr, XYPosition initialPosition, FloorMap floor) {
         this.position = initialPosition;
         this.pdr = pdr;
         this.floor = floor;

@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.androidapp.stepdetection;
+package it.cnr.isti.wnlab.indoornavigation.androidapp.stepdetectiontester;
 
 import android.content.Context;
 import android.graphics.Color;

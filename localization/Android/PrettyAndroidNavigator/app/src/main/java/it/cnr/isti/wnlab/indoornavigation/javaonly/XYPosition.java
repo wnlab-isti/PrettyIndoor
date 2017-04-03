@@ -1,6 +1,8 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly;
 
-public class XYPosition {
+import java.io.Serializable;
+
+public class XYPosition implements Serializable {
     public final float x;
     public final float y;
 

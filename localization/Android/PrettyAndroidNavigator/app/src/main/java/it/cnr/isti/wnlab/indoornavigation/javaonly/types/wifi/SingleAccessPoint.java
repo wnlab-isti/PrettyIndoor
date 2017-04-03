@@ -1,11 +1,13 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi;
 
+import java.io.Serializable;
+
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
 
 /**
  * (bssd,rssi)
  */
-public class SingleAccessPoint implements RawData {
+public class SingleAccessPoint implements RawData, Serializable {
     public final String bssid;
     public final int rssi;
 

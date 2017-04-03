@@ -1,5 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental;
 
+import java.io.Serializable;
+
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.DecomposedSensorData;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
 
@@ -7,7 +9,7 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
  * μT
  */
 
-public class MagneticField extends DecomposedSensorData {
+public class MagneticField extends DecomposedSensorData implements Serializable {
     public MagneticField(float x, float y, float z, float accuracy, long timestamp) {
         super(x, y, z, accuracy, timestamp);
     }
