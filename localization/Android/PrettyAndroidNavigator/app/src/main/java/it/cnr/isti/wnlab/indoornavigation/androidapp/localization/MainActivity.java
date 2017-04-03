@@ -31,13 +31,11 @@ import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
 
-public class MainActivity extends AppCompatActivity implements
-        CompoundButton.OnCheckedChangeListener,
-        View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /*
+    /***********************************
      * Activity lifecycle
-     */
+     ***********************************/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,22 +122,12 @@ public class MainActivity extends AppCompatActivity implements
     }
     
     private void setListeners() {
-        accToggle.setOnCheckedChangeListener(this);
-        gyroToggle.setOnCheckedChangeListener(this);
-        magToggle.setOnCheckedChangeListener(this);
-        wifiToggle.setOnCheckedChangeListener(this);
-
         startFab.setOnClickListener(this);
         stopFab.setOnClickListener(this);
         logStepFab.setOnClickListener(this);
     }
     
     private void unsetListeners() {
-        accToggle.setOnCheckedChangeListener(null);
-        gyroToggle.setOnCheckedChangeListener(null);
-        magToggle.setOnCheckedChangeListener(null);
-        wifiToggle.setOnCheckedChangeListener(null);
-
         startFab.setOnClickListener(null);
         stopFab.setOnClickListener(null);
         logStepFab.setOnClickListener(null);
@@ -226,20 +214,12 @@ public class MainActivity extends AppCompatActivity implements
         return null;
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-    }
-
     /***********************************
      * Logging
      ***********************************/
 
     private BufferedWriter mWriter;
 
-    /**
-     * Initialize objects for logging.
-     */
     private void startLogging() {
         // Step logger (FAB)
         String logFolderPath = Constants.LOG_FOLDER_PATH;
