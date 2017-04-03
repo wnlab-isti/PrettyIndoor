@@ -85,28 +85,28 @@
             <RadioGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_gravity="center"
                 android:id="@+id/radiogroup_fusionfilters">
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radio_kalmanfilter"
+                    android:text="@string/radio_pdr"
                     android:id="@+id/radio_pdr"
                     android:layout_marginRight="20dp" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radio_kalmanfilter"
+                    android:text="@string/radio_wififp"
                     android:id="@+id/radio_wififp"
                     android:layout_marginRight="20dp" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radio_kalmanfilter"
+                    android:text="@string/radio_magfp"
                     android:id="@+id/radio_magfp"
                     android:layout_marginRight="20dp" />
 
@@ -143,27 +143,6 @@
                 android:layout_gravity="center"
                 android:id="@+id/et_initial_position" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/pdr_position"
-                android:textColor="@android:color/darker_gray"
-                android:text="PDR: 0,0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/wifi_position"
-                android:textColor="@android:color/holo_red_dark"
-                android:text="Wifi FP: 0,0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/mag_position"
-                android:textColor="@android:color/holo_blue_dark"
-                android:text="Magnetic FP: 0,0" />
-
         </LinearLayout>
 
     </ScrollView>
@@ -189,16 +168,6 @@
         android:id="@+id/fab_stop"
         android:src="@android:drawable/ic_media_pause"
         android:backgroundTint="@android:color/holo_red_dark" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:elevation="@dimen/fab_margin"
-        android:id="@+id/fab_settings"
-        android:src="@android:drawable/ic_dialog_info"
-        android:backgroundTint="@android:color/darker_gray"/>
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"

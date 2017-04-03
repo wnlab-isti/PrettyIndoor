@@ -138,7 +138,7 @@ public class FingerprintActivity extends AppCompatActivity implements View.OnCli
         // Wifi initialization
         long timestamp = System.currentTimeMillis();
         mEmittersMap.put(
-                new WifiScanner((WifiManager) getSystemService(WIFI_SERVICE), WifiScanner.DEFAULT_SCANNING_RATE),
+                new WifiScanner((WifiManager) getSystemService(WIFI_SERVICE), 1400),
                 new File(WIFI_DATA_FOLDER + "/" + WIFI_DATA_FILE_PREFIX + timestamp + ".csv"));
 
         // MF initialization

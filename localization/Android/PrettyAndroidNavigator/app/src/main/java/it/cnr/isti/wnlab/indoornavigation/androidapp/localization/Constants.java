@@ -12,7 +12,7 @@ public final class Constants {
 
     public static final String APP_NAME = "PrettyIndoorNavigator";
     public static final String APP_FOLDER_PATH_EXTERNAL_STORAGE = Environment.getExternalStorageDirectory() + "/" + APP_NAME;
-    public static final String FP_FOLDER_PATH = APP_FOLDER_PATH_EXTERNAL_STORAGE + "/fingerprints";
+    public static final String FP_FOLDER_PATH = Environment.getExternalStorageDirectory() + "/fingerprints";
     public static final String WIFIFP_DEFAULT = FP_FOLDER_PATH + "/wifi_fingerprints.csv";
     public static final String MAGFP_DEFAULT = FP_FOLDER_PATH + "/magnetic_fingerprints.csv";
     public static final String LOG_FOLDER_PATH = APP_FOLDER_PATH_EXTERNAL_STORAGE + "/log";

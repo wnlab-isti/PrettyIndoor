@@ -47,12 +47,12 @@ public class SimpleFingerprintLocalization<T extends RawData>
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         emitter.register(this);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         emitter.unregister(this);
     }
 

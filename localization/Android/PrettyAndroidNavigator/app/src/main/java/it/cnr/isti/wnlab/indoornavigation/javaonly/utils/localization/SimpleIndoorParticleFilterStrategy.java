@@ -366,12 +366,12 @@ public class SimpleIndoorParticleFilterStrategy
     }
 
     @Override
-    protected void start() {
+    protected void startEmission() {
         pdr.register(this);
     }
 
     @Override
-    protected void stop() {
+    protected void stopEmission() {
         pdr.unregister(this);
     }
 

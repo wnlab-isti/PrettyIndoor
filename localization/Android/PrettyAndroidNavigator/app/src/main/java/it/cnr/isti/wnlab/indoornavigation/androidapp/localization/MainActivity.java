@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.IllegalFormatException;
 
 import it.cnr.isti.wnlab.indoornavigation.R;
 import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
@@ -43,6 +45,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         initializeGUI();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         // Set GUI mode
         if(!SimpleIndoorService.active)
@@ -52,13 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Set listeners
         setListeners();
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if(SimpleIndoorService.active)
+        // Bind to service if it is active
+        if(SimpleIndoorService.active && mBoundService == null)
             bindToService();
     }
 
@@ -68,9 +71,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Set listeners
         unsetListeners();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
 
         // Unbind
-        unbindToService();
+        if(SimpleIndoorService.active)
+            unbindToService();
     }
 
     /***********************************
@@ -161,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     // Start service
                     startLocalizationService();
+                    bindToService();
                     // Start logging
                     startLogging();
                     // Change GUI
@@ -173,12 +183,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.fab_stop:
                 // Stop localization
+                unbindToService();
                 stopLocalizationService();
                 // Stop logging
                 stopLogging();
+                // Change GUI
+                inactiveModeGUI();
                 break;
 
             case R.id.fab_logstep:
+                Log.d("STR", "bound service: " + mBoundService);
                 if(mBoundService != null && mWriter != null)
                     logPosition(mBoundService.getPosition());
                 else
@@ -199,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SimpleIndoorService.Strategies getLocalizationStrategyChoice() {
         int id = radioFusionFilters.getCheckedRadioButtonId();
+        Log.d("STR", id + "");
         switch(id) {
             case R.id.radio_pdr:
                 return SimpleIndoorService.Strategies.PDR_STRATEGY;
@@ -211,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.radio_particlefilter:
                 return SimpleIndoorService.Strategies.PF_STRATEGY;
         }
-        return null;
+        throw new RuntimeException("No strategy is specified.");
     }
 
     /***********************************
@@ -236,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(mWriter != null) {
             try {
                 mWriter.write(position.toString() + "\n");
+                Log.d("STR","Position written: " + position);
             } catch(IOException e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Impossible to write position on file", Toast.LENGTH_SHORT).show();
@@ -246,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void stopLogging() {
         if(mWriter != null)
             try {
+                mWriter.flush();
                 mWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -257,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      ***********************************/
 
     private SimpleIndoorService.SimpleBinder mBoundService;
+    private ServiceConnection mConnection;
 
     private void startLocalizationService() {
         Intent intent = new Intent(this, SimpleIndoorService.class);
@@ -269,25 +287,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopService(new Intent(this, SimpleIndoorService.class));
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mBoundService = ((SimpleIndoorService.SimpleBinder)service).getService();
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            mBoundService = null;
-        }
-    };
-
     void bindToService() {
-        bindService(new Intent(this, SimpleIndoorService.class), mConnection, BIND_IMPORTANT);
+        mConnection = new ServiceConnection() {
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                mBoundService = ((SimpleIndoorService.SimpleBinder) service).getService();
+            }
 
+            public void onServiceDisconnected(ComponentName className) {
+                mBoundService = null;
+            }
+        };
+        bindService(new Intent(this, SimpleIndoorService.class), mConnection, BIND_IMPORTANT);
     }
 
     void unbindToService() {
-        if (mBoundService != null)
-            // Detach our existing connection.
+        if (mBoundService != null) {
+            // Detach our existing connection
             unbindService(mConnection);
+            mBoundService = null;
+        }
     }
 
 }

@@ -8,6 +8,9 @@
     <string name="toggle_gyroscope">gyro</string>
     <string name="toggle_magnetic">mag</string>
     <string name="toggle_wifi">wifi</string>
+    <string name="radio_pdr">PDR only</string>
+    <string name="radio_wififp">Wifi Fingerprint</string>
+    <string name="radio_magfp">Magnetic Fingerprint</string>
     <string name="radio_kalmanfilter">Kalman Filter</string>
     <string name="radio_particlefilter">Particle Filter</string>
     <string name="et_startPosition">0,0</string>
