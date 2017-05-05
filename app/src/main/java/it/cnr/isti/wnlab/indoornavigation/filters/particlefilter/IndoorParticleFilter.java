@@ -20,7 +20,7 @@ public class IndoorParticleFilter extends ParticleFilter<PositionParticle> imple
             Collection particles,
             UpdateStrategy updateStep,
             FilteringStrategy filteringStep,
-            RegenerationStrategy regenerationStep,
+            ResamplingStrategy regenerationStep,
             PositionPickingStrategy<PositionParticle,XYPosition> positionPicking
     ) {
         super(particles, updateStep, filteringStep, regenerationStep);

@@ -6,7 +6,7 @@ import java.util.Collection;
  * The regeneration policy of a Particle StateEstimationFilter.
  * @param <T>
  */
-public interface RegenerationStrategy<T extends Particle> {
+public interface ResamplingStrategy<T extends Particle> {
     /**
      * Make a new collection of particles from another one (i.e. for second generation on).
      * @param particles

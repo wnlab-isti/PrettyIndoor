@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.WifiFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.SingleAccessPoint;
 

@@ -17,13 +17,13 @@ public class ParticleFilter<T extends Particle> implements StateEstimationFilter
 
     protected UpdateStrategy<T> updateStrategy;
     protected FilteringStrategy<T> filteringStrategy;
-    protected RegenerationStrategy<T> regenerationStrategy;
+    protected ResamplingStrategy<T> resamplingStrategy;
 
     public ParticleFilter(
             Collection<T> particles,
             UpdateStrategy<T> updateStrategy,
             FilteringStrategy<T> filteringStrategy,
-            RegenerationStrategy<T> regenerationStrategy) {
+            ResamplingStrategy<T> resamplingStrategy) {
         // Set particles
         this.particles = particles;
         this.beginningParticlesNumber = particles.size();
@@ -31,7 +31,7 @@ public class ParticleFilter<T extends Particle> implements StateEstimationFilter
         // Set strategies
         this.updateStrategy = updateStrategy;
         this.filteringStrategy = filteringStrategy;
-        this.regenerationStrategy = regenerationStrategy;
+        this.resamplingStrategy = resamplingStrategy;
     }
 
     public void filter() {
@@ -39,8 +39,8 @@ public class ParticleFilter<T extends Particle> implements StateEstimationFilter
             updateStrategy.update(particles);
         if(filteringStrategy != null)
             filteringStrategy.filter(particles);
-        if(regenerationStrategy != null)
-            regenerationStrategy.regenerate(particles);
+        if(resamplingStrategy != null)
+            resamplingStrategy.regenerate(particles);
     }
 
     /*
@@ -63,12 +63,12 @@ public class ParticleFilter<T extends Particle> implements StateEstimationFilter
         this.filteringStrategy = filteringStrategy;
     }
 
-    public RegenerationStrategy<T> getRegenerationStrategy() {
-        return regenerationStrategy;
+    public ResamplingStrategy<T> getRegenerationStrategy() {
+        return resamplingStrategy;
     }
 
-    public void setRegenerationStrategy(RegenerationStrategy<T> regenerationStrategy) {
-        this.regenerationStrategy = regenerationStrategy;
+    public void setRegenerationStrategy(ResamplingStrategy<T> resamplingStrategy) {
+        this.resamplingStrategy = resamplingStrategy;
     }*/
 
 }

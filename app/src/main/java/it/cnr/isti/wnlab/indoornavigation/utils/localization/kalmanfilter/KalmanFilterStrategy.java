@@ -12,9 +12,9 @@ import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.KalmanFilter;
 import it.cnr.isti.wnlab.indoornavigation.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.PositionDistance;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.PositionDistance;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.DistancesMap;
 import it.cnr.isti.wnlab.indoornavigation.utils.math.GeometryUtils;
 import it.cnr.isti.wnlab.indoornavigation.pdr.PDR;
 
