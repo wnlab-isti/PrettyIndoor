@@ -5,4 +5,5 @@ package it.cnr.isti.wnlab.indoornavigation.filters.particlefilter;
  */
 public interface Particle {
     float getWeight();
+    void setWeight(float weight);
 }

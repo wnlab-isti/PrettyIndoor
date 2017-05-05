@@ -11,9 +11,9 @@ import it.cnr.isti.wnlab.indoornavigation.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
 import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
 import it.cnr.isti.wnlab.indoornavigation.types.RawData;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.DistancesMap;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.FingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.PositionDistance;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.FingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.PositionDistance;
 
 /**
  * A not-so-smart localization algorithm that uses only a fingerprint map.

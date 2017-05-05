@@ -1,4 +1,4 @@
-package it.cnr.isti.wnlab.indoornavigation.types.fingerprint;
+package it.cnr.isti.wnlab.indoornavigation.fingerprint;
 
 import com.google.common.io.Files;
 

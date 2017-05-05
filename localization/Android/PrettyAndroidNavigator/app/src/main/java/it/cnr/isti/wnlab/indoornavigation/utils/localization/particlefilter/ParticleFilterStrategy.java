@@ -15,16 +15,16 @@ import it.cnr.isti.wnlab.indoornavigation.XYPosition;
 import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.IndoorParticleFilter;
 import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.PositionParticle;
 import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.PositionPickingStrategy;
-import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.RegenerationStrategy;
+import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.ResamplingStrategy;
 import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.UpdateStrategy;
 import it.cnr.isti.wnlab.indoornavigation.map.FloorMap;
 import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.MagneticFingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.PositionDistance;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.WifiFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.MagneticFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.PositionDistance;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.WifiFingerprintMap;
 import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.fingerprint.DistancesMap;
 import it.cnr.isti.wnlab.indoornavigation.pdr.PDR;
 
 /**
@@ -117,7 +117,7 @@ public class ParticleFilterStrategy
                 // Filtering is in previous function (to save an iteration over all particles)
                 null,
                 // Regenerate particles
-                new RegenerationStrategy<PositionParticle>() {
+                new ResamplingStrategy<PositionParticle>() {
                     @Override
                     public void regenerate(Collection<PositionParticle> particles) {
                         regenerateParticles(particles);
