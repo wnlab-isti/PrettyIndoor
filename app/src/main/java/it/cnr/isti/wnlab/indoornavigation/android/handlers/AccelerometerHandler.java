@@ -4,7 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
 
 /**
  * Handler for Android's accelerometer events.

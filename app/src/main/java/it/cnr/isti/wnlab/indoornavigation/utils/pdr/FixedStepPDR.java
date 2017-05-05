@@ -1,13 +1,13 @@
 package it.cnr.isti.wnlab.indoornavigation.utils.pdr;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
+import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.types.Heading;
+import it.cnr.isti.wnlab.indoornavigation.types.Step;
 
 /**
- * PDR utility methods.
+ * A fixed-step PDR implementation.
  */
 public class FixedStepPDR extends PDR {
 

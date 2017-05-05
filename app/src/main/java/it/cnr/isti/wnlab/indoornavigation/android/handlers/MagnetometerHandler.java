@@ -4,7 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
 
 /**
  * Handler for Android's magnetometer events.

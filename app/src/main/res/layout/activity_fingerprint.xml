@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="it.cnr.isti.wnlab.indoornavigation.androidapp.fingerfood.FingerprintActivity">
+    tools:context=".android.app.fingerfood.FingerprintActivity">
 
     <Button
         android:layout_width="match_parent"
@@ -56,13 +56,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="x: 0"
         android:id="@+id/tv_x" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="y: 0"
         android:id="@+id/tv_y" />
 
     <TextView
@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_make_magnetic"
-        android:text="Will magnetic data blend?"
+        android:text="BLEND MAGNETIC DATA"
         android:textSize="5pt" />
 
     <TextView
@@ -86,7 +86,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_make_wifi"
-        android:text="Will WiFi data blend?"
+        android:text="BLEND WIFI DATA"
         android:textSize="5pt" />
 
 

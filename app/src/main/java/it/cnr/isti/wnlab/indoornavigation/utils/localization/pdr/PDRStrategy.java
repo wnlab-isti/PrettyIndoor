@@ -1,12 +1,15 @@
 package it.cnr.isti.wnlab.indoornavigation.utils.localization.pdr;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.AbstractIndoorLocalizationStrategy;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.AbstractIndoorLocalizationStrategy;
+import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigation.XYPosition;
+import it.cnr.isti.wnlab.indoornavigation.map.FloorMap;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.pdr.PDR;
 
+/**
+ * A not-so-smart localization algorithm that uses only PDR.
+ */
 public class PDRStrategy extends AbstractIndoorLocalizationStrategy implements Observer<PDR.Result> {
 
     private XYPosition position;
