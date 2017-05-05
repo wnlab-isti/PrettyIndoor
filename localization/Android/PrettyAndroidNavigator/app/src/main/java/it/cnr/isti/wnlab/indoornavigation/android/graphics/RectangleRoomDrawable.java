@@ -3,7 +3,7 @@ package it.cnr.isti.wnlab.indoornavigation.android.graphics;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.map.RectangleRoomMap;
+import it.cnr.isti.wnlab.indoornavigation.map.RectangleRoomMap;
 
 public class RectangleRoomDrawable implements IndoorDrawable {
 

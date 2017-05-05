@@ -6,19 +6,24 @@ import android.os.Handler;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.Compass;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataEmitter;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.AngularSpeed;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Heading;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.Compass;
+import it.cnr.isti.wnlab.indoornavigation.observer.DataEmitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigation.types.inertial.AngularSpeed;
+import it.cnr.isti.wnlab.indoornavigation.types.Heading;
+import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
 
 /**
- * Refers to http://plaw.info/2012/03/android-sensor-fusion-tutorial/
+ * This class represents a compass derived from low-filtered Accelerometer and Magnetometer and
+ * high-filtered gyroscope.
+ * The output is the rotation of the phone from the north, between -pi and pi.
+ *
+ * Code is an adaptation of https://www.codeproject.com/Articles/729759/Android-Sensor-Fusion-Tutorial
+ * @author Paul Lawitzki, Michele Agostini (adaptment)
  */
 
-public abstract class LawitzkiCompass extends Compass {
+public class LawitzkiCompass extends Compass {
 
     private static float[] multiplication3x3(float[] A, float[] B) {
         float[] result = new float[9];
@@ -71,9 +76,6 @@ public abstract class LawitzkiCompass extends Compass {
     /*
      * Gyroscope (high-pass filtered)
      */
-
-    // Angular speeds from gyro
-    private AngularSpeed gyro;
 
     // Rotation matrix from gyro data
     private float[] gyroMatrix = new float[9];
@@ -226,7 +228,7 @@ public abstract class LawitzkiCompass extends Compass {
     private long timestamp;
     private boolean initState = true;
 
-    public void onGyroscope(AngularSpeed data) {
+    private void onGyroscope(AngularSpeed data) {
         // don't startEmission until first accelerometer/magnetometer orientation has been acquired
         if (accMagOrientation == null)
             return;
@@ -239,6 +241,8 @@ public abstract class LawitzkiCompass extends Compass {
             gyroMatrix = multiplication3x3(gyroMatrix, initMatrix);
             initState = false;
         }
+
+        AngularSpeed gyro;
 
         // copy the new gyro values into the gyro array
         // convert the raw gyro data into a rotation vector

@@ -1,23 +1,12 @@
 --- TODO
-M
--> Finire refactoring con service
-    - Finire refactoring KF
-    - Test e debug KF Navigator
-    - Finire service
-    - Estendere a PF, PDR e FingerprintMap
-    - Estendere service
--> Rendere singleton gli handlers per android
--> Sistemare componenti che implementano observer (come StepDetector e DistancesMap)
-
 -> Scrivere documentazione
-    - Ultracommentare
     - UML
     - Readme.txt
 
--> Campagna EvAAL-like
--> Rivedere Step Detection (implementazione & teoria)
 -> Tesi
+    - Tra le altre cose, rivedere Step Detection (teoria)
 
+-> Campagna EvAAL-like e misurazioni varie
 
 --- TODO WHAT
 Requisiti app Android:

@@ -5,19 +5,26 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.AbstractIndoorLocalizationStrategy;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.kalmanfilter.KalmanFilter;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
-import it.cnr.isti.wnlab.indoornavigation.utils.GeometryUtils;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigation.AbstractIndoorLocalizationStrategy;
+import it.cnr.isti.wnlab.indoornavigation.XYPosition;
+import it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter.KalmanFilter;
+import it.cnr.isti.wnlab.indoornavigation.map.FloorMap;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.PositionDistance;
+import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.utils.math.GeometryUtils;
+import it.cnr.isti.wnlab.indoornavigation.pdr.PDR;
 
+/**
+ * A simple localization strategy that:
+ * - The main position is defined by PDR
+ * - PDR is refined with error correction using Magnetic Mismatch
+ * - Magnetic Mismatch positions are inscribed in a circular fence having the Wifi fingerprint-found
+ *   position as its center.
+ */
 public class KalmanFilterStrategy
         extends AbstractIndoorLocalizationStrategy
         implements Observer<PDR.Result> {
@@ -26,7 +33,7 @@ public class KalmanFilterStrategy
     private XYPosition position;
     private FloorMap floor;
 
-    // Kalman Filter
+    // Kalman StateEstimationFilter
     private KalmanFilter kf;
 
     // PDR
@@ -59,7 +66,7 @@ public class KalmanFilterStrategy
         this.position = startPosition;
         this.floor = chosenFloor;
         this.pdr = pdr;
-        this.kf = new BazookaKalmanFilter();
+        this.kf = new StupidKalmanFilter();
         this.wiDist = wiDist;
         this.magDist = magDist;
         this.radius = radius;

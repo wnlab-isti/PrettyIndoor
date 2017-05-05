@@ -3,7 +3,7 @@ package it.cnr.isti.wnlab.indoornavigation.android.graphics;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
+import it.cnr.isti.wnlab.indoornavigation.XYPosition;
 
 public class XYPositionDrawable implements IndoorDrawable {
 

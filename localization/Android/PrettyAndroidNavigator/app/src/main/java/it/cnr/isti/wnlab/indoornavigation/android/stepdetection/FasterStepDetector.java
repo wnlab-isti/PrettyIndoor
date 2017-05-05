@@ -2,13 +2,19 @@ package it.cnr.isti.wnlab.indoornavigation.android.stepdetection;
 
 import android.hardware.SensorManager;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.StepDetector;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.inertial.Acceleration;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.Step;
+import it.cnr.isti.wnlab.indoornavigation.StepDetector;
+import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.types.inertial.Acceleration;
+import it.cnr.isti.wnlab.indoornavigation.types.Step;
 
-
+/**
+ * This class is an Android implementation of Step Detection. I used this because the one in the
+ * Android Framework is too slow in its updates.
+ *
+ * Refers to https://github.com/bagilevi/android-pedometer (GNU GPL)
+ * @author Levente Bagi, Michele Agostini (adaptment)
+ */
 public class FasterStepDetector extends StepDetector implements Observer<Acceleration> {
 
     private float   mLimit = 1.9f; // Sperimentally found on my slow walk. It was 10.0 before

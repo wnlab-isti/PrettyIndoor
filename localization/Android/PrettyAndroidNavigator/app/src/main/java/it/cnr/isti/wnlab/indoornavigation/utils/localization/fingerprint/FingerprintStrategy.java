@@ -4,17 +4,21 @@ import org.apache.commons.math3.exception.NullArgumentException;
 
 import java.util.List;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.AbstractIndoorLocalizationStrategy;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.DataObserver;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Emitter;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.RawData;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.FingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
+import it.cnr.isti.wnlab.indoornavigation.AbstractIndoorLocalizationStrategy;
+import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigation.XYPosition;
+import it.cnr.isti.wnlab.indoornavigation.map.FloorMap;
+import it.cnr.isti.wnlab.indoornavigation.observer.DataObserver;
+import it.cnr.isti.wnlab.indoornavigation.observer.Emitter;
+import it.cnr.isti.wnlab.indoornavigation.types.RawData;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.FingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.PositionDistance;
 
+/**
+ * A not-so-smart localization algorithm that uses only a fingerprint map.
+ * @param <T>
+ */
 public class FingerprintStrategy<T extends RawData>
         extends AbstractIndoorLocalizationStrategy
         implements DataObserver<T> {

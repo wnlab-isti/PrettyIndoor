@@ -9,25 +9,27 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import it.cnr.isti.wnlab.indoornavigation.javaonly.AbstractIndoorLocalizationStrategy;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.IndoorPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.XYPosition;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.IndoorParticleFilter;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.PositionParticle;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.PositionPickingStrategy;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.RegenerationStrategy;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.filters.particlefilter.UpdateStrategy;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.map.FloorMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.observer.Observer;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.environmental.MagneticField;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.MagneticFingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.PositionDistance;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.WifiFingerprintMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.wifi.AccessPoints;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.types.fingerprint.DistancesMap;
-import it.cnr.isti.wnlab.indoornavigation.javaonly.pdr.PDR;
+import it.cnr.isti.wnlab.indoornavigation.AbstractIndoorLocalizationStrategy;
+import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
+import it.cnr.isti.wnlab.indoornavigation.XYPosition;
+import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.IndoorParticleFilter;
+import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.PositionParticle;
+import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.PositionPickingStrategy;
+import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.RegenerationStrategy;
+import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.UpdateStrategy;
+import it.cnr.isti.wnlab.indoornavigation.map.FloorMap;
+import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
+import it.cnr.isti.wnlab.indoornavigation.types.environmental.MagneticField;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.MagneticFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.PositionDistance;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.WifiFingerprintMap;
+import it.cnr.isti.wnlab.indoornavigation.types.wifi.AccessPoints;
+import it.cnr.isti.wnlab.indoornavigation.types.fingerprint.DistancesMap;
+import it.cnr.isti.wnlab.indoornavigation.pdr.PDR;
 
-
+/**
+ * A localization strategy that uses the Particle Filter.
+ */
 public class ParticleFilterStrategy
         extends AbstractIndoorLocalizationStrategy
         implements Observer<PDR.Result> {
@@ -39,7 +41,7 @@ public class ParticleFilterStrategy
     private final NormalDistribution speedDistribution;
     private float stepLength;
 
-    // Particle Filter
+    // Particle StateEstimationFilter
     private IndoorParticleFilter particleFilter;
     private final int particlesNumber;
 
@@ -95,7 +97,7 @@ public class ParticleFilterStrategy
         this.stepLength = stepLength;
 
         /*
-         * Particle Filter
+         * Particle StateEstimationFilter
          */
 
         // Initialize PF
@@ -165,7 +167,7 @@ public class ParticleFilterStrategy
 
     /**********************************************************************
      * FIRST STEP: Move particles
-     * SECOND STEP: Filter particles
+     * SECOND STEP: StateEstimationFilter particles
      * (these steps are exceptionally together)
      *********************************************************************/
 
@@ -293,10 +295,7 @@ public class ParticleFilterStrategy
         // Doing so, the less distanced the particles is, the less the probability of being killed.
         float random = r.nextFloat()*(maxLimit);
         Log.d("PFS", "Random is " + random + ", distance is " + particlePositionDistance + ", threshold: " + maxLimit + ", distances: " + distances.size());
-        if(random < particlePositionDistance)
-            return false;
-        else
-            return true;
+        return random >= particlePositionDistance;
     }
 
     /**********************************************************************
