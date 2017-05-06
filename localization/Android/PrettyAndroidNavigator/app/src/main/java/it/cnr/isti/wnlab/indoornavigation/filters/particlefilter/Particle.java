@@ -1,7 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.filters.particlefilter;
 
 /**
- * A generic Particle for Particle StateEstimationFilter.
+ * Particle Filter's particle.
  */
 public interface Particle {
     float getWeight();

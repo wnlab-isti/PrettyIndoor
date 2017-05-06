@@ -104,7 +104,7 @@ These classes are both an example of how an (data)observer works and useful impl
 
 ## How to make a new component
 Generally speaking, you should make a Java class that:
-1. **extends** or **implements** another abstraction that is already in the project. If this doesn't exists, you should firstly create the interfaces and write the common code (if any) in an abstract class, then implement your solution in a concrete class.
+1. **extends** or **implements** another abstraction that is already in the project. If this doesn't exist, you should firstly create the interfaces and write the common code (if any) in an abstract class, then implement your solution in a concrete class.
 2. **receives the data emitters in the constructor** from a third class and manages these emitters in its internal code.
 > OOP speaking, a component **HAS its observer** objects/functions and usually **IS NOT an observer**.
 
@@ -116,4 +116,4 @@ If your algorithm implementation is written in C/C\++ (i.e. for Android native i
 This is a work-in-progress package: it contains some code about possible *drawable* classes for output visualization on Android. Unfortunately I have never tested nor even run it.
 
 ## JavaDoc
-*coming soon (I just have to re-read the code, correct the comments and extract it)*
+See the [reference](javadoc/index.html) for more details.

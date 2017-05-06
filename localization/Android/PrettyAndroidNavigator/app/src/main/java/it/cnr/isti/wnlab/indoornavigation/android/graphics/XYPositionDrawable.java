@@ -5,6 +5,9 @@ import android.graphics.Paint;
 
 import it.cnr.isti.wnlab.indoornavigation.XYPosition;
 
+/**
+ * A drawable indicating a position in a 2D space.
+ */
 public class XYPositionDrawable implements IndoorDrawable {
 
     private XYPosition position;

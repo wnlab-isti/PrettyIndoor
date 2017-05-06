@@ -8,6 +8,9 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * This view shows a floor.
+ */
 public class FloorMapView extends View {
 
     private Matrix cartesian2computing;

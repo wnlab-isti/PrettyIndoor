@@ -2,6 +2,9 @@ package it.cnr.isti.wnlab.indoornavigation.pdr;
 
 import it.cnr.isti.wnlab.indoornavigation.observer.AbstractEmitter;
 
+/**
+ * Extend this class to make a new Pedestrian Dead Reckoning implementation.
+ */
 public abstract class PDR extends AbstractEmitter<PDR.Result> {
 
     public static class Result {

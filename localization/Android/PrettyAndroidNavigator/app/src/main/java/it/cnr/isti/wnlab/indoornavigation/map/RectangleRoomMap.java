@@ -1,5 +1,8 @@
 package it.cnr.isti.wnlab.indoornavigation.map;
 
+/**
+ * A rectangular-shaped room.
+ */
 public abstract class RectangleRoomMap extends RoomMap {
 
     private final float x;

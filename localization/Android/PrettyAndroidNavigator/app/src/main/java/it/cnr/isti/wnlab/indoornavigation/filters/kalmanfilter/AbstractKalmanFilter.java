@@ -1,7 +1,7 @@
 package it.cnr.isti.wnlab.indoornavigation.filters.kalmanfilter;
 
 /**
- * This class abstracts the method of Kalman StateEstimationFilter. Override this for writing your own
+ * This class represents the method of Kalman Filter. Override this for writing your own
  * implementation.
  */
 public abstract class AbstractKalmanFilter implements KalmanFilter {

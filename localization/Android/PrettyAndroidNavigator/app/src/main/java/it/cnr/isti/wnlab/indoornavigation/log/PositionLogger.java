@@ -6,6 +6,9 @@ import java.io.Writer;
 import it.cnr.isti.wnlab.indoornavigation.IndoorPosition;
 import it.cnr.isti.wnlab.indoornavigation.observer.Observer;
 
+/**
+ * A PositionLogger observes position updates and writes them in a file.
+ */
 public class PositionLogger implements Observer<IndoorPosition> {
 
     protected Writer mWriter;
