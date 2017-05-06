@@ -3,7 +3,7 @@ package it.cnr.isti.wnlab.indoornavigation.types.wifi;
 import it.cnr.isti.wnlab.indoornavigation.types.RawData;
 
 /**
- * (bssd,rssi)
+ * A class encapsulating (bssd,rssi) pair.
  */
 public class SingleAccessPoint implements RawData {
     public final String bssid;

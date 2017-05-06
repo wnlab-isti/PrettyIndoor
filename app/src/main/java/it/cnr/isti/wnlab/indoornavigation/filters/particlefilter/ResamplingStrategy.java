@@ -3,7 +3,7 @@ package it.cnr.isti.wnlab.indoornavigation.filters.particlefilter;
 import java.util.Collection;
 
 /**
- * The regeneration policy of a Particle StateEstimationFilter.
+ * The regeneration policy of a Particle Filter.
  * @param <T>
  */
 public interface ResamplingStrategy<T extends Particle> {

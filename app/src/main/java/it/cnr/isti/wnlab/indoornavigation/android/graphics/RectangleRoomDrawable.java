@@ -5,6 +5,9 @@ import android.graphics.Paint;
 
 import it.cnr.isti.wnlab.indoornavigation.map.RectangleRoomMap;
 
+/**
+ * A drawable that represents a room having a rectangle shape.
+ */
 public class RectangleRoomDrawable implements IndoorDrawable {
 
     private RectangleRoomMap room;

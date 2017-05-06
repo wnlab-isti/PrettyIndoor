@@ -7,6 +7,9 @@ import java.util.Collection;
 
 import it.cnr.isti.wnlab.indoornavigation.filters.particlefilter.PositionParticle;
 
+/**
+ * A drawable for Particle Filter's particles that represent positions.
+ */
 public class ParticlesDrawable implements IndoorDrawable {
 
     private Collection<PositionParticle> particles;

@@ -7,7 +7,7 @@ import java.util.Random;
 import it.cnr.isti.wnlab.indoornavigation.XYPosition;
 
 /**
- * A Particle StateEstimationFilter's Particle represting a 2D position.
+ * Particle Filter's particle that represents a 2D position.
  */
 public class PositionParticle implements Particle {
 
