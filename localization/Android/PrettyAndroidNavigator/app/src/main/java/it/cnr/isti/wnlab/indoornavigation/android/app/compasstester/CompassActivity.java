@@ -108,8 +108,7 @@ public class CompassActivity extends AppCompatActivity {
     }
 
     private void updateHeading(Heading newHeading) {
-        float heading = newHeading.heading;
-        mView.rotate = heading;
+        mView.rotate = -newHeading.heading;
         mView.invalidate();
     }
 }
