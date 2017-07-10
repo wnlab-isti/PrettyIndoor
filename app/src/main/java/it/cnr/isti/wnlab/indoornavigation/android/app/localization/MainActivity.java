@@ -1,11 +1,15 @@
 package it.cnr.isti.wnlab.indoornavigation.android.app.localization;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +34,49 @@ import it.cnr.isti.wnlab.indoornavigation.XYPosition;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     /***********************************
+     * User's permission request
+     ***********************************/
+
+    private final int PERMISSION_CODE_ALL = 1;
+
+    private void checkForPermissions(String... permissions) {
+        for(String permission : permissions)
+            // Here, thisActivity is the current activity
+            if (ContextCompat.checkSelfPermission(this,
+                    permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                // It should be more friendly checking if user needs explanations
+                ActivityCompat.requestPermissions(this,
+                        new String[]{permission},
+                        PERMISSION_CODE_ALL);
+            }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_CODE_ALL: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // Everything's ok
+
+                } else {
+
+                    // We have not all the permissions! Brutally close everything
+                    Toast.makeText(this, getResources().getString(R.string.no_permissions), Toast.LENGTH_LONG).show();
+                    finish();
+
+                }
+
+            }
+        }
+    }
+
+    /***********************************
      * Activity lifecycle
      ***********************************/
 
@@ -38,6 +85,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Asynchronously ask runtime permissions
+        checkForPermissions(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        // Initialize GUI elements
         initializeGUI();
     }
 
