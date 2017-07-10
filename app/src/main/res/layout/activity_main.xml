@@ -154,7 +154,7 @@
 
     <!-- Floating Action Buttons -->
 
-    <android.support.design.widget.FloatingActionButton
+<!--    <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -182,6 +182,36 @@
         android:elevation="@dimen/fab_margin"
         android:id="@+id/fab_logstep"
         android:src="@android:drawable/ic_menu_myplaces"
-        android:backgroundTint="@android:color/background_light"/>
+        android:backgroundTint="@android:color/background_light"/>-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_start"
+        android:src="@android:drawable/ic_media_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_gravity="end|bottom"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        app:layout_anchorGravity="bottom"
+        android:layout_margin="16dp" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_stop"
+        android:src="@android:drawable/ic_media_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_gravity="end|bottom"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        app:layout_anchorGravity="bottom"
+        android:layout_margin="16dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_logstep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:src="@android:drawable/ic_menu_myplaces"
+        android:layout_margin="16dp" />
 </RelativeLayout>
